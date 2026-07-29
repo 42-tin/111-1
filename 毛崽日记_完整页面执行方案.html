@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>毛崽日记 · 完整页面执行方案</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #FFF5E8 0%, #FAE8D0 100%);
+  color: #3D2817;
+  padding: 48px 24px 80px;
+  line-height: 1.7;
+}
+.container { max-width: 960px; margin: 0 auto; }
+h1 { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid #F0DDB5; }
+h3 { font-size: 16px; font-weight: 600; margin: 28px 0 12px; }
+h4 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: #5C3D2E; }
+.subtitle { font-size: 14px; color: #8B7355; margin-bottom: 32px; }
+p { font-size: 14px; color: #3D2817; margin-bottom: 10px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { font-size: 14px; color: #3D2817; margin-bottom: 4px; }
+
+.tokens { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 16px 0; }
+.token-card { background: #FFF8EE; border: 1px solid #F0E4CE; border-radius: 12px; padding: 12px 14px; }
+.token-card .label { font-size: 11px; color: #A0815F; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.token-card .value { font-size: 13px; font-weight: 500; }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(0,0,0,0.1); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+th { background: #FFF1DC; padding: 10px 12px; text-align: left; font-weight: 500; color: #5C3D2E; border-bottom: 2px solid #F0DDB5; }
+td { padding: 8px 12px; border-bottom: 1px solid #F0E4CE; }
+tr:hover td { background: #FFFBF5; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.b-l1 { background: #E87A5D; color: #FFF; }
+.b-l2 { background: #FFF1DC; color: #8B7355; border: 1px solid #F0DDB5; }
+.b-l3 { background: #F5E8D0; color: #A0815F; }
+.b-l4 { background: #FAF3E8; color: #B89C7A; border: 1px dashed #D3B98C; }
+.b-state { background: #E6F1FB; color: #185FA5; }
+.b-p0 { background: #FCEBEB; color: #A32D2D; }
+.b-p1 { background: #FAEEDA; color: #854F0B; }
+.b-p2 { background: #F1EFE8; color: #5F5E5A; }
+.b-done { background: #E1F5EE; color: #0F6E56; }
+
+.spec-card { background: #FFF8EE; border: 1px solid #F0E4CE; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.spec-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.spec-header h3 { margin: 0; }
+.spec-layout { font-size: 13px; color: #5C3D2E; margin-bottom: 12px; padding: 12px 14px; background: #FFFBF5; border-radius: 10px; border: 1px solid #F5E8D0; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.8; white-space: pre-wrap; }
+.spec-elements { list-style: none; padding: 0; }
+.spec-elements li { font-size: 13px; color: #3D2817; padding: 5px 0; padding-left: 18px; position: relative; }
+.spec-elements li::before { content: ""; position: absolute; left: 4px; top: 12px; width: 6px; height: 6px; border-radius: 50%; background: #E87A5D; }
+.spec-interact { margin-top: 10px; padding: 10px 14px; background: #FFF1DC; border-radius: 8px; border-left: 3px solid #E87A5D; }
+.spec-interact .label { font-size: 11px; color: #A0815F; font-weight: 500; margin-bottom: 4px; }
+.spec-interact .text { font-size: 13px; color: #5C3D2E; }
+
+.batch-card { background: #FFF8EE; border: 1px solid #F0E4CE; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.batch-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.batch-num { width: 32px; height: 32px; border-radius: 50%; background: #E87A5D; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+.batch-pages { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.batch-page { background: #FFFBF5; border: 1px solid #F0E4CE; border-radius: 8px; padding: 4px 10px; font-size: 12px; color: #5C3D2E; }
+
+.section-divider { height: 1px; background: linear-gradient(90deg, transparent, #F0DDB5, transparent); margin: 32px 0; }
+.flow-box { background: #FFF8EE; border: 1px solid #F0E4CE; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+.flow-title { font-size: 14px; font-weight: 600; color: #3D2817; margin-bottom: 10px; }
+.flow-step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C3D2E; padding: 4px 0; }
+.flow-arrow { color: #E87A5D; font-weight: 600; }
+.flow-branch { padding-left: 20px; border-left: 2px solid #F0DDB5; margin-left: 8px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>毛崽日记 · 完整页面执行方案</h1>
+<p class="subtitle">基于首页高保真设计稿推导 · 共40+页面 · 5个执行批次 · 覆盖一至四级页面及全部交互状态</p>
+
+<h2>一、设计系统（从首页高保真稿提取）</h2>
+
+<h3>1.1 配色规范</h3>
+<div class="tokens">
+  <div class="token-card"><div class="label">主背景</div><div class="value"><span class="swatch" style="background:#FFF8EE"></span>#FFF8EE 奶油色</div></div>
+  <div class="token-card"><div class="label">页面渐变</div><div class="value"><span class="swatch" style="background:linear-gradient(135deg,#FFF5E8,#FAE8D0)"></span>#FFF5E8 → #FAE8D0</div></div>
+  <div class="token-card"><div class="label">主文字</div><div class="value"><span class="swatch" style="background:#3D2817"></span>#3D2817 深棕</div></div>
+  <div class="token-card"><div class="label">次文字</div><div class="value"><span class="swatch" style="background:#8B7355"></span>#8B7355 中棕</div></div>
+  <div class="token-card"><div class="label">辅助文字</div><div class="value"><span class="swatch" style="background:#A0815F"></span>#A0815F 浅棕</div></div>
+  <div class="token-card"><div class="label">强调色</div><div class="value"><span class="swatch" style="background:#E87A5D"></span>#E87A5D 珊瑚橙</div></div>
+  <div class="token-card"><div class="label">卡片背景</div><div class="value"><span class="swatch" style="background:#FFFFFF"></span>#FFFFFF 纯白</div></div>
+  <div class="token-card"><div class="label">卡片边框</div><div class="value"><span class="swatch" style="background:#F0E4CE"></span>#F0E4CE 浅暖</div></div>
+  <div class="token-card"><div class="label">高亮背景</div><div class="value"><span class="swatch" style="background:#FFF1DC"></span>#FFF1DC 浅黄</div></div>
+  <div class="token-card"><div class="label">虚线边框</div><div class="value"><span class="swatch" style="background:#D3B98C"></span>#D3B98C 暖灰</div></div>
+</div>
+
+<h3>1.2 排版规范</h3>
+<div class="tokens">
+  <div class="token-card"><div class="label">字体族</div><div class="value">-apple-system, PingFang SC, Microsoft YaHei</div></div>
+  <div class="token-card"><div class="label">Logo/标题</div><div class="value">18px / weight 500</div></div>
+  <div class="token-card"><div class="label">区块标题</div><div class="value">15px / weight 500</div></div>
+  <div class="token-card"><div class="label">正文</div><div class="value">13px / weight 400</div></div>
+  <div class="token-card"><div class="label">辅助说明</div><div class="value">12px / weight 400</div></div>
+  <div class="token-card"><div class="label">标签/小字</div><div class="value">11px / weight 400</div></div>
+</div>
+
+<h3>1.3 组件规范</h3>
+<div class="tokens">
+  <div class="token-card"><div class="label">手机框</div><div class="value">390px宽 / 48px圆角 / 2px边框</div></div>
+  <div class="token-card"><div class="label">屏幕</div><div class="value">36px内圆角</div></div>
+  <div class="token-card"><div class="label">卡片圆角</div><div class="value">14-16px</div></div>
+  <div class="token-card"><div class="label">头像尺寸</div><div class="value">36px(切换) / 38px(日记) / 42px(社区)</div></div>
+  <div class="token-card"><div class="label">按钮</div><div class="value">珊瑚橙底 / 白字 / 12px圆角</div></div>
+  <div class="token-card"><div class="label">底部Tab</div><div class="value">5Tab / 中间凸起圆形54px</div></div>
+</div>
+
+<div class="section-divider"></div>
+
+<h2>二、完整页面清单（40页 + 全局状态）</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>页面名称</th><th>层级</th><th>所属模块</th><th>优先级</th><th>状态</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>首页（Dashboard）</td><td><span class="badge b-l1">L1</span></td><td>-</td><td><span class="badge b-p0">P0</span></td><td><span class="badge b-done">已完成</span></td></tr>
+<tr><td>2</td><td>社区页 - 推荐流</td><td><span class="badge b-l1">L1</span></td><td>社区</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>3</td><td>社区页 - 关注流</td><td><span class="badge b-l1">L1</span></td><td>社区</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>4</td><td>日记详情页（共用）</td><td><span class="badge b-l2">L2</span></td><td>社区/我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>5</td><td>搜索页</td><td><span class="badge b-l2">L2</span></td><td>社区</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>6</td><td>用户主页</td><td><span class="badge b-l3">L3</span></td><td>社区</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>7</td><td>创作输入页</td><td><span class="badge b-l1">L1</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>8</td><td>AI生成中（Loading）</td><td><span class="badge b-state">状态</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>9</td><td>生成结果页</td><td><span class="badge b-l2">L2</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>10</td><td>重新生成（Loading）</td><td><span class="badge b-state">状态</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>11</td><td>发布确认页</td><td><span class="badge b-l2">L2</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>12</td><td>分享弹窗</td><td><span class="badge b-state">弹窗</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>13</td><td>发布成功弹窗</td><td><span class="badge b-state">弹窗</span></td><td>创作</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>14</td><td>消息总览页</td><td><span class="badge b-l1">L1</span></td><td>消息</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>15</td><td>系统通知列表</td><td><span class="badge b-l2">L2</span></td><td>消息</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>16</td><td>宠物提醒列表</td><td><span class="badge b-l2">L2</span></td><td>消息</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>17</td><td>点赞 & 评论通知</td><td><span class="badge b-l2">L2</span></td><td>消息</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>18</td><td>私信列表</td><td><span class="badge b-l2">L2</span></td><td>消息</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>19</td><td>私信聊天窗口</td><td><span class="badge b-l3">L3</span></td><td>消息</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>20</td><td>我的主页</td><td><span class="badge b-l1">L1</span></td><td>我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>21</td><td>宠物档案管理</td><td><span class="badge b-l2">L2</span></td><td>我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>22</td><td>宠物档案详情</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>23</td><td>添加新宠物</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>24</td><td>编辑宠物档案</td><td><span class="badge b-l4">L4</span></td><td>我的</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>25</td><td>我的日记列表</td><td><span class="badge b-l2">L2</span></td><td>我的</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+<tr><td>26</td><td>我的草稿箱</td><td><span class="badge b-l2">L2</span></td><td>我的</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>27</td><td>收藏的日记</td><td><span class="badge b-l2">L2</span></td><td>我的</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>28</td><td>设置页</td><td><span class="badge b-l2">L2</span></td><td>我的</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>29</td><td>账号设置</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p2">P2</span></td><td>待制作</td></tr>
+<tr><td>30</td><td>通知设置</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p2">P2</span></td><td>待制作</td></tr>
+<tr><td>31</td><td>隐私设置</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p2">P2</span></td><td>待制作</td></tr>
+<tr><td>32</td><td>关于毛崽日记</td><td><span class="badge b-l3">L3</span></td><td>我的</td><td><span class="badge b-p2">P2</span></td><td>待制作</td></tr>
+<tr><td>33</td><td>删除确认弹窗</td><td><span class="badge b-state">弹窗</span></td><td>全局</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>34-39</td><td>空状态合集（6种）</td><td><span class="badge b-state">状态</span></td><td>全局</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>40</td><td>网络错误状态</td><td><span class="badge b-state">状态</span></td><td>全局</td><td><span class="badge b-p1">P1</span></td><td>待制作</td></tr>
+<tr><td>41</td><td>宠物提醒推送通知</td><td><span class="badge b-state">状态</span></td><td>全局</td><td><span class="badge b-p0">P0</span></td><td>待制作</td></tr>
+</tbody>
+</table>
+
+<div class="section-divider"></div>
+
+<h2>三、各页面核心要素详述</h2>
+
+<h3>3.1 社区线</h3>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>社区页 - 推荐流</h3>
+    <span class="badge b-l1">L1</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[状态栏]
+[导航栏] 毛崽日记 · 搜索 · 消息(红点)
+[Tab切换] 推荐(选中·珊瑚色下划线) | 关注
+[分类筛选] 全部 · 猫咪 · 狗狗 · 其他宠物 (横滑标签)
+[Feed流] 瀑布流卡片 × N (可滚动)
+  卡片结构：
+    宠物头像(42px) + 名字·品种 + 关注按钮 + 时间
+    风格标签 (傲娇风/热血风/文艺风)
+    日记标题 (加粗)
+    日记正文预览 (3行+省略号)
+    配图区 (1张大图 或 2-3张缩略图横排)
+    互动栏: 点赞(爱心+数) · 评论(气泡+数) · 分享 · 收藏
+[底部Tab栏] 社区选中</div>
+  <ul class="spec-elements">
+    <li>推荐流按内容热度排序（综合点赞数、评论数、发布时间加权）</li>
+    <li>热门日记带"HOT"角标（珊瑚色小标签）</li>
+    <li>卡片点击 → 进入日记详情页</li>
+    <li>宠物头像/名字点击 → 进入用户主页</li>
+    <li>关注按钮：未关注显示珊瑚色描边，已关注显示灰色实心</li>
+    <li>下拉刷新，上滑加载更多</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">点赞动画：爱心从小到大弹出+轻微震动；双击日记配图也可触发点赞</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>社区页 - 关注流</h3>
+    <span class="badge b-l1">L1</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[状态栏]
+[导航栏] 毛崽日记 · 搜索 · 消息(红点)
+[Tab切换] 推荐 | 关注(选中·珊瑚色下划线)
+[Feed流] 仅展示已关注用户的最新日记
+  卡片结构与推荐流一致，但：
+    - 不显示"关注"按钮（已关注状态）
+    - 按发布时间倒序排列（非热度排序）
+[空状态] (无关注用户时)
+  插画 + "还没有关注的人"
+  "去推荐页发现更多可爱的毛崽吧" + 跳转按钮
+[底部Tab栏] 社区选中</div>
+  <ul class="spec-elements">
+    <li>与推荐流共用卡片组件，仅数据源和排序逻辑不同</li>
+    <li>空状态展示：可爱的宠物插画 + 引导文案 + 跳转推荐页按钮</li>
+    <li>首次使用引导：如果用户从未关注过任何人，自动展示空状态</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>日记详情页（共用页面）</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span> <span class="badge b-done">多入口共用</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "日记详情" · 更多(···)
+[作者信息条]
+  宠物头像(48px) + 名字·品种 + 发布时间
+  关注按钮 (仅他人日记显示)
+[风格标签] 如"傲娇风" (圆角小标签·珊瑚色)
+[日记标题] 加粗大字
+[日记正文] 完整第一视角文案 (可展开/收起长文)
+[配图区] 大图展示 / 多图横滑 (带页码指示器)
+[互动栏·固定底部]
+  点赞(爱心) · 评论(气泡) · 收藏(书签) · 分享 · 重新生成(仅自己的日记)
+[评论区]
+  评论数标题
+  热门评论 × 2-3 (置顶)
+  全部评论列表 (头像+昵称+内容+时间+点赞)
+  回复按钮 → 展开子评论
+[评论输入框·固定底部]
+  头像 + "说点什么..." + 表情 + 发送</div>
+  <ul class="spec-elements">
+    <li>入口：首页最近日记 / 社区Feed / 我的日记 / 收藏列表 / 消息通知</li>
+    <li>自己的日记：显示"重新生成"按钮（回到生成结果页换风格）</li>
+    <li>他人的日记：显示"关注"按钮，不显示"重新生成"</li>
+    <li>更多菜单：举报/不感兴趣（他人）/ 编辑/删除（自己）</li>
+    <li>点赞后爱心变珊瑚色填充+缩放动画</li>
+    <li>评论支持文字+表情，不支持图片</li>
+    <li>长文默认展开3行，点击"展开全文"查看完整</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">分享按钮 → 弹出分享面板（微信/朋友圈/微博/QQ/复制链接/生成长图）；删除 → 弹出删除确认弹窗</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>搜索页</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · 搜索框(带光标·可输入) · 取消
+[搜索前]
+  历史搜索 (标签云·可单个删除/全部清空)
+  热门搜索 (带排名序号·红色高亮前3)
+  热门话题 (#拆家日记大赛 #猫咪迷惑行为)
+[搜索结果]
+  Tab切换: 日记 | 用户 | 话题
+  日记结果: 紧凑卡片列表 (头像+标题+预览+点赞数)
+  用户结果: 用户卡片 (头像+宠物名+品种+关注按钮)
+  话题结果: 话题卡片 (#话题名 + 参与数 + 关注)
+[空状态] (无搜索结果)
+  "没有找到相关内容，换个关键词试试？"</div>
+  <ul class="spec-elements">
+    <li>搜索范围：日记标题/正文、宠物名字、用户昵称、话题标签</li>
+    <li>输入时实时联想（防抖300ms）</li>
+    <li>历史搜索最多保留10条</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>用户主页</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · 用户昵称 · 更多(举报/拉黑)
+[封面区] 宠物大图(横幅)
+[宠物信息]
+  头像(64px) + 宠物名·品种 + 性别图标 + 年龄
+  性格标签 × 2-3
+  简介 (1行)
+[数据栏] 日记数 · 获赞数 · 粉丝数 (三列·可点击)
+[操作按钮] 关注/已关注 + 私信
+[Tab切换] 日记 | 收藏
+[日记列表] 卡片式 (与社区Feed卡片一致)
+[底部Tab栏] 无 (从社区/消息进入·不显示Tab)</div>
+  <ul class="spec-elements">
+    <li>点击"私信"→ 进入私信聊天窗口</li>
+    <li>点击数据栏"粉丝数"→ 粉丝列表（P2·后续迭代）</li>
+    <li>收藏Tab仅展示该用户公开的收藏（如对方开启权限）</li>
+  </ul>
+</div>
+
+<h3>3.2 创作线</h3>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>创作输入页</h3>
+    <span class="badge b-l1">L1</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回(存草稿确认) · "为Ta写日记" · 存草稿
+[选择宠物]
+  标签 "选择宠物"
+  横滑宠物卡片 (已建档案)
+  选中态：珊瑚色边框 + 右上角对勾
+  无档案时：引导创建卡片 → 跳转添加新宠物
+[行为描述]
+  标签 "描述Ta今天的行为"
+  多行文本框 (占位："比如：今天把拖鞋藏到了沙发底下，被抓包后还假装无事发生...")
+  字数统计 (0/500)
+  快捷模板标签 (横滑):
+    "今天Ta做了什么趣事" / "Ta今天的心情" / "印象深刻的瞬间"
+[上传照片]
+  标签 "添加照片（可选）"
+  网格上传区: 已传照片(可删除×) + 上传按钮(虚线框+)
+  最多9张
+[AI生成按钮] 全宽珊瑚色大按钮 "AI生成日记 →"</div>
+  <ul class="spec-elements">
+    <li>从首页底部"+"按钮或宠物档案详情页"为Ta写日记"进入</li>
+    <li>默认选中最近活跃的宠物（减少操作步骤）</li>
+    <li>行为描述至少10字才可生成，否则按钮置灰</li>
+    <li>照片可选，不传也能生成（AI纯文字创作）</li>
+    <li>存草稿：保存当前输入内容到草稿箱</li>
+    <li>返回时如有未保存内容 → 弹出"保存草稿/丢弃"确认</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">点击"AI生成日记"→ 进入AI生成中Loading状态；草稿箱中的草稿点击"继续编辑"→ 回到此页并恢复内容</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>AI生成中（Loading状态）</h3>
+    <span class="badge b-state">状态</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[全屏半透明遮罩] 背景 rgba(61,40,23,0.6)
+[居中卡片]
+  宠物头像(64px·带呼吸光圈动画)
+  "咪咪正在思考..."
+  进度文案 (动态切换):
+    "正在理解咪咪的行为..." →
+    "正在用傲娇风写日记..." →
+    "快要写完了..."
+  进度条 (珊瑚色·流光动画)
+  [取消按钮] "取消生成"</div>
+  <ul class="spec-elements">
+    <li>遮罩层不可点击穿透，防止误操作</li>
+    <li>预计生成时间3-5秒，进度文案每1.5秒切换</li>
+    <li>取消后返回创作输入页，保留已输入内容</li>
+    <li>头像使用当前选中宠物的真实照片</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>生成结果页</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回(到输入页) · "日记预览" · 存草稿
+[宠物信息条] 头像 + 名字 + 品种 + "的日记"
+[日记正文区] (白色卡片·圆角14px)
+  AI生成的标题 (加粗)
+  完整日记正文 (第一视角文案)
+  配图展示 (用户上传的照片)
+[风格切换栏]
+  标签 "切换风格"
+  风格标签横滑: 傲娇风(选中) | 热血风 | 文艺风 | 搞笑风 | 温柔风 | 霸道风
+  选中态：珊瑚色填充+白字
+  未选中：浅暖底+棕字
+  [重新生成按钮] "换个风格重写 →"
+[底部操作栏·固定]
+  [保存草稿] (白底珊瑚色描边)
+  [发布至社区] (珊瑚色填充·白字)</div>
+  <ul class="spec-elements">
+    <li>首次生成默认"傲娇风"，可切换其他风格重新生成</li>
+    <li>切换风格后点击"重新生成"→ 进入重新生成Loading</li>
+    <li>重新生成会替换当前正文，但可点击"撤回"恢复上一版</li>
+    <li>配图随日记一起保存，不可在此页编辑</li>
+    <li>存草稿：保存当前结果+选中风格到草稿箱</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">点击"发布至社区"→ 进入发布确认页；点击"保存草稿"→ 弹出Toast"已保存到草稿箱"并返回首页</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>重新生成（Loading状态）</h3>
+    <span class="badge b-state">状态</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[局部遮罩] 仅日记正文区域变暗
+[居中提示]
+  风格图标 (旋转动画)
+  "正在用热血风重写..."
+  进度条 (珊瑚色)
+  [取消按钮]</div>
+  <ul class="spec-elements">
+    <li>与AI生成中类似，但仅覆盖正文区域，保留风格切换栏可见</li>
+    <li>生成完成后正文区域渐变切换为新内容</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>发布确认页</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回(到结果页) · "发布" (右上角珊瑚色文字)
+[日记预览缩略] 小卡片展示标题+前2行正文+缩略图
+[可见性设置]
+  ○ 公开 (所有人可见·默认选中)
+  ○ 仅好友可见
+  ○ 仅自己可见 (私密日记)
+[添加话题]
+  输入框 "#添加话题标签"
+  推荐话题: #拆家日记 #猫咪日常 #萌宠日常 (可点击添加)
+  已选话题标签 (可删除×)
+[分享设置]
+  "同时分享到" (开关)
+  [微信] [朋友圈] [微博] [QQ] (平台图标·可多选)
+[发布按钮] 全宽珊瑚色大按钮 "发布日记"</div>
+  <ul class="spec-elements">
+    <li>可见性默认"公开"，发布到社区Feed流</li>
+    <li>"仅自己可见"的日记不会出现在社区，仅在"我的日记"中显示</li>
+    <li>话题最多添加3个</li>
+    <li>分享到第三方平台：生成日记长图分享</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">点击"发布日记"→ 如果勾选了第三方分享，先弹出分享面板；否则直接发布→ 显示发布成功弹窗</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>分享弹窗</h3>
+    <span class="badge b-state">弹窗</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[底部弹出面板·白色圆角顶部]
+[标题] "分享到"
+[分享平台网格] (2行×3列)
+  微信好友 · 朋友圈 · 微博
+  QQ · 复制链接 · 生成长图
+[取消按钮] 全宽灰色按钮</div>
+  <ul class="spec-elements">
+    <li>从日记详情页"分享"按钮或发布确认页触发</li>
+    <li>"生成长图"：将日记标题+正文+配图合成一张竖版长图</li>
+    <li>"复制链接"：复制日记分享链接，Toast提示"已复制"</li>
+    <li>点击遮罩区或"取消"关闭面板</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>发布成功弹窗</h3>
+    <span class="badge b-state">弹窗</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[居中弹窗·白色圆角20px]
+[成功图标] 爪印+对勾 (珊瑚色·带弹跳动画)
+[标题] "日记已发布!"
+[副标题] "咪咪的日记已经分享到社区啦"
+[操作按钮]
+  [去看看] (珊瑚色填充) → 跳转日记详情页
+  [继续创作] (白底描边) → 回到创作输入页</div>
+  <ul class="spec-elements">
+    <li>点击遮罩区默认执行"继续创作"</li>
+    <li>如果选择了"仅自己可见"，副标题改为"日记已保存到我的日记"</li>
+  </ul>
+</div>
+
+<h3>3.3 消息线</h3>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>消息总览页</h3>
+    <span class="badge b-l1">L1</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] "消息" · 设置(消息免打扰)
+[消息分类入口] (列表式·每行带未读红点)
+  [系统通知] 官方图标 + "系统通知" + 最新消息预览 + 时间 + 未读数
+  [宠物提醒] 爪印图标 + "宠物提醒" + "咪咪想你了..." + 时间 + 未读数
+  [点赞&评论] 爱心图标 + "互动消息" + "3人赞了你的日记" + 时间 + 未读数
+  [私信] 消息气泡图标 + "私信" + 最新消息预览 + 时间 + 未读数
+[底部Tab栏] 消息选中</div>
+  <ul class="spec-elements">
+    <li>每个入口的未读数以珊瑚色圆形角标显示</li>
+    <li>点击各入口 → 进入对应二级列表页</li>
+    <li>宠物提醒的图标使用宠物头像，增加亲切感</li>
+    <li>全部已读：右上角设置中有"全部标为已读"选项</li>
+    <li>消息免打扰：设置中可开启/关闭推送通知</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>系统通知列表</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "系统通知" · 清空
+[通知卡片列表]
+  每张: 官方Logo图标 + 标题 + 内容摘要 + 时间
+  类型区分:
+    活动公告 (橙色标签)
+    功能更新 (蓝色标签)
+    社区规范 (灰色标签)
+    福利通知 (红色标签)
+  未读：左侧珊瑚色小圆点
+  已读：透明度降低
+[点击] → 展开通知详情或跳转对应活动页</div>
+  <ul class="spec-elements">
+    <li>通知按时间倒序排列</li>
+    <li>"清空"→ 弹出确认弹窗"清空所有系统通知？"</li>
+    <li>活动类通知可带"立即参与"按钮</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>宠物提醒列表</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "宠物提醒" · 提醒设置(齿轮)
+[提醒卡片列表]
+  每张: 宠物头像(48px) + 提醒文案(第一人称) + 时间 + [去写日记]按钮
+  提醒文案示例:
+    "咪咪说：今天我都拆家了，你还不给我写日记？"
+    "年糕说：本喵已经睡了一整天了，快来记录本喵的英姿！"
+  不同宠物 · 不同提醒风格（与宠物性格标签关联）
+[提醒频率设置入口]
+  "每日提醒时间" 20:00
+  "提醒频率" 每天/每2天/每周
+  "参与提醒的宠物" 咪咪✓ 年糕✓</div>
+  <ul class="spec-elements">
+    <li>提醒文案由AI根据宠物性格+近期日记频率自动生成</li>
+    <li>点击"去写日记"→ 跳转创作输入页，自动选中该宠物</li>
+    <li>已写日记的提醒标记为"已完成"，灰色置底</li>
+    <li>推送通知与App内提醒同步，点击推送直接跳转创作页</li>
+  </ul>
+  <div class="spec-interact">
+    <div class="label">关键交互</div>
+    <div class="text">推送通知样式：宠物头像+"咪咪提醒你写日记啦"+[立即写]按钮；点击跳转创作输入页</div>
+  </div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>点赞 & 评论通知</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "互动消息"
+[Tab切换] 点赞(选中) | 评论
+[点赞列表]
+  用户头像 + "赞了你的日记" + 日记标题摘要 + 时间
+  聚合显示: "XX等3人赞了你的日记《今日份拆家述职报告》"
+  点击 → 跳转日记详情页
+[评论列表]
+  用户头像 + 评论内容 + 回复按钮 + 时间
+  "@了你的日记" + 日记标题
+  点击 → 跳转日记详情页评论区</div>
+  <ul class="spec-elements">
+    <li>同一日记的多个点赞聚合为一条（"XX等N人"）</li>
+    <li>评论通知支持直接在列表内回复（展开输入框）</li>
+    <li>已读通知透明度降低</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>私信列表</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "私信" · 新建(笔图标)
+[聊天列表]
+  每行: 用户头像(带宠物) + 昵称 + 最新消息预览 + 时间 + 未读数
+  最新消息置顶
+[右滑操作] 标为已读 / 删除会话
+[空状态] "还没有私信，去社区认识其他铲屎官吧"</div>
+  <ul class="spec-elements">
+    <li>按最新消息时间排序</li>
+    <li>点击行 → 进入私信聊天窗口</li>
+    <li>删除会话 → 弹出确认弹窗</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>私信聊天窗口</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · 对方头像+昵称(宠物名) · 更多(举报/拉黑)
+[消息列表] (双向气泡)
+  自己消息: 右对齐·珊瑚色气泡·白字
+  对方消息: 左对齐·白色气泡·棕字
+  时间分隔条 (居中灰色小字)
+  支持文字+表情+图片消息
+[快捷回复标签] (横滑·消息列表底部)
+  "你的宠物好可爱！" / "日记写得太有趣了" / "关注你啦~"
+[输入栏·固定底部]
+  表情按钮 + 文字输入框 + 图片按钮 + 发送按钮</div>
+  <ul class="spec-elements">
+    <li>从用户主页"私信"按钮或私信列表进入</li>
+    <li>支持发送图片（压缩后发送）</li>
+    <li>对方拉黑后：输入框置灰，提示"对方暂时无法接收消息"</li>
+    <li>更多菜单：举报用户/拉黑用户/清空聊天记录</li>
+  </ul>
+</div>
+
+<h3>3.4 我的线</h3>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>我的主页</h3>
+    <span class="badge b-l1">L1</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] "我的" · 设置(齿轮图标)
+[个人信息区]
+  头像(64px) + 昵称 + 签名简介(1行)
+  [编辑资料] 按钮 (小·描边)
+[数据栏] 关注 · 粉丝 · 获赞 (三列·可点击)
+[功能入口列表]
+  宠物档案管理 → (右侧箭头·显示宠物数量)
+  我的日记 → (显示日记总数)
+  我的草稿箱 → (右上角珊瑚色角标·显示草稿数)
+  收藏的日记 → (显示收藏数)
+[数据概览卡片]
+  本月创作: 12篇
+  累计获赞: 348
+  社区排名: #1,256
+[底部Tab栏] 我的选中</div>
+  <ul class="spec-elements">
+    <li>点击头像/编辑资料 → 资料编辑页（修改昵称、签名、头像）</li>
+    <li>数据栏点击：关注/粉丝 → 对应列表页（P2）</li>
+    <li>草稿箱角标：有草稿时显示数字，无草稿不显示</li>
+    <li>数据概览卡片：浅黄色背景·展示创作激励信息</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>宠物档案管理</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "宠物档案" · 添加(+)
+[宠物列表] (纵向卡片)
+  每张卡片:
+    宠物大头像(56px) + 名字 + 品种 + 性别图标
+    年龄 · 性格标签 × 2-3
+    右侧箭头 →
+  点击卡片 → 进入宠物档案详情
+[添加按钮] 右上角"+"或列表底部"添加新宠物"卡片</div>
+  <ul class="spec-elements">
+    <li>支持多只宠物，无数量上限</li>
+    <li>长按卡片 → 弹出快捷菜单（编辑/删除/设为默认）</li>
+    <li>删除宠物 → 弹出确认弹窗"删除后该宠物的日记将保留但不再关联宠物档案，确认删除？"</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>宠物档案详情</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "宠物档案" · 编辑(笔图标)
+[宠物大图] 横幅照片(16:9)
+[基本信息卡片]
+  名字 (大字加粗)
+  品种 · 性别 · 生日 · 年龄 · 体重
+  绝育状态
+  性格标签 × 3 (圆角标签·浅暖色)
+  简介 (宠物第一视角的自我介绍·AI生成)
+[统计栏] 日记数 · 获赞数 · 关注数 (三列)
+[Ta的日记]
+  标题 "Ta的日记" + 排序按钮 (按时间/按热度)
+  日记卡片列表 (紧凑式: 标题+时间+风格标签+状态)
+  点击 → 进入日记详情
+[底部操作·固定] [为Ta写日记] 全宽珊瑚色按钮</div>
+  <ul class="spec-elements">
+    <li>从首页宠物切换条点击宠物名 → 进入此页</li>
+    <li>"为Ta写日记"→ 跳转创作输入页，自动选中该宠物</li>
+    <li>简介由AI根据宠物档案信息生成，可在编辑页修改</li>
+    <li>统计栏"关注数"表示有多少人关注了这只宠物</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>添加新宠物</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "添加新宠物" · 
+[头像上传] 圆形虚线框 + 相机图标 (点击上传)
+[表单]
+  名字 (文本输入)
+  品种 (选择器→弹出品种选择面板)
+    猫: 布偶/橘猫/英短/美短/波斯/暹罗/缅因/其他
+    狗: 金毛/拉布拉多/柯基/柴犬/泰迪/哈士奇/其他
+    其他: 兔子/仓鼠/鸟类/爬宠/其他
+  性别 (♂/♀ 选择)
+  生日 (日期选择器)
+  体重 (数字输入+kg)
+  绝育状态 (开关)
+  性格标签 (多选标签·最多3个)
+    高冷/黏人/贪吃/好奇/活泼/慵懒/霸道/温柔/胆小/神经质
+[完成按钮] 全宽珊瑚色 "创建档案"</div>
+  <ul class="spec-elements">
+    <li>名字和品种为必填，其他可选</li>
+    <li>创建后自动生成宠物第一视角简介（AI）</li>
+    <li>创建成功 → 返回宠物档案管理页，新宠物出现在列表</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>编辑宠物档案</h3>
+    <span class="badge b-l4">L4</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "编辑档案" · 保存
+[同添加新宠物表单] 但已填充现有数据
+[头像更换] 点击现有头像 → 重新上传
+[删除宠物] 底部红色文字按钮 "删除这只宠物"</div>
+  <ul class="spec-elements">
+    <li>修改后点击"保存"→ 返回档案详情页</li>
+    <li>返回时如有未保存修改 → 弹出"保存/不保存"确认</li>
+    <li>删除宠物 → 弹出删除确认弹窗</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>我的日记列表</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p0">P0</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "我的日记"
+[筛选栏]
+  宠物筛选: 全部 · 咪咪 · 年糕 (横滑标签)
+  状态筛选: 全部 · 已发布 · 草稿 · 仅自己可见
+[日记列表] (卡片式)
+  每张: 宠物头像 + 日记标题 + 时间 + 风格标签 + 状态标识
+  状态标识:
+    已发布(绿色) / 草稿(灰色) / 仅自己可见(锁图标)
+  点击 → 进入日记详情页
+[空状态] "还没有写过日记，点击下方按钮开始创作吧"</div>
+  <ul class="spec-elements">
+    <li>按时间倒序排列</li>
+    <li>草稿日记点击 → 回到创作流程（生成结果页或输入页）</li>
+    <li>左滑卡片 → 快捷操作（编辑/删除/分享）</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>我的草稿箱</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "草稿箱" · 清空
+[草稿列表] (卡片式)
+  每张: 宠物头像 + 日记标题(或"未命名草稿") + 最后编辑时间 + 风格标签
+  [继续编辑] 按钮 (珊瑚色描边)
+  [删除] 按钮 (红色文字)
+[空状态] "还没有草稿" + 插画 + "去写第一篇日记" 按钮</div>
+  <ul class="spec-elements">
+    <li>草稿包含：已输入内容但未生成、已生成但未发布两种状态</li>
+    <li>"继续编辑"→ 根据草稿状态跳转到创作输入页或生成结果页</li>
+    <li>清空 → 弹出确认弹窗"清空所有草稿？此操作不可撤销"</li>
+  </ul>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>收藏的日记</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "收藏" · 排序
+[收藏列表] (卡片式)
+  每张: 宠物头像 + 名字·品种 + 日记标题 + 预览(2行) + 收藏时间
+  [取消收藏] 按钮 (已收藏状态·书签图标填充)
+  点击 → 进入日记详情页
+[空状态] "还没有收藏的日记" + "去社区发现好日记" 按钮</div>
+  <ul class="spec-elements">
+    <li>按收藏时间倒序排列</li>
+    <li>原日记被删除后显示"该日记已被作者删除"</li>
+    <li>支持按宠物类型筛选（猫/狗/其他）</li>
+  </ul>
+</div>
+
+<h3>3.5 设置 & 全局状态</h3>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>设置页</h3>
+    <span class="badge b-l2">L2</span> <span class="badge b-p1">P1</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "设置"
+[分组列表]
+  账号与安全 → (手机号/微信绑定状态)
+  通知设置 → (推送开关)
+  隐私设置 → (可见性范围)
+  清除缓存 → (显示缓存大小·点击清除)
+  关于毛崽日记 → (版本号)
+  [退出登录] 红色文字按钮</div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>账号设置</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p2">P2</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "账号与安全"
+[列表]
+  手机号 (已绑定 138****8888 → 更换)
+  微信 (已绑定/未绑定 → 绑定/解绑)
+  修改密码 →
+  注销账号 → (红色文字·危险操作)</div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>通知设置</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p2">P2</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "通知设置"
+[开关列表]
+  宠物提醒推送 (开/关)
+    每日提醒时间 20:00 → (时间选择器)
+    提醒频率 每天/每2天/每周 → (单选)
+  点赞通知 (开/关)
+  评论通知 (开/关)
+  系统通知 (开/关)
+  私信通知 (开/关)
+  勿扰模式 (开/关)
+    勿扰时段 22:00-08:00 →</div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>隐私设置</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p2">P2</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "隐私设置"
+[列表]
+  谁可以看到我的日记: 所有人/仅好友/仅自己 (单选)
+  谁可以私信我: 所有人/仅关注的人 (单选)
+  是否展示宠物档案: 公开/仅好友可见 (单选)
+  屏蔽列表 → (已屏蔽用户列表)
+  黑名单管理 →</div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>关于毛崽日记</h3>
+    <span class="badge b-l3">L3</span> <span class="badge b-p2">P2</span>
+  </div>
+  <div class="spec-layout">[导航栏] ←返回 · "关于"
+[App信息]
+  Logo + "毛崽日记" + 版本号 v1.0.0
+[列表]
+  用户协议 →
+  隐私政策 →
+  社区规范 →
+  联系我们 →
+  给我们打分 → (跳转应用商店)</div>
+</div>
+
+<div class="spec-card">
+  <div class="spec-header">
+    <h3>全局弹窗 & 状态合集</h3>
+    <span class="badge b-state">弹窗/状态</span> <span class="badge b-p1">P1</span>
+  </div>
+  <h4>删除确认弹窗</h4>
+  <ul class="spec-elements">
+    <li>居中弹窗 · 白色圆角 · 遮罩背景</li>
+    <li>标题"确认删除？" + 描述文案 + [取消] [删除] (红色)</li>
+    <li>用于：删除日记/删除宠物/删除草稿/清空列表</li>
+  </ul>
+  <h4>空状态（6种）</h4>
+  <ul class="spec-elements">
+    <li>无日记：宠物趴着睡觉插画 + "还没有日记" + "开始创作"按钮</li>
+    <li>无关注：宠物探头插画 + "还没有关注的人" + "去发现"按钮</li>
+    <li>无消息：空信箱插画 + "暂时没有新消息"</li>
+    <li>无搜索结果：放大镜插画 + "没有找到相关内容"</li>
+    <li>无草稿：空白纸插画 + "还没有草稿" + "去写日记"按钮</li>
+    <li>无收藏：空书架插画 + "还没有收藏" + "去社区逛逛"按钮</li>
+  </ul>
+  <h4>网络错误状态</h4>
+  <ul class="spec-elements">
+    <li>断网页面：云朵+断线插画 + "网络走丢了" + "重试"按钮</li>
+    <li>加载失败：骨架屏 + "加载失败，点击重试"</li>
+  </ul>
+  <h4>宠物提醒推送通知</h4>
+  <ul class="spec-elements">
+    <li>系统通知栏样式：宠物头像 + "咪咪提醒你写日记啦" + [立即写] [稍后]</li>
+    <li>点击"立即写"→ 直接跳转创作输入页，选中对应宠物</li>
+    <li>点击"稍后"→ 1小时后再次提醒（最多3次）</li>
+  </ul>
+</div>
+
+<div class="section-divider"></div>
+
+<h2>四、执行批次规划</h2>
+
+<div class="batch-card">
+  <div class="batch-header">
+    <div class="batch-num">1</div>
+    <div>
+      <h3 style="margin:0">社区线</h3>
+      <span class="badge b-p0">P0</span>
+    </div>
+  </div>
+  <p>覆盖社区核心浏览路径：推荐流→日记详情→用户主页，以及搜索功能。建议渲染为3个手机框并排。</p>
+  <div class="batch-pages">
+    <span class="batch-page">社区-推荐流</span>
+    <span class="batch-page">社区-关注流(空状态)</span>
+    <span class="batch-page">日记详情页</span>
+    <span class="batch-page">搜索页</span>
+    <span class="batch-page">用户主页</span>
+  </div>
+</div>
+
+<div class="batch-card">
+  <div class="batch-header">
+    <div class="batch-num">2</div>
+    <div>
+      <h3 style="margin:0">创作线</h3>
+      <span class="badge b-p0">P0</span>
+    </div>
+  </div>
+  <p>覆盖完整创作链路：输入→生成→换风格→发布→分享。这是App核心功能流，含2个Loading状态和2个弹窗。建议渲染为3-4个手机框并排。</p>
+  <div class="batch-pages">
+    <span class="batch-page">创作输入页</span>
+    <span class="batch-page">AI生成中</span>
+    <span class="batch-page">生成结果页</span>
+    <span class="batch-page">重新生成</span>
+    <span class="batch-page">发布确认页</span>
+    <span class="batch-page">分享弹窗</span>
+    <span class="batch-page">发布成功弹窗</span>
+  </div>
+</div>
+
+<div class="batch-card">
+  <div class="batch-header">
+    <div class="batch-num">3</div>
+    <div>
+      <h3 style="margin:0">消息线</h3>
+      <span class="badge b-p0">P0</span> <span class="badge b-p1">P1</span>
+    </div>
+  </div>
+  <p>覆盖消息总览→分类列表→私信聊天的完整通知体系。宠物提醒是App特色功能，需重点设计。建议渲染为3个手机框并排。</p>
+  <div class="batch-pages">
+    <span class="batch-page">消息总览页</span>
+    <span class="batch-page">系统通知</span>
+    <span class="batch-page">宠物提醒</span>
+    <span class="batch-page">点赞&评论</span>
+    <span class="batch-page">私信列表</span>
+    <span class="batch-page">聊天窗口</span>
+  </div>
+</div>
+
+<div class="batch-card">
+  <div class="batch-header">
+    <div class="batch-num">4</div>
+    <div>
+      <h3 style="margin:0">我的线</h3>
+      <span class="badge b-p0">P0</span> <span class="badge b-p1">P1</span>
+    </div>
+  </div>
+  <p>覆盖个人中心、宠物档案管理（含4级页面）、日记/草稿/收藏列表。页面最多但结构统一，建议渲染为4个手机框并排。</p>
+  <div class="batch-pages">
+    <span class="batch-page">我的主页</span>
+    <span class="batch-page">宠物档案管理</span>
+    <span class="batch-page">宠物档案详情</span>
+    <span class="batch-page">添加新宠物</span>
+    <span class="batch-page">编辑档案</span>
+    <span class="batch-page">我的日记列表</span>
+    <span class="batch-page">草稿箱</span>
+    <span class="batch-page">收藏日记</span>
+  </div>
+</div>
+
+<div class="batch-card">
+  <div class="batch-header">
+    <div class="batch-num">5</div>
+    <div>
+      <h3 style="margin:0">设置 & 全局状态</h3>
+      <span class="badge b-p1">P1</span> <span class="badge b-p2">P2</span>
+    </div>
+  </div>
+  <p>设置子页面+所有弹窗/Loading/空状态/推送通知。结构标准化，可批量产出。建议渲染为3个手机框+弹窗集合。</p>
+  <div class="batch-pages">
+    <span class="batch-page">设置页</span>
+    <span class="batch-page">账号设置</span>
+    <span class="batch-page">通知设置</span>
+    <span class="batch-page">隐私设置</span>
+    <span class="batch-page">关于</span>
+    <span class="batch-page">删除确认弹窗</span>
+    <span class="batch-page">空状态×6</span>
+    <span class="batch-page">网络错误</span>
+    <span class="batch-page">推送通知</span>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<h2>五、核心页面流转逻辑</h2>
+
+<div class="flow-box">
+  <div class="flow-title">创作核心路径</div>
+  <div class="flow-step">首页/宠物档案 <span class="flow-arrow">→</span> 创作输入页 <span class="flow-arrow">→</span> AI生成中 <span class="flow-arrow">→</span> 生成结果页</div>
+  <div class="flow-branch">
+    <div class="flow-step">不满意？ <span class="flow-arrow">→</span> 切换风格 <span class="flow-arrow">→</span> 重新生成 <span class="flow-arrow">→</span> 回到结果页</div>
+    <div class="flow-step">暂不发布？ <span class="flow-arrow">→</span> 存草稿 <span class="flow-arrow">→</span> 回到首页</div>
+    <div class="flow-step">满意？ <span class="flow-arrow">→</span> 发布确认页 <span class="flow-arrow">→</span> 发布成功弹窗 <span class="flow-arrow">→</span> 日记详情/继续创作</div>
+  </div>
+</div>
+
+<div class="flow-box">
+  <div class="flow-title">社区浏览路径</div>
+  <div class="flow-step">社区Tab <span class="flow-arrow">→</span> 推荐/关注Feed <span class="flow-arrow">→</span> 日记详情页</div>
+  <div class="flow-branch">
+    <div class="flow-step">看作者？ <span class="flow-arrow">→</span> 用户主页 <span class="flow-arrow">→</span> 关注/私信</div>
+    <div class="flow-step">互动？ <span class="flow-arrow">→</span> 点赞/评论/收藏/分享</div>
+    <div class="flow-step">搜索？ <span class="flow-arrow">→</span> 搜索页 <span class="flow-arrow">→</span> 搜索结果 <span class="flow-arrow">→</span> 日记详情</div>
+  </div>
+</div>
+
+<div class="flow-box">
+  <div class="flow-title">消息通知路径</div>
+  <div class="flow-step">消息Tab <span class="flow-arrow">→</span> 消息总览 <span class="flow-arrow">→</span> 分类列表</div>
+  <div class="flow-branch">
+    <div class="flow-step">宠物提醒 <span class="flow-arrow">→</span> "去写日记" <span class="flow-arrow">→</span> 创作输入页</div>
+    <div class="flow-step">点赞/评论 <span class="flow-arrow">→</span> 日记详情页</div>
+    <div class="flow-step">私信 <span class="flow-arrow">→</span> 私信列表 <span class="flow-arrow">→</span> 聊天窗口</div>
+  </div>
+</div>
+
+<div class="flow-box">
+  <div class="flow-title">个人管理路径</div>
+  <div class="flow-step">我的Tab <span class="flow-arrow">→</span> 我的主页</div>
+  <div class="flow-branch">
+    <div class="flow-step">宠物档案管理 <span class="flow-arrow">→</span> 档案详情 <span class="flow-arrow">→</span> 编辑档案 / 为Ta写日记</div>
+    <div class="flow-step">我的日记 <span class="flow-arrow">→</span> 日记详情（自己的）<span class="flow-arrow">→</span> 重新生成</div>
+    <div class="flow-step">草稿箱 <span class="flow-arrow">→</span> 继续编辑 <span class="flow-arrow">→</span> 创作流程</div>
+    <div class="flow-step">设置 <span class="flow-arrow">→</span> 账号/通知/隐私/关于</div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<h2>六、执行建议</h2>
+<ol>
+  <li><strong>批次顺序</strong>：按 1→2→3→4→5 执行。创作线（批次2）是App灵魂，社区线（批次1）是留存基础，两者优先完成。</li>
+  <li><strong>渲染方式</strong>：每个批次渲染为一张SVG/HTML，3-4个手机框并排展示，便于对比页面间跳转关系。复用首页的配色和组件规范。</li>
+  <li><strong>共用页面</strong>：日记详情页被5个入口共用，只需设计一次，在不同入口下微调（如自己的日记显示"重新生成"按钮）。</li>
+  <li><strong>状态优先</strong>：Loading状态和弹窗虽然不是独立页面，但影响用户体验感知，需与对应功能页同步设计。</li>
+  <li><strong>真实图片</strong>：延续首页方案，宠物头像使用真实照片（咪咪.jpg/年糕.jpg/布丁.jpg），新增宠物用SVG占位。</li>
+  <li><strong>交互标注</strong>：每张原型图右侧用虚线引线标注功能区域名称，与低保真原型保持一致的标注方式。</li>
+</ol>
+
+</div>
+</body>
+</html>
