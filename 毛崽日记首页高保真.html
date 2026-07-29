@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>毛崽日记 App - 首页高保真效果图</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #FFF5E8 0%, #FAE8D0 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.frame {
+  width: 390px;
+  background: #FFF8EE;
+  border-radius: 48px;
+  padding: 14px;
+  border: 2px solid #E8D5B5;
+  position: relative;
+}
+.screen {
+  background: #FFF8EE;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+}
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3D2817;
+}
+.statusbar-right { display: flex; gap: 6px; align-items: center; }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 22px 14px;
+}
+.logo-wrap { display: flex; align-items: center; gap: 10px; }
+.logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #F0DDB5;
+}
+.logo-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #3D2817;
+  letter-spacing: 0.5px;
+}
+.nav-icons { display: flex; gap: 18px; align-items: center; }
+.nav-icons .dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #E87A5D;
+  border-radius: 50%;
+  border: 1.5px solid #FFF8EE;
+}
+.nav-icons .dot-wrap { position: relative; }
+.pet-switcher { padding: 0 18px 14px; }
+.pet-cards { display: flex; gap: 10px; }
+.pet-card {
+  flex: 1;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pet-card.active { border: 2px solid #E87A5D; }
+.pet-card.normal { border: 1.5px solid #EDE4D3; }
+.pet-card.add-card {
+  background: #FAF3E8;
+  border: 1.5px dashed #D3B98C;
+}
+.pet-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #F5DCC2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.pet-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pet-avatar.add-bg { background: #F5E8D0; }
+.pet-info { flex: 1; min-width: 0; }
+.pet-name { font-size: 13px; font-weight: 500; }
+.pet-name.active-name { color: #3D2817; }
+.pet-name.normal-name { color: #8B7355; }
+.pet-name.add-name { color: #A0815F; }
+.pet-breed { font-size: 11px; color: #A0815F; margin-top: 2px; }
+.pet-breed.add-breed { color: #B89C7A; }
+.selected-info {
+  padding: 10px 22px 14px;
+  background: #FFF1DC;
+  border-top: 1px solid #F0DDB5;
+  border-bottom: 1px solid #F0DDB5;
+}
+.selected-info .text { font-size: 13px; color: #5C3D2E; }
+.selected-info .text .label { color: #8B7355; }
+.selected-info .text .name { font-weight: 500; color: #3D2817; }
+.selected-info .text .breed { color: #A0815F; }
+.selected-info .stat {
+  font-size: 11px;
+  color: #A0815F;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.selected-info .stat .pulse {
+  width: 6px;
+  height: 6px;
+  background: #E87A5D;
+  border-radius: 50%;
+  display: inline-block;
+}
+.section { padding: 18px 22px 0; }
+.section.community-section { padding-top: 22px; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.section-header h2 { font-size: 15px; font-weight: 500; color: #3D2817; }
+.section-header .more {
+  font-size: 12px;
+  color: #A0815F;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.diary-list { display: flex; flex-direction: column; gap: 10px; }
+.diary-card {
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.diary-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFE6D5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.diary-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.diary-info { flex: 1; min-width: 0; }
+.diary-title { font-size: 13px; font-weight: 500; color: #3D2817; }
+.diary-time { font-size: 11px; color: #A0815F; margin-top: 3px; }
+.diary-card .arrow { flex-shrink: 0; }
+.community-card {
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.community-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #FFE0B0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid #F0DDB5;
+  overflow: hidden;
+}
+.community-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.community-info { flex: 1; min-width: 0; }
+.community-name { font-size: 12px; font-weight: 500; color: #5C3D2E; }
+.community-preview {
+  font-size: 12px;
+  color: #8B7355;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.community-like {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #E87A5D;
+  flex-shrink: 0;
+}
+.community-like .num { font-size: 13px; font-weight: 500; }
+.load-more {
+  margin: 24px 22px 0;
+  border: 1.5px dashed #D3B98C;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  color: #A0815F;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tabbar-spacer { height: 120px; }
+.tabbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid #F0E4CE;
+  padding: 10px 10px 22px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+.tab-item .label { font-size: 11px; }
+.tab-item .label.active { color: #E87A5D; font-weight: 500; }
+.tab-item .label.normal { color: #8B7355; }
+.tab-item.center { margin-top: -30px; }
+.create-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #E87A5D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #FFF8EE;
+  box-sizing: border-box;
+}
+.create-btn .label { font-size: 11px; color: #8B7355; margin-top: 3px; }
+.hint { margin-top: 18px; color: #8B7355; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="screen">
+
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="statusbar-right">
+        <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="14" height="11" viewBox="0 0 14 11"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <div class="logo-wrap">
+        <img class="logo-img" src="logo.jpg" alt="毛崽日记 logo">
+        <span class="logo-text">毛崽日记</span>
+      </div>
+      <div class="nav-icons">
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="#3D2817" stroke-width="1.5" fill="none"/><path d="M14 14 L18 18" stroke="#3D2817" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="dot-wrap">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#3D2817" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="11" cy="10" r="3.5" stroke="#3D2817" stroke-width="1.2" fill="none"/></svg>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pet-switcher">
+      <div class="pet-cards">
+        <div class="pet-card active">
+          <div class="pet-avatar">
+            <img src="咪咪.jpg" alt="咪咪">
+          </div>
+          <div class="pet-info">
+            <div class="pet-name active-name">咪咪</div>
+            <div class="pet-breed">布偶猫</div>
+          </div>
+        </div>
+        <div class="pet-card normal">
+          <div class="pet-avatar">
+            <img src="年糕.jpg" alt="年糕">
+          </div>
+          <div class="pet-info">
+            <div class="pet-name normal-name">年糕</div>
+            <div class="pet-breed">橘猫</div>
+          </div>
+        </div>
+        <div class="pet-card add-card">
+          <div class="pet-avatar add-bg">
+            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 4 L10 16 M4 10 L16 10" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="pet-info">
+            <div class="pet-name add-name">添加</div>
+            <div class="pet-breed add-breed">新宠物</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selected-info">
+      <div class="text">
+        <span class="label">当前选中：</span><span class="name">咪咪</span><span class="breed"> · 布偶猫</span>
+      </div>
+      <div class="stat">
+        <span class="pulse"></span>
+        今日已记录 1 篇日记
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>最近日记</h2>
+        <span class="more">查看全部 <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5 L7 5 M5 3 L7 5 L5 7" stroke="#A0815F" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="diary-list">
+        <div class="diary-card">
+          <div class="diary-avatar">
+            <img src="咪咪.jpg" alt="咪咪">
+          </div>
+          <div class="diary-info">
+            <div class="diary-title">今日份拆家述职报告</div>
+            <div class="diary-time">今天 10:30</div>
+          </div>
+          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16"><path d="M6 4 L10 8 L6 12" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="diary-card">
+          <div class="diary-avatar">
+            <img src="咪咪.jpg" alt="咪咪">
+          </div>
+          <div class="diary-info">
+            <div class="diary-title">窗外的鸟是我的梦想</div>
+            <div class="diary-time">昨天 15:20</div>
+          </div>
+          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16"><path d="M6 4 L10 8 L6 12" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="diary-card">
+          <div class="diary-avatar">
+            <img src="咪咪.jpg" alt="咪咪">
+          </div>
+          <div class="diary-info">
+            <div class="diary-title">午睡的艺术</div>
+            <div class="diary-time">前天 14:00</div>
+          </div>
+          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16"><path d="M6 4 L10 8 L6 12" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="section community-section">
+      <div class="section-header">
+        <h2>社区精选</h2>
+        <span class="more">查看更多 <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5 L7 5 M5 3 L7 5 L5 7" stroke="#A0815F" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="community-card">
+        <div class="community-avatar">
+          <img src="布丁.jpg" alt="布丁">
+        </div>
+        <div class="community-info">
+          <div class="community-name">布丁·金毛</div>
+          <div class="community-preview">今天追了15只蝴蝶...</div>
+        </div>
+        <div class="community-like">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z" fill="#E87A5D"/></svg>
+          <span class="num">34</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more">
+      <svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 4 Q6 8 9 4" stroke="#A0815F" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      下滑加载更多社区内容
+    </div>
+
+    <div class="tabbar-spacer"></div>
+
+    <div class="tabbar">
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" fill="#E87A5D"/></svg>
+        <span class="label active">首页</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#8B7355"/><circle cx="16" cy="6" r="2" fill="#8B7355"/><circle cx="6" cy="16" r="2" fill="#8B7355"/><circle cx="16" cy="16" r="2" fill="#8B7355"/></svg>
+        <span class="label normal">社区</span>
+      </div>
+      <div class="tab-item center">
+        <div class="create-btn">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="label normal">创作</span>
+      </div>
+      <div class="tab-item">
+        <div style="position:relative">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <div style="position:absolute;top:-2px;right:-4px;width:7px;height:7px;background:#E87A5D;border-radius:50%;border:1.2px solid #FFFFFF;"></div>
+        </div>
+        <span class="label normal">消息</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#8B7355" stroke-width="1.5" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">我的</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<p class="hint">毛崽日记 · 首页高保真效果图（v2 真实头像版）</p>
+</body>
+</html>
