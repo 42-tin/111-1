@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>毛崽日记 - 登录注册流程 & AI重新生成 高保真原型</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #FFF5E8 0%, #FAE8D0 100%);
+  min-height: 100vh;
+  padding: 40px 20px 80px;
+}
+/* ===== Flow Group ===== */
+.flow-group {
+  max-width: 1800px;
+  margin: 0 auto 60px;
+}
+.flow-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3D2817;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.flow-title .badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: #E87A5D;
+  color: #FFF;
+}
+.flow-desc {
+  font-size: 13px;
+  color: #8B7355;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.screens-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.screen-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.screen-unit .state-label {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3D2817;
+  text-align: center;
+}
+.screen-unit .state-sub {
+  font-size: 11px;
+  color: #A0815F;
+  margin-top: 3px;
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.5;
+}
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-width: 60px;
+  padding-top: 300px;
+}
+.flow-arrow .arrow-line {
+  width: 40px;
+  height: 2px;
+  background: #E87A5D;
+  position: relative;
+}
+.flow-arrow .arrow-line::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid #E87A5D;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+.flow-arrow .arrow-label {
+  font-size: 10px;
+  color: #E87A5D;
+  margin-top: 6px;
+  text-align: center;
+  line-height: 1.4;
+  max-width: 56px;
+}
+
+/* ===== Phone Frame ===== */
+.frame {
+  width: 360px;
+  background: #FFF8EE;
+  border-radius: 44px;
+  padding: 12px;
+  border: 2px solid #E8D5B5;
+  position: relative;
+  flex-shrink: 0;
+}
+.screen {
+  background: #FFF8EE;
+  border-radius: 34px;
+  overflow: hidden;
+  position: relative;
+  height: 720px;
+}
+/* ===== Status Bar ===== */
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.statusbar-right { display: flex; gap: 5px; align-items: center; }
+
+/* ===== Auth Page Common ===== */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 28px;
+  height: 100%;
+}
+.auth-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 2px solid #F0DDB5;
+  margin-top: 20px;
+}
+.auth-app-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #3D2817;
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+.auth-heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3D2817;
+  margin-top: 24px;
+  align-self: flex-start;
+}
+.auth-subtitle {
+  font-size: 13px;
+  color: #8B7355;
+  margin-top: 6px;
+  align-self: flex-start;
+  line-height: 1.5;
+}
+.input-group {
+  width: 100%;
+  margin-top: 20px;
+}
+.input-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8B7355;
+  margin-bottom: 8px;
+}
+.input-field {
+  width: 100%;
+  height: 48px;
+  background: #FFFFFF;
+  border: 1.5px solid #EDE4D3;
+  border-radius: 14px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+.input-field.active {
+  border-color: #E87A5D;
+  box-shadow: 0 0 0 3px rgba(232,122,93,0.1);
+}
+.input-field.error {
+  border-color: #E85D5D;
+  box-shadow: 0 0 0 3px rgba(232,93,93,0.08);
+}
+.input-field.filled {
+  border-color: #EDE4D3;
+}
+.input-field input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: #3D2817;
+  flex: 1;
+  font-family: inherit;
+}
+.input-field .placeholder {
+  font-size: 14px;
+  color: #C4A87A;
+}
+.input-field .input-value {
+  font-size: 15px;
+  color: #3D2817;
+}
+.input-field .input-dots {
+  font-size: 18px;
+  color: #3D2817;
+  letter-spacing: 4px;
+}
+.input-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clear-btn {
+  width: 18px;
+  height: 18px;
+  background: #E0D0BC;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.error-msg {
+  font-size: 12px;
+  color: #E85D5D;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.success-msg {
+  font-size: 12px;
+  color: #5DAF6B;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Code input */
+.code-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.code-box {
+  flex: 1;
+  height: 52px;
+  background: #FFFFFF;
+  border: 1.5px solid #EDE4D3;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.code-box.active {
+  border-color: #E87A5D;
+  box-shadow: 0 0 0 3px rgba(232,122,93,0.1);
+}
+.code-box.filled {
+  border-color: #E87A5D;
+}
+.code-box.error {
+  border-color: #E85D5D;
+}
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #E87A5D 0%, #D4684A 100%);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(232,122,93,0.3);
+  margin-top: 24px;
+}
+.btn-primary.disabled {
+  background: #E8D5B5;
+  box-shadow: none;
+  color: #FFFFFF;
+}
+.btn-primary.loading {
+  background: linear-gradient(135deg, #D4684A 0%, #C45A3D 100%);
+}
+.btn-secondary {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  background: #FFF1DC;
+  color: #C4852A;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  border: 1.5px solid #F0DDB5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.btn-text {
+  font-size: 13px;
+  color: #E87A5D;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-text.muted {
+  color: #8B7355;
+}
+/* Verify code button */
+.verify-btn {
+  font-size: 13px;
+  color: #E87A5D;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: #FFF1DC;
+  flex-shrink: 0;
+}
+.verify-btn.disabled {
+  color: #C4A87A;
+  background: #F5E8D0;
+}
+.verify-btn.counting {
+  color: #A0815F;
+  background: #F5E8D0;
+}
+/* Agreement */
+.agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #8B7355;
+  line-height: 1.5;
+}
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid #D3B98C;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkbox.checked {
+  background: #E87A5D;
+  border-color: #E87A5D;
+}
+.agreement a { color: #E87A5D; text-decoration: none; }
+/* Third-party login */
+.divider-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 28px;
+}
+.divider-text .line {
+  flex: 1;
+  height: 1px;
+  background: #F0E4CE;
+}
+.divider-text .text {
+  font-size: 12px;
+  color: #A0815F;
+}
+.third-party {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 20px;
+}
+.tp-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #F0E4CE;
+}
+.tp-wechat { background: #E8F8E8; }
+.tp-apple { background: #F5F5F5; }
+.tp-qq { background: #E8F0FF; }
+/* Bottom links */
+.bottom-links {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 18px;
+}
+/* Step indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 20px;
+  width: 100%;
+}
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.step-circle.active {
+  background: #E87A5D;
+  color: #FFF;
+}
+.step-circle.done {
+  background: #5DAF6B;
+  color: #FFF;
+}
+.step-circle.normal {
+  background: #F5E8D0;
+  color: #A0815F;
+}
+.step-label {
+  font-size: 10px;
+  color: #A0815F;
+}
+.step-label.active { color: #E87A5D; font-weight: 500; }
+.step-line {
+  width: 30px;
+  height: 2px;
+  background: #F0E4CE;
+  margin: 0 4px;
+  margin-bottom: 16px;
+}
+.step-line.done { background: #5DAF6B; }
+/* Password strength */
+.pwd-strength {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+.pwd-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: #F0E4CE;
+}
+.pwd-bar.weak { background: #E85D5D; }
+.pwd-bar.medium { background: #F0AD4E; }
+.pwd-bar.strong { background: #5DAF6B; }
+.pwd-strength-text {
+  font-size: 11px;
+  margin-top: 4px;
+}
+.pwd-strength-text.weak { color: #E85D5D; }
+.pwd-strength-text.medium { color: #F0AD4E; }
+.pwd-strength-text.strong { color: #5DAF6B; }
+/* Success overlay */
+.success-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 40px;
+}
+.success-check {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #5DAF6B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.success-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.success-subtitle {
+  font-size: 14px;
+  color: #8B7355;
+  margin-top: 8px;
+  text-align: center;
+  line-height: 1.6;
+}
+/* Loading spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #FFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* Toast */
+.toast {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(61,40,23,0.9);
+  color: #FFF;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  z-index: 10;
+}
+.toast.success {
+  background: rgba(93,175,107,0.95);
+}
+
+/* ===== AI Result Page ===== */
+.ai-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 20px 12px;
+}
+.ai-navbar .nav-text {
+  font-size: 13px;
+  color: #A0815F;
+}
+.ai-pet-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 14px;
+}
+.ai-pet-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #F5DCC2;
+  flex-shrink: 0;
+}
+.ai-pet-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ai-pet-name { font-size: 14px; font-weight: 500; color: #3D2817; }
+.ai-pet-breed { font-size: 11px; color: #A0815F; margin-top: 2px; }
+.ai-pet-photos {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.ai-pet-photos .mini-photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #F0E4CE;
+}
+.ai-pet-photos .mini-photo img { width: 100%; height: 100%; object-fit: cover; }
+.ai-diary-card {
+  margin: 0 20px;
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 16px;
+  padding: 18px 16px;
+  position: relative;
+}
+.ai-diary-style-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #FFF1DC;
+  color: #C4852A;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.ai-diary-version {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  font-size: 11px;
+  color: #A0815F;
+  background: #F5E8D0;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+.ai-diary-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3D2817;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.ai-diary-body {
+  font-size: 13px;
+  color: #5C3D2E;
+  line-height: 1.8;
+}
+.ai-diary-body .first-person {
+  color: #E87A5D;
+  font-weight: 500;
+}
+/* Skeleton loading */
+.skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #F5E8D0 25%, #FAF3E8 50%, #F5E8D0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 10px;
+}
+.skeleton-line.title {
+  height: 18px;
+  width: 60%;
+  margin-bottom: 16px;
+}
+.skeleton-line.short { width: 70%; }
+.skeleton-line.medium { width: 85%; }
+.skeleton-line.long { width: 100%; }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.ai-loading-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #E87A5D;
+}
+.ai-loading-dots {
+  display: flex;
+  gap: 4px;
+}
+.ai-loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #E87A5D;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+.ai-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.ai-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+/* Style switcher */
+.style-switcher {
+  margin: 16px 20px 0;
+  padding: 14px;
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 14px;
+}
+.style-switcher-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #3D2817;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.style-tags-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.style-tag-item {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.style-tag-item.selected {
+  background: #E87A5D;
+  color: #FFF;
+  font-weight: 500;
+}
+.style-tag-item.normal {
+  background: #FAF3E8;
+  color: #8B7355;
+  border: 1px solid #F0E4CE;
+}
+.regen-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #FFF1DC;
+  border: 1.5px dashed #E87A5D;
+  font-size: 13px;
+  color: #E87A5D;
+  font-weight: 500;
+  cursor: pointer;
+}
+/* Bottom action bar */
+.ai-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid #F0E4CE;
+  padding: 12px 20px 20px;
+  display: flex;
+  gap: 12px;
+}
+.ai-bottom-btn {
+  flex: 1;
+  height: 46px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ai-bottom-btn.draft {
+  background: #FAF3E8;
+  color: #8B7355;
+  border: 1px solid #F0E4CE;
+}
+.ai-bottom-btn.publish {
+  background: linear-gradient(135deg, #E87A5D 0%, #D4684A 100%);
+  color: #FFF;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(232,122,93,0.3);
+}
+/* History comparison */
+.history-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFF8EE;
+  border-radius: 24px 24px 0 0;
+  padding: 20px;
+  max-height: 85%;
+  overflow-y: auto;
+}
+.history-handle {
+  width: 40px;
+  height: 4px;
+  background: #E0D0BC;
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.history-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3D2817;
+  margin-bottom: 4px;
+}
+.history-sub {
+  font-size: 12px;
+  color: #A0815F;
+  margin-bottom: 16px;
+}
+.version-card {
+  background: #FFFFFF;
+  border: 1.5px solid #F0E4CE;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.version-card.current {
+  border-color: #E87A5D;
+  background: #FFF8F5;
+}
+.version-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.version-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.version-tag.v1 { background: #E8F0FF; color: #5B7CBF; }
+.version-tag.v2 { background: #FFF1DC; color: #C4852A; }
+.version-tag.v3 { background: #F0FAF2; color: #5DAF6B; }
+.version-num {
+  font-size: 11px;
+  color: #A0815F;
+}
+.version-preview {
+  font-size: 12px;
+  color: #5C3D2E;
+  line-height: 1.6;
+}
+.version-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.version-use-btn {
+  font-size: 12px;
+  color: #E87A5D;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 10px;
+  background: #FFE6D5;
+}
+.version-use-btn.current {
+  background: #E87A5D;
+  color: #FFF;
+}
+/* Backdrop */
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(61,40,23,0.4);
+  z-index: 5;
+}
+
+/* ===== Home (main interface) ===== */
+.home-welcome {
+  padding: 0 22px 12px;
+}
+.home-welcome .greeting {
+  font-size: 22px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.home-welcome .sub {
+  font-size: 13px;
+  color: #8B7355;
+  margin-top: 4px;
+}
+/* ===== Jump flow indicator ===== */
+.jump-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 auto 50px;
+  max-width: 600px;
+  padding: 16px 24px;
+  background: #FFFFFF;
+  border: 1px dashed #E87A5D;
+  border-radius: 16px;
+}
+.jump-flow .jf-text {
+  font-size: 13px;
+  color: #5C3D2E;
+  line-height: 1.6;
+}
+.jump-flow .jf-text strong {
+  color: #E87A5D;
+}
+.jump-flow .jf-arrow {
+  font-size: 20px;
+  color: #E87A5D;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 22px 12px;
+}
+.navbar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.back-btn { display: flex; align-items: center; cursor: pointer; }
+
+/* Tab bar */
+.tabbar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid #F0E4CE;
+  padding: 8px 10px 18px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+.tab-item .label { font-size: 10px; }
+.tab-item .label.active { color: #E87A5D; font-weight: 600; }
+.tab-item .label.normal { color: #8B7355; }
+.tab-item.center { margin-top: -26px; }
+.create-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #E87A5D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #FFF8EE;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(232,122,93,0.3);
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================ -->
+<!-- FLOW 1: 登录流程 (4 states) -->
+<!-- ================================================ -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Flow 1</span>
+    登录流程
+  </div>
+  <div class="flow-desc">
+    登录页包含 4 个交互状态：默认空表单 → 用户输入中（按钮激活） → 错误提示（密码错误/格式错误） → 登录成功（Loading → 跳转首页）
+  </div>
+  <div class="screens-row">
+
+    <!-- State 1: Login Default -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container">
+            <img class="auth-logo" src="logo.jpg" alt="毛崽日记">
+            <div class="auth-app-name">毛崽日记</div>
+            <div class="auth-heading">欢迎回来</div>
+            <div class="auth-subtitle">登录后开启你和毛崽的日记之旅</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#C4A87A"/></svg>
+                </div>
+                <span class="placeholder">请输入手机号</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">密码</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#C4A87A" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="placeholder">请输入密码</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" stroke="#C4A87A" stroke-width="1.3" fill="none"/><circle cx="9" cy="7" r="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-primary disabled">
+              登 录
+            </div>
+
+            <div class="bottom-links">
+              <span class="btn-text muted">还没账号？立即注册</span>
+              <span class="btn-text">忘记密码？</span>
+            </div>
+
+            <div class="divider-text">
+              <div class="line"></div>
+              <span class="text">其他方式登录</span>
+              <div class="line"></div>
+            </div>
+            <div class="third-party">
+              <div class="tp-icon tp-wechat">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M9 4 Q4 4 4 8 Q4 11 7 12 L6 14 L9 12.5 Q10 13 11 13 M11 13 Q16 13 16 9 Q16 5 11 5 Q9 5 8 6" fill="#5DAF6B"/><circle cx="8" cy="8" r="0.8" fill="#FFF"/><circle cx="12" cy="8" r="0.8" fill="#FFF"/></svg>
+              </div>
+              <div class="tp-icon tp-apple">
+                <svg width="20" height="22" viewBox="0 0 20 22"><path d="M14 3 Q13 5 11 5 Q12 3 14 3 Z M16 14 Q15 18 13 18 Q12 18 11 17 Q10 18 9 18 Q7 18 6 14 Q5 10 7 8 Q9 7 10 8 Q11 8 12 8 Q13 7 15 8 Q16 9 16 14 Z" fill="#3D2817"/></svg>
+              </div>
+              <div class="tp-icon tp-qq">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 Q7 3 6 7 Q5 10 5 13 Q5 15 6 16 L5 18 L7 17 Q8 18 9 18 L13 18 Q14 18 15 17 L17 18 L16 16 Q17 15 17 13 Q17 10 16 7 Q15 3 11 3 Z" fill="#4A8FE0"/><circle cx="9" cy="9" r="1" fill="#FFF"/><circle cx="13" cy="9" r="1" fill="#FFF"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">① 默认状态</div>
+      <div class="state-sub">输入框为空，登录按钮灰色禁用</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">用户<br>输入</div>
+    </div>
+
+    <!-- State 2: Login Input -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container">
+            <img class="auth-logo" src="logo.jpg" alt="毛崽日记">
+            <div class="auth-app-name">毛崽日记</div>
+            <div class="auth-heading">欢迎回来</div>
+            <div class="auth-subtitle">登录后开启你和毛崽的日记之旅</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field active">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#E87A5D" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#E87A5D"/></svg>
+                </div>
+                <span class="input-value">138 8888 8888</span>
+                <div class="clear-btn">
+                  <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 2 L8 8 M8 2 L2 8" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">密码</div>
+              <div class="input-field active">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#E87A5D" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#E87A5D" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#E87A5D" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#E87A5D"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-primary">
+              登 录
+            </div>
+
+            <div class="bottom-links">
+              <span class="btn-text muted">还没账号？立即注册</span>
+              <span class="btn-text">忘记密码？</span>
+            </div>
+
+            <div class="divider-text">
+              <div class="line"></div>
+              <span class="text">其他方式登录</span>
+              <div class="line"></div>
+            </div>
+            <div class="third-party">
+              <div class="tp-icon tp-wechat">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M9 4 Q4 4 4 8 Q4 11 7 12 L6 14 L9 12.5 Q10 13 11 13 M11 13 Q16 13 16 9 Q16 5 11 5 Q9 5 8 6" fill="#5DAF6B"/><circle cx="8" cy="8" r="0.8" fill="#FFF"/><circle cx="12" cy="8" r="0.8" fill="#FFF"/></svg>
+              </div>
+              <div class="tp-icon tp-apple">
+                <svg width="20" height="22" viewBox="0 0 20 22"><path d="M14 3 Q13 5 11 5 Q12 3 14 3 Z M16 14 Q15 18 13 18 Q12 18 11 17 Q10 18 9 18 Q7 18 6 14 Q5 10 7 8 Q9 7 10 8 Q11 8 12 8 Q13 7 15 8 Q16 9 16 14 Z" fill="#3D2817"/></svg>
+              </div>
+              <div class="tp-icon tp-qq">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 Q7 3 6 7 Q5 10 5 13 Q5 15 6 16 L5 18 L7 17 Q8 18 9 18 L13 18 Q14 18 15 17 L17 18 L16 16 Q17 15 17 13 Q17 10 16 7 Q15 3 11 3 Z" fill="#4A8FE0"/><circle cx="9" cy="9" r="1" fill="#FFF"/><circle cx="13" cy="9" r="1" fill="#FFF"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">② 输入中状态</div>
+      <div class="state-sub">输入框高亮橙色边框，清除按钮出现，登录按钮激活</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">密码<br>错误</div>
+    </div>
+
+    <!-- State 3: Login Error -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container">
+            <img class="auth-logo" src="logo.jpg" alt="毛崽日记">
+            <div class="auth-app-name">毛崽日记</div>
+            <div class="auth-heading">欢迎回来</div>
+            <div class="auth-subtitle">登录后开启你和毛崽的日记之旅</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#8B7355"/></svg>
+                </div>
+                <span class="input-value">138 8888 8888</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">密码</div>
+              <div class="input-field error">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#E85D5D" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#E85D5D" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">•••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#E85D5D" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#E85D5D"/></svg>
+                </div>
+              </div>
+              <div class="error-msg">
+                <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#E85D5D"/><path d="M7 4 L7 8 M7 9.5 L7 10.5" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+                密码错误，请重新输入
+              </div>
+            </div>
+
+            <div class="btn-primary">
+              登 录
+            </div>
+
+            <div class="bottom-links">
+              <span class="btn-text muted">还没账号？立即注册</span>
+              <span class="btn-text">忘记密码？</span>
+            </div>
+
+            <div class="divider-text">
+              <div class="line"></div>
+              <span class="text">其他方式登录</span>
+              <div class="line"></div>
+            </div>
+            <div class="third-party">
+              <div class="tp-icon tp-wechat">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M9 4 Q4 4 4 8 Q4 11 7 12 L6 14 L9 12.5 Q10 13 11 13 M11 13 Q16 13 16 9 Q16 5 11 5 Q9 5 8 6" fill="#5DAF6B"/><circle cx="8" cy="8" r="0.8" fill="#FFF"/><circle cx="12" cy="8" r="0.8" fill="#FFF"/></svg>
+              </div>
+              <div class="tp-icon tp-apple">
+                <svg width="20" height="22" viewBox="0 0 20 22"><path d="M14 3 Q13 5 11 5 Q12 3 14 3 Z M16 14 Q15 18 13 18 Q12 18 11 17 Q10 18 9 18 Q7 18 6 14 Q5 10 7 8 Q9 7 10 8 Q11 8 12 8 Q13 7 15 8 Q16 9 16 14 Z" fill="#3D2817"/></svg>
+              </div>
+              <div class="tp-icon tp-qq">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 Q7 3 6 7 Q5 10 5 13 Q5 15 6 16 L5 18 L7 17 Q8 18 9 18 L13 18 Q14 18 15 17 L17 18 L16 16 Q17 15 17 13 Q17 10 16 7 Q15 3 11 3 Z" fill="#4A8FE0"/><circle cx="9" cy="9" r="1" fill="#FFF"/><circle cx="13" cy="9" r="1" fill="#FFF"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">③ 错误提示状态</div>
+      <div class="state-sub">密码字段红色边框 + 底部红色错误文案，抖动动画</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">验证<br>通过</div>
+    </div>
+
+    <!-- State 4: Login Success -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container">
+            <img class="auth-logo" src="logo.jpg" alt="毛崽日记">
+            <div class="auth-app-name">毛崽日记</div>
+            <div class="auth-heading">欢迎回来</div>
+            <div class="auth-subtitle">登录后开启你和毛崽的日记之旅</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#8B7355"/></svg>
+                </div>
+                <span class="input-value">138 8888 8888</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">密码</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#8B7355" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#8B7355"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-primary loading">
+              <div class="spinner"></div>
+              登录中...
+            </div>
+
+            <div class="bottom-links">
+              <span class="btn-text muted">还没账号？立即注册</span>
+              <span class="btn-text">忘记密码？</span>
+            </div>
+
+            <div class="divider-text">
+              <div class="line"></div>
+              <span class="text">其他方式登录</span>
+              <div class="line"></div>
+            </div>
+            <div class="third-party">
+              <div class="tp-icon tp-wechat">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M9 4 Q4 4 4 8 Q4 11 7 12 L6 14 L9 12.5 Q10 13 11 13 M11 13 Q16 13 16 9 Q16 5 11 5 Q9 5 8 6" fill="#5DAF6B"/><circle cx="8" cy="8" r="0.8" fill="#FFF"/><circle cx="12" cy="8" r="0.8" fill="#FFF"/></svg>
+              </div>
+              <div class="tp-icon tp-apple">
+                <svg width="20" height="22" viewBox="0 0 20 22"><path d="M14 3 Q13 5 11 5 Q12 3 14 3 Z M16 14 Q15 18 13 18 Q12 18 11 17 Q10 18 9 18 Q7 18 6 14 Q5 10 7 8 Q9 7 10 8 Q11 8 12 8 Q13 7 15 8 Q16 9 16 14 Z" fill="#3D2817"/></svg>
+              </div>
+              <div class="tp-icon tp-qq">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 Q7 3 6 7 Q5 10 5 13 Q5 15 6 16 L5 18 L7 17 Q8 18 9 18 L13 18 Q14 18 15 17 L17 18 L16 16 Q17 15 17 13 Q17 10 16 7 Q15 3 11 3 Z" fill="#4A8FE0"/><circle cx="9" cy="9" r="1" fill="#FFF"/><circle cx="13" cy="9" r="1" fill="#FFF"/></svg>
+              </div>
+            </div>
+
+            <div class="toast success" style="top:50px;">
+              <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="rgba(255,255,255,0.3)"/><path d="M5 8 L7 10 L11 6" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              登录成功，正在跳转...
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">④ 登录成功状态</div>
+      <div class="state-sub">按钮变Loading旋转 + 顶部绿色Toast「登录成功」，1.5s后跳转首页</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Jump: Login → Register -->
+<div class="jump-flow">
+  <span class="jf-arrow">←</span>
+  <span class="jf-text">登录页点击「还没账号？立即注册」<strong>向右推进</strong>跳转至注册页　|　注册成功后<strong>自动返回</strong>登录页或直接进入首页</span>
+  <span class="jf-arrow">→</span>
+</div>
+
+<!-- ================================================ -->
+<!-- FLOW 2: 注册流程 (4 states) -->
+<!-- ================================================ -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Flow 2</span>
+    注册流程
+  </div>
+  <div class="flow-desc">
+    注册页包含 4 个交互状态：默认空表单 → 输入中（验证码倒计时） → 错误提示（验证码错误/手机号已注册） → 注册成功（跳转首页或完善宠物档案）
+  </div>
+  <div class="screens-row">
+
+    <!-- State 1: Register Default -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:16px;">创建账号</div>
+            <div class="auth-subtitle">注册后即可为你的毛崽写日记</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#C4A87A"/></svg>
+                </div>
+                <span class="placeholder">请输入手机号</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">验证码</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="3" y="5" width="12" height="8" rx="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/><path d="M3 9 L15 9 M6 5 L6 3 M9 5 L9 3 M12 5 L12 3" stroke="#C4A87A" stroke-width="1" stroke-linecap="round"/></svg>
+                </div>
+                <span class="placeholder">请输入验证码</span>
+                <div class="verify-btn disabled">获取验证码</div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">设置密码</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#C4A87A" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="placeholder">8-20位，字母+数字</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" stroke="#C4A87A" stroke-width="1.3" fill="none"/><circle cx="9" cy="7" r="2" stroke="#C4A87A" stroke-width="1.3" fill="none"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">昵称</div>
+              <div class="input-field">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="6" r="3" stroke="#C4A87A" stroke-width="1.3" fill="none"/><path d="M3 16 Q3 10 9 10 Q15 10 15 16" stroke="#C4A87A" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="placeholder">给自己起个名字</span>
+              </div>
+            </div>
+
+            <div class="agreement">
+              <div class="checkbox"></div>
+              <span>我已阅读并同意 <a>《用户协议》</a> 和 <a>《隐私政策》</a></span>
+            </div>
+
+            <div class="btn-primary disabled">
+              注 册
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">① 默认状态</div>
+      <div class="state-sub">所有输入框为空，验证码按钮灰色，协议未勾选，注册按钮禁用</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">用户<br>填写</div>
+    </div>
+
+    <!-- State 2: Register Input -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:16px;">创建账号</div>
+            <div class="auth-subtitle">注册后即可为你的毛崽写日记</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#8B7355"/></svg>
+                </div>
+                <span class="input-value">138 8888 8888</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">验证码</div>
+              <div class="input-field active">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="3" y="5" width="12" height="8" rx="2" stroke="#E87A5D" stroke-width="1.3" fill="none"/><path d="M3 9 L15 9 M6 5 L6 3 M9 5 L9 3 M12 5 L12 3" stroke="#E87A5D" stroke-width="1" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-value">8</span>
+                <span style="font-size:18px;color:#C4A87A;animation:blink 1s infinite;">|</span>
+                <div class="verify-btn counting">59s后重发</div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">设置密码</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#8B7355" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#8B7355"/></svg>
+                </div>
+              </div>
+              <div class="pwd-strength">
+                <div class="pwd-bar strong"></div>
+                <div class="pwd-bar strong"></div>
+                <div class="pwd-bar strong"></div>
+              </div>
+              <div class="pwd-strength-text strong">强度：强 ✓</div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">昵称</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="6" r="3" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M3 16 Q3 10 9 10 Q15 10 15 16" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-value">咪咪的铲屎官</span>
+              </div>
+            </div>
+
+            <div class="agreement">
+              <div class="checkbox checked">
+                <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5 L4 7 L8 3" stroke="#FFF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span>我已阅读并同意 <a>《用户协议》</a> 和 <a>《隐私政策》</a></span>
+            </div>
+
+            <div class="btn-primary">
+              注 册
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">② 输入中状态</div>
+      <div class="state-sub">验证码倒计时59s，密码强度检测为「强」，协议已勾选，注册按钮激活</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">验证码<br>错误</div>
+    </div>
+
+    <!-- State 3: Register Error -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:16px;">创建账号</div>
+            <div class="auth-subtitle">注册后即可为你的毛崽写日记</div>
+
+            <div class="input-group">
+              <div class="input-label">手机号</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="5" y="2" width="8" height="14" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><circle cx="9" cy="13.5" r="0.8" fill="#8B7355"/></svg>
+                </div>
+                <span class="input-value">138 8888 8888</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">验证码</div>
+              <div class="input-field error">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="3" y="5" width="12" height="8" rx="2" stroke="#E85D5D" stroke-width="1.3" fill="none"/><path d="M3 9 L15 9 M6 5 L6 3 M9 5 L9 3 M12 5 L12 3" stroke="#E85D5D" stroke-width="1" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-value" style="color:#E85D5D;">8821</span>
+                <div class="verify-btn">重新获取</div>
+              </div>
+              <div class="error-msg">
+                <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#E85D5D"/><path d="M7 4 L7 8 M7 9.5 L7 10.5" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+                验证码错误，请重新输入
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">设置密码</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#8B7355" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#8B7355"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">昵称</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="6" r="3" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M3 16 Q3 10 9 10 Q15 10 15 16" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-value">咪咪的铲屎官</span>
+              </div>
+            </div>
+
+            <div class="agreement">
+              <div class="checkbox checked">
+                <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5 L4 7 L8 3" stroke="#FFF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span>我已阅读并同意 <a>《用户协议》</a> 和 <a>《隐私政策》</a></span>
+            </div>
+
+            <div class="btn-primary">
+              注 册
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">③ 错误提示状态</div>
+      <div class="state-sub">验证码字段红色边框 + 红色错误文案，可点击「重新获取」</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">注册<br>成功</div>
+    </div>
+
+    <!-- State 4: Register Success -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="success-overlay">
+            <div class="success-check">
+              <svg width="36" height="36" viewBox="0 0 36 36"><path d="M10 18 L15 23 L26 12" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="success-title">注册成功！</div>
+            <div class="success-subtitle">
+              欢迎加入毛崽日记大家庭<br>
+              先去创建你的第一只宠物档案吧 🐾
+            </div>
+            <div class="btn-primary" style="margin-top:32px;">
+              去创建宠物档案
+            </div>
+            <div class="btn-secondary">
+              稍后再说，先逛逛
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">④ 注册成功状态</div>
+      <div class="state-sub">绿色对勾 + 引导创建宠物档案（主路径）或跳过进入首页（次路径）</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Jump: Login → Forgot Password -->
+<div class="jump-flow">
+  <span class="jf-arrow">←</span>
+  <span class="jf-text">登录页点击「忘记密码？」<strong>向右推进</strong>跳转至找回密码流程　|　密码重置成功后<strong>返回</strong>登录页</span>
+  <span class="jf-arrow">→</span>
+</div>
+
+<!-- ================================================ -->
+<!-- FLOW 3: 忘记密码流程 (4 states) -->
+<!-- ================================================ -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Flow 3</span>
+    忘记密码流程
+  </div>
+  <div class="flow-desc">
+    三步式找回密码：① 输入邮箱/手机号 → ② 输入验证码 → ③ 设置新密码 → 成功返回登录。顶部步骤指示器实时显示进度。
+  </div>
+  <div class="screens-row">
+
+    <!-- Step 1: Enter email/phone -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:12px;">找回密码</div>
+            <div class="auth-subtitle">验证你的邮箱或手机号后即可重置密码</div>
+
+            <!-- Step indicator -->
+            <div class="step-indicator">
+              <div class="step-item">
+                <div class="step-circle active">1</div>
+                <div class="step-label active">验证身份</div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-item">
+                <div class="step-circle normal">2</div>
+                <div class="step-label">输入验证码</div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-item">
+                <div class="step-circle normal">3</div>
+                <div class="step-label">重置密码</div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">邮箱 / 手机号</div>
+              <div class="input-field active">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="10" rx="2" stroke="#E87A5D" stroke-width="1.3" fill="none"/><path d="M2 6 L9 10 L16 6" stroke="#E87A5D" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-value">catlover@email.com</span>
+                <div class="clear-btn">
+                  <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 2 L8 8 M8 2 L2 8" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:12px;color:#A0815F;margin-top:12px;display:flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#C4A87A" stroke-width="1" fill="none"/><path d="M7 4 L7 7.5 L9 9" stroke="#C4A87A" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+              验证码将发送至该邮箱
+            </div>
+
+            <div class="btn-primary">
+              发送验证码
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">① 步骤一：验证身份</div>
+      <div class="state-sub">输入邮箱/手机号，步骤指示器高亮第一步</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">发送<br>成功</div>
+    </div>
+
+    <!-- Step 2: Verification code -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:12px;">输入验证码</div>
+            <div class="auth-subtitle">验证码已发送至 cat****@email.com</div>
+
+            <div class="step-indicator">
+              <div class="step-item">
+                <div class="step-circle done">
+                  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="step-label">验证身份</div>
+              </div>
+              <div class="step-line done"></div>
+              <div class="step-item">
+                <div class="step-circle active">2</div>
+                <div class="step-label active">输入验证码</div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-item">
+                <div class="step-circle normal">3</div>
+                <div class="step-label">重置密码</div>
+              </div>
+            </div>
+
+            <div class="input-group" style="margin-top:24px;">
+              <div class="code-input-row">
+                <div class="code-box filled">8</div>
+                <div class="code-box filled">2</div>
+                <div class="code-box filled">5</div>
+                <div class="code-box active">|</div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
+              </div>
+            </div>
+
+            <div style="font-size:12px;color:#A0815F;margin-top:16px;text-align:center;">
+              <span class="verify-btn counting" style="display:inline;">47s后可重新获取</span>
+            </div>
+
+            <div style="margin-top:8px;font-size:12px;color:#E85D5D;display:flex;align-items:center;gap:4px;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#E85D5D"/><path d="M7 4 L7 8 M7 9.5 L7 10.5" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+              验证码错误，请重新输入
+            </div>
+
+            <div class="btn-primary disabled" style="margin-top:auto;margin-bottom:20px;">
+              确 认
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">② 步骤二：输入验证码</div>
+      <div class="state-sub">6位验证码输入框，已输3位+光标闪烁，含错误态（验证码不匹配）</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">验证<br>通过</div>
+    </div>
+
+    <!-- Step 3: Reset password -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="auth-container" style="padding:0 24px;">
+            <div style="display:flex;align-items:center;width:100%;margin-top:8px;">
+              <div class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="auth-heading" style="margin-top:12px;">设置新密码</div>
+            <div class="auth-subtitle">请设置一个8-20位的新密码</div>
+
+            <div class="step-indicator">
+              <div class="step-item">
+                <div class="step-circle done">
+                  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="step-label">验证身份</div>
+              </div>
+              <div class="step-line done"></div>
+              <div class="step-item">
+                <div class="step-circle done">
+                  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="step-label">输入验证码</div>
+              </div>
+              <div class="step-line done"></div>
+              <div class="step-item">
+                <div class="step-circle active">3</div>
+                <div class="step-label active">重置密码</div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">新密码</div>
+              <div class="input-field active">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#E87A5D" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#E87A5D" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#E87A5D" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#E87A5D"/></svg>
+                </div>
+              </div>
+              <div class="pwd-strength">
+                <div class="pwd-bar medium"></div>
+                <div class="pwd-bar medium"></div>
+                <div class="pwd-bar"></div>
+              </div>
+              <div class="pwd-strength-text medium">强度：中</div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-label">确认新密码</div>
+              <div class="input-field filled">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 18 18"><rect x="4" y="8" width="10" height="8" rx="2" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M6 8 L6 5 Q6 2 9 2 Q12 2 12 5 L12 8" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+                </div>
+                <span class="input-dots">••••••••</span>
+                <div class="input-icon">
+                  <svg width="18" height="14" viewBox="0 0 18 14"><path d="M1 7 Q4 3 9 3 Q14 3 17 7 Q14 11 9 11 Q4 11 1 7 Z" fill="none" stroke="#8B7355" stroke-width="1.3"/><circle cx="9" cy="7" r="2" fill="#8B7355"/></svg>
+                </div>
+              </div>
+              <div class="success-msg">
+                <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#5DAF6B"/><path d="M4 7 L6 9 L10 5" stroke="#FFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                两次密码一致
+              </div>
+            </div>
+
+            <div class="btn-primary">
+              确认重置
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">③ 步骤三：重置密码</div>
+      <div class="state-sub">新密码+确认密码，密码强度检测，两次一致后显示绿色验证通过</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">重置<br>成功</div>
+    </div>
+
+    <!-- Step 4: Success -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+          <div class="success-overlay">
+            <div class="success-check">
+              <svg width="36" height="36" viewBox="0 0 36 36"><path d="M10 18 L15 23 L26 12" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="success-title">密码重置成功</div>
+            <div class="success-subtitle">
+              请使用新密码登录<br>
+              即将自动返回登录页...
+            </div>
+            <div class="btn-primary" style="margin-top:32px;">
+              去登录
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">④ 重置成功</div>
+      <div class="state-sub">绿色对勾 + 引导返回登录页，2s后自动跳转</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Jump: Login Success → Main Interface -->
+<div class="jump-flow">
+  <span class="jf-arrow">↓</span>
+  <span class="jf-text">登录成功后<strong>渐入动画</strong>进入主界面（首页），顶部短暂显示欢迎Toast</span>
+  <span class="jf-arrow">↓</span>
+</div>
+
+<!-- ================================================ -->
+<!-- FLOW 4: 登录成功 → 主界面 (1 screen) -->
+<!-- ================================================ -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Flow 4</span>
+    登录成功 → 主界面
+  </div>
+  <div class="flow-desc">
+    登录成功后通过渐入动画（fade-in + scale-up）进入首页主界面，顶部短暂显示「欢迎回来」Toast，1.5s后自动消失。
+  </div>
+  <div class="screens-row" style="justify-content:center;">
+    <div class="screen-unit">
+      <div class="frame" style="width:390px;">
+        <div class="screen" style="height:780px;">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+
+          <!-- Toast -->
+          <div class="toast success" style="top:50px;">
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 8 L7 11 L12 5" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            欢迎回来，咪咪的铲屎官！
+          </div>
+
+          <!-- Navbar -->
+          <div class="navbar" style="margin-top:20px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img src="logo.jpg" style="width:32px;height:32px;border-radius:8px;object-fit:cover;border:1px solid #F0DDB5;" alt="logo">
+              <span style="font-size:18px;font-weight:500;color:#3D2817;">毛崽日记</span>
+            </div>
+            <div style="display:flex;gap:18px;align-items:center;">
+              <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="#3D2817" stroke-width="1.5" fill="none"/><path d="M14 14 L18 18" stroke="#3D2817" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div style="position:relative;">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#3D2817" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                <div style="position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:#E87A5D;border-radius:50%;border:1.5px solid #FFF8EE;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Welcome -->
+          <div class="home-welcome" style="margin-top:4px;">
+            <div class="greeting">喵～早上好！</div>
+            <div class="sub">今天为咪咪写一篇日记吧 🐾</div>
+          </div>
+
+          <!-- Pet switcher -->
+          <div style="padding:0 18px 12px;">
+            <div style="display:flex;gap:10px;">
+              <div style="flex:1;background:#FFF;border:2px solid #E87A5D;border-radius:16px;padding:10px 8px;display:flex;align-items:center;gap:8px;">
+                <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#F5DCC2;flex-shrink:0;">
+                  <img src="咪咪.jpg" style="width:100%;height:100%;object-fit:cover;" alt="咪咪">
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:#3D2817;">咪咪</div>
+                  <div style="font-size:11px;color:#A0815F;">布偶猫</div>
+                </div>
+              </div>
+              <div style="flex:1;background:#FFF;border:1.5px solid #EDE4D3;border-radius:16px;padding:10px 8px;display:flex;align-items:center;gap:8px;">
+                <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#F5DCC2;flex-shrink:0;">
+                  <img src="年糕.jpg" style="width:100%;height:100%;object-fit:cover;" alt="年糕">
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:#8B7355;">年糕</div>
+                  <div style="font-size:11px;color:#A0815F;">橘猫</div>
+                </div>
+              </div>
+              <div style="flex:1;background:#FAF3E8;border:1.5px dashed #D3B98C;border-radius:16px;padding:10px 8px;display:flex;align-items:center;gap:8px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:#F5E8D0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 4 L10 16 M4 10 L16 10" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13px;color:#A0815F;">添加</div>
+                  <div style="font-size:11px;color:#B89C7A;">新宠物</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected info -->
+          <div style="padding:10px 22px 14px;background:#FFF1DC;border-top:1px solid #F0DDB5;border-bottom:1px solid #F0DDB5;">
+            <div style="font-size:13px;color:#5C3D2E;">
+              <span style="color:#8B7355;">当前选中：</span><span style="font-weight:500;color:#3D2817;">咪咪</span><span style="color:#A0815F;"> · 布偶猫</span>
+            </div>
+            <div style="font-size:11px;color:#A0815F;margin-top:4px;display:flex;align-items:center;gap:4px;">
+              <span style="width:6px;height:6px;background:#E87A5D;border-radius:50%;display:inline-block;"></span>
+              今日已记录 0 篇日记
+            </div>
+          </div>
+
+          <!-- Recent diaries -->
+          <div style="padding:18px 22px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h2 style="font-size:15px;font-weight:500;color:#3D2817;">最近日记</h2>
+              <span style="font-size:12px;color:#A0815F;">查看全部 →</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:#FFF;border:1px solid #F0E4CE;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;overflow:hidden;background:#FFE6D5;flex-shrink:0;">
+                  <img src="咪咪.jpg" style="width:100%;height:100%;object-fit:cover;" alt="咪咪">
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:500;color:#3D2817;">窗外的鸟是我的梦想</div>
+                  <div style="font-size:11px;color:#A0815F;margin-top:3px;">昨天 15:20</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 4 L10 8 L6 12" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="background:#FFF;border:1px solid #F0E4CE;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;overflow:hidden;background:#FFE6D5;flex-shrink:0;">
+                  <img src="咪咪.jpg" style="width:100%;height:100%;object-fit:cover;" alt="咪咪">
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:500;color:#3D2817;">午睡的艺术</div>
+                  <div style="font-size:11px;color:#A0815F;margin-top:3px;">前天 14:00</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 4 L10 8 L6 12" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab bar -->
+          <div class="tabbar">
+            <div class="tab-item">
+              <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" fill="#E87A5D"/></svg>
+              <span class="label active">首页</span>
+            </div>
+            <div class="tab-item">
+              <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#8B7355"/><circle cx="16" cy="6" r="2" fill="#8B7355"/><circle cx="6" cy="16" r="2" fill="#8B7355"/><circle cx="16" cy="16" r="2" fill="#8B7355"/></svg>
+              <span class="label normal">社区</span>
+            </div>
+            <div class="tab-item center">
+              <div class="create-btn">
+                <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+              </div>
+              <span class="label normal">创作</span>
+            </div>
+            <div class="tab-item">
+              <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+              <span class="label normal">消息</span>
+            </div>
+            <div class="tab-item">
+              <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#8B7355" stroke-width="1.5" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+              <span class="label normal">我的</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">主界面 · 首页</div>
+      <div class="state-sub">登录成功后进入首页，顶部显示欢迎Toast，1.5s后淡出消失</div>
+    </div>
+  </div>
+</div>
+
+<!-- Jump: Main Interface → AI Regeneration -->
+<div class="jump-flow">
+  <span class="jf-arrow">↓</span>
+  <span class="jf-text">点击底部Tab<strong>「⊕创作」</strong>进入创作流程 → 输入行为描述+上传照片 → 点击<strong>「AI生成日记」</strong> → 进入AI结果页</span>
+  <span class="jf-arrow">↓</span>
+</div>
+
+<!-- ================================================ -->
+<!-- FLOW 5: AI日记重新生成 (4 states) -->
+<!-- ================================================ -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Flow 5</span>
+    AI日记重新生成功能
+  </div>
+  <div class="flow-desc">
+    AI生成日记结果页支持无限次重新生成：① 首次生成结果 → ② 点击重新生成进入加载态（骨架屏+动画） → ③ 新风格生成完成 → ④ 查看历史版本对比，可一键切换使用任意版本。
+  </div>
+  <div class="screens-row">
+
+    <!-- State 1: AI Result Initial -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+
+          <!-- Navbar -->
+          <div class="ai-navbar">
+            <div class="back-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="navbar-title">日记预览</div>
+            <span class="nav-text">存草稿</span>
+          </div>
+
+          <!-- Pet info bar -->
+          <div class="ai-pet-bar">
+            <div class="ai-pet-avatar">
+              <img src="咪咪.jpg" alt="咪咪">
+            </div>
+            <div>
+              <div class="ai-pet-name">咪咪 · 布偶猫</div>
+              <div class="ai-pet-breed">行为：叼拖鞋被发现后假装舔毛</div>
+            </div>
+            <div class="ai-pet-photos">
+              <div class="mini-photo"><img src="咪咪叼拖鞋.jpg" alt="照片1"></div>
+              <div class="mini-photo"><img src="咪咪叼拖鞋舔毛.jpg" alt="照片2"></div>
+            </div>
+          </div>
+
+          <!-- Diary card -->
+          <div class="ai-diary-card">
+            <div class="ai-diary-version">第 1 版</div>
+            <div class="ai-diary-style-tag">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L7 4 L10 4.5 L8 6.5 L8.5 9 L6 7.5 L3.5 9 L4 6.5 L2 4.5 L5 4 Z" fill="#C4852A"/></svg>
+              傲娇风
+            </div>
+            <div class="ai-diary-title">今日份拆家述职报告</div>
+            <div class="ai-diary-body">
+              <span class="first-person">本喵</span>今天确实叼了拖鞋，但那是因为拖鞋长得太像逗猫棒了，能怪本喵吗？被铲屎官发现的时候，本喵正在淡定地舔毛——对，就是在舔毛。拖鞋是自己跑到本喵嘴边的，跟本喵没有任何关系。再说了，那个拖鞋的味道还挺不错的……哼，不说了。
+            </div>
+          </div>
+
+          <!-- Style switcher -->
+          <div class="style-switcher">
+            <div class="style-switcher-label">
+              切换风格重新生成
+              <span style="font-size:11px;color:#A0815F;font-weight:400;">（生成后内容会变化）</span>
+            </div>
+            <div class="style-tags-row">
+              <span class="style-tag-item selected">傲娇风</span>
+              <span class="style-tag-item normal">热血风</span>
+              <span class="style-tag-item normal">文艺风</span>
+              <span class="style-tag-item normal">搞笑风</span>
+              <span class="style-tag-item normal">哲理风</span>
+            </div>
+            <div class="regen-btn">
+              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 4 M3 5 L5 7 M13 5 L11 7 M2 9 Q4 13 8 13 Q12 13 14 9" stroke="#E87A5D" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9 L2 9 L2.5 7.5 M15 9 L14 9 L13.5 7.5" stroke="#E87A5D" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+              重新生成（当前：傲娇风）
+            </div>
+          </div>
+
+          <!-- Bottom bar -->
+          <div class="ai-bottom-bar">
+            <div class="ai-bottom-btn draft">
+              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 3 L12 3 L12 14 L4 14 Z M6 6 L10 6 M6 9 L10 9" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+              存草稿
+            </div>
+            <div class="ai-bottom-btn publish">
+              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 10 M5 7 L8 10 L11 7 M3 14 L13 14" stroke="#FFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              发布至社区
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">① AI生成结果（初始）</div>
+      <div class="state-sub">首次生成完成，显示傲娇风日记，右上角「第1版」标识</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">点击<br>重新生成</div>
+    </div>
+
+    <!-- State 2: AI Regenerate Loading -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+
+          <div class="ai-navbar">
+            <div class="back-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="navbar-title">日记预览</div>
+            <span class="nav-text">存草稿</span>
+          </div>
+
+          <div class="ai-pet-bar">
+            <div class="ai-pet-avatar">
+              <img src="咪咪.jpg" alt="咪咪">
+            </div>
+            <div>
+              <div class="ai-pet-name">咪咪 · 布偶猫</div>
+              <div class="ai-pet-breed">正在分析照片内容...</div>
+            </div>
+            <div class="ai-pet-photos">
+              <div class="mini-photo"><img src="咪咪叼拖鞋.jpg" alt="照片1"></div>
+              <div class="mini-photo"><img src="咪咪叼拖鞋舔毛.jpg" alt="照片2"></div>
+            </div>
+          </div>
+
+          <!-- Skeleton loading card -->
+          <div class="ai-diary-card">
+            <div class="ai-diary-style-tag" style="background:#FFF1DC;color:#C4852A;">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L7 4 L10 4.5 L8 6.5 L8.5 9 L6 7.5 L3.5 9 L4 6.5 L2 4.5 L5 4 Z" fill="#C4852A"/></svg>
+              热血风 · 生成中
+            </div>
+            <div class="skeleton-line title"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+
+            <div class="ai-loading-text">
+              <div class="ai-loading-dots">
+                <span></span><span></span><span></span>
+              </div>
+              AI正在根据照片内容重新生成...
+            </div>
+          </div>
+
+          <!-- Style switcher (disabled) -->
+          <div class="style-switcher" style="opacity:0.5;pointer-events:none;">
+            <div class="style-switcher-label">
+              切换风格重新生成
+            </div>
+            <div class="style-tags-row">
+              <span class="style-tag-item normal">傲娇风</span>
+              <span class="style-tag-item selected">热血风</span>
+              <span class="style-tag-item normal">文艺风</span>
+              <span class="style-tag-item normal">搞笑风</span>
+              <span class="style-tag-item normal">哲理风</span>
+            </div>
+            <div class="regen-btn" style="background:#F5E8D0;border-color:#D3B98C;color:#A0815F;">
+              <div class="spinner" style="width:14px;height:14px;border-color:rgba(160,129,95,0.3);border-top-color:#A0815F;"></div>
+              正在重新生成...
+            </div>
+          </div>
+
+          <div class="ai-bottom-bar" style="opacity:0.5;pointer-events:none;">
+            <div class="ai-bottom-btn draft">存草稿</div>
+            <div class="ai-bottom-btn publish">发布至社区</div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">② 重新生成 · 加载态</div>
+      <div class="state-sub">骨架屏shimmer动画 + 跳动圆点，底部按钮和风格切换禁用置灰</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">生成<br>完成</div>
+    </div>
+
+    <!-- State 3: AI Regenerate New Result -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+
+          <div class="ai-navbar">
+            <div class="back-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="navbar-title">日记预览</div>
+            <span class="nav-text">存草稿</span>
+          </div>
+
+          <div class="ai-pet-bar">
+            <div class="ai-pet-avatar">
+              <img src="咪咪.jpg" alt="咪咪">
+            </div>
+            <div>
+              <div class="ai-pet-name">咪咪 · 布偶猫</div>
+              <div class="ai-pet-breed">行为：叼拖鞋被发现后假装舔毛</div>
+            </div>
+            <div class="ai-pet-photos">
+              <div class="mini-photo"><img src="咪咪叼拖鞋.jpg" alt="照片1"></div>
+              <div class="mini-photo"><img src="咪咪叼拖鞋舔毛.jpg" alt="照片2"></div>
+            </div>
+          </div>
+
+          <!-- New diary card - 热血风 -->
+          <div class="ai-diary-card">
+            <div class="ai-diary-version">第 2 版</div>
+            <div class="ai-diary-style-tag" style="background:#FFE6D5;color:#E87A5D;">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L7 4 L10 4.5 L8 6.5 L8.5 9 L6 7.5 L3.5 9 L4 6.5 L2 4.5 L5 4 Z" fill="#E87A5D"/></svg>
+              热血风
+            </div>
+            <div class="ai-diary-title">拖鞋大作战！本喵绝不认输！</div>
+            <div class="ai-diary-body">
+              <span class="first-person">战斗开始！</span>目标：那只蓝色的拖鞋。本喵以迅雷不及掩耳之势叼起拖鞋，飞速撤离作案现场——结果被铲屎官当场抓获。但是！本喵绝不低头！立刻启动B计划：假装舔毛。对，本喵在舔毛，拖鞋是什么？本喵不知道。铲屎官你看到了什么？那都是幻觉！本喵的字典里没有"认输"三个字！明天继续！
+            </div>
+          </div>
+
+          <!-- Style switcher -->
+          <div class="style-switcher">
+            <div class="style-switcher-label">
+              切换风格重新生成
+              <span style="font-size:11px;color:#A0815F;font-weight:400;">（已生成2版，可继续切换）</span>
+            </div>
+            <div class="style-tags-row">
+              <span class="style-tag-item normal">傲娇风</span>
+              <span class="style-tag-item selected">热血风</span>
+              <span class="style-tag-item normal">文艺风</span>
+              <span class="style-tag-item normal">搞笑风</span>
+              <span class="style-tag-item normal">哲理风</span>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <div class="regen-btn" style="flex:1;margin-top:0;">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 4 M3 5 L5 7 M13 5 L11 7 M2 9 Q4 13 8 13 Q12 13 14 9" stroke="#E87A5D" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9 L2 9 L2.5 7.5 M15 9 L14 9 L13.5 7.5" stroke="#E87A5D" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                重新生成
+              </div>
+              <div style="padding:10px 14px;border-radius:12px;background:#FAF3E8;border:1px solid #F0E4CE;font-size:13px;color:#8B7355;font-weight:500;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <svg width="14" height="14" viewBox="0 0 14 14"><rect x="2" y="2" width="4" height="4" rx="1" stroke="#8B7355" stroke-width="1.2" fill="none"/><rect x="8" y="2" width="4" height="4" rx="1" stroke="#8B7355" stroke-width="1.2" fill="none"/><rect x="2" y="8" width="4" height="4" rx="1" stroke="#8B7355" stroke-width="1.2" fill="none"/><rect x="8" y="8" width="4" height="4" rx="1" stroke="#8B7355" stroke-width="1.2" fill="none"/></svg>
+                历史版本
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom bar -->
+          <div class="ai-bottom-bar">
+            <div class="ai-bottom-btn draft">
+              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 3 L12 3 L12 14 L4 14 Z M6 6 L10 6 M6 9 L10 9" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+              存草稿
+            </div>
+            <div class="ai-bottom-btn publish">
+              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 10 M5 7 L8 10 L11 7 M3 14 L13 14" stroke="#FFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              发布至社区
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">③ 重新生成 · 新结果</div>
+      <div class="state-sub">切换为热血风，内容完全不同但基于同一照片，右上角「第2版」，新增「历史版本」入口</div>
+    </div>
+
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">点击<br>历史版本</div>
+    </div>
+
+    <!-- State 4: AI History Comparison -->
+    <div class="screen-unit">
+      <div class="frame">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <div class="statusbar-right">
+              <svg width="14" height="10" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+              <svg width="22" height="10" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+            </div>
+          </div>
+
+          <div class="ai-navbar">
+            <div class="back-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="navbar-title">日记预览</div>
+            <span class="nav-text">存草稿</span>
+          </div>
+
+          <div class="ai-pet-bar">
+            <div class="ai-pet-avatar">
+              <img src="咪咪.jpg" alt="咪咪">
+            </div>
+            <div>
+              <div class="ai-pet-name">咪咪 · 布偶猫</div>
+              <div class="ai-pet-breed">行为：叼拖鞋被发现后假装舔毛</div>
+            </div>
+            <div class="ai-pet-photos">
+              <div class="mini-photo"><img src="咪咪叼拖鞋.jpg" alt="照片1"></div>
+              <div class="mini-photo"><img src="咪咪叼拖鞋舔毛.jpg" alt="照片2"></div>
+            </div>
+          </div>
+
+          <!-- Current diary (compact) -->
+          <div class="ai-diary-card" style="padding:14px 16px;">
+            <div class="ai-diary-version">第 2 版</div>
+            <div class="ai-diary-style-tag" style="background:#FFE6D5;color:#E87A5D;">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L7 4 L10 4.5 L8 6.5 L8.5 9 L6 7.5 L3.5 9 L4 6.5 L2 4.5 L5 4 Z" fill="#E87A5D"/></svg>
+              热血风 · 当前使用
+            </div>
+            <div class="ai-diary-title" style="font-size:14px;">拖鞋大作战！本喵绝不认输！</div>
+            <div class="ai-diary-body" style="font-size:12px;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">
+              <span class="first-person">战斗开始！</span>目标：那只蓝色的拖鞋。本喵以迅雷不及掩耳之势叼起拖鞋，飞速撤离作案现场——结果被铲屎官当场抓获...
+            </div>
+          </div>
+
+          <!-- History bottom sheet -->
+          <div class="backdrop"></div>
+          <div class="history-sheet">
+            <div class="history-handle"></div>
+            <div class="history-title">历史版本对比</div>
+            <div class="history-sub">共 3 个版本 · 可切换使用任意版本</div>
+
+            <!-- Version 3: 文艺风 -->
+            <div class="version-card">
+              <div class="version-header">
+                <span class="version-tag v3">文艺风</span>
+                <span class="version-num">第 3 版 · 刚刚</span>
+              </div>
+              <div class="version-preview">
+                窗外的风轻轻吹过，本喵叼起那只蓝色的拖鞋，仿佛叼着一段关于自由的记忆。被铲屎官发现的那一刻，本喵开始舔毛——每一次舔舐，都是在抚平内心的波澜...
+              </div>
+              <div class="version-action">
+                <div class="version-use-btn">使用此版本</div>
+              </div>
+            </div>
+
+            <!-- Version 2: 热血风 (current) -->
+            <div class="version-card current">
+              <div class="version-header">
+                <span class="version-tag" style="background:#FFE6D5;color:#E87A5D;">热血风</span>
+                <span class="version-num">第 2 版 · 当前使用</span>
+              </div>
+              <div class="version-preview">
+                战斗开始！目标：那只蓝色的拖鞋。本喵以迅雷不及掩耳之势叼起拖鞋，飞速撤离作案现场——结果被铲屎官当场抓获。但是！本喵绝不低头...
+              </div>
+              <div class="version-action">
+                <div class="version-use-btn current">当前使用中</div>
+              </div>
+            </div>
+
+            <!-- Version 1: 傲娇风 -->
+            <div class="version-card">
+              <div class="version-header">
+                <span class="version-tag v1">傲娇风</span>
+                <span class="version-num">第 1 版 · 5分钟前</span>
+              </div>
+              <div class="version-preview">
+                本喵今天确实叼了拖鞋，但那是因为拖鞋长得太像逗猫棒了，能怪本喵吗？被铲屎官发现的时候，本喵正在淡定地舔毛——对，就是在舔毛...
+              </div>
+              <div class="version-action">
+                <div class="version-use-btn">使用此版本</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label">④ 历史版本对比</div>
+      <div class="state-sub">底部弹出历史版本列表，3个版本可预览对比，一键切换使用任意版本</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Page Flow Summary -->
+<div class="flow-group">
+  <div class="flow-title">
+    <span class="badge">Summary</span>
+    页面跳转逻辑总览
+  </div>
+  <div class="flow-desc">
+    所有页面的正向流程与异常回退路径汇总
+  </div>
+  <div style="background:#FFFFFF;border:1px solid #F0E4CE;border-radius:16px;padding:24px;max-width:900px;margin:0 auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="border-bottom:2px solid #F0E4CE;">
+          <th style="text-align:left;padding:10px 12px;color:#3D2817;">起始页</th>
+          <th style="text-align:left;padding:10px 12px;color:#3D2817;">触发条件</th>
+          <th style="text-align:left;padding:10px 12px;color:#3D2817;">目标页</th>
+          <th style="text-align:left;padding:10px 12px;color:#3D2817;">动画方式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">登录页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「立即注册」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">注册页</td>
+          <td style="padding:8px 12px;color:#A0815F;">向右推进 (push)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">登录页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「忘记密码」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">忘记密码页</td>
+          <td style="padding:8px 12px;color:#A0815F;">向右推进 (push)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">登录页</td>
+          <td style="padding:8px 12px;color:#8B7355;">验证通过</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">首页（主界面）</td>
+          <td style="padding:8px 12px;color:#A0815F;">渐入 (fade-in + scale)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">注册页</td>
+          <td style="padding:8px 12px;color:#8B7355;">注册成功</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">宠物档案创建 / 首页</td>
+          <td style="padding:8px 12px;color:#A0815F;">渐入 (fade-in)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">注册页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击返回</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">登录页（回退）</td>
+          <td style="padding:8px 12px;color:#A0815F;">向左滑出 (pop)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">忘记密码-步骤3</td>
+          <td style="padding:8px 12px;color:#8B7355;">重置成功</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">登录页（回退）</td>
+          <td style="padding:8px 12px;color:#A0815F;">向左滑出 (pop) 2s后自动</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">AI结果页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「重新生成」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">加载态 → 新结果</td>
+          <td style="padding:8px 12px;color:#A0815F;">内容淡入替换 (crossfade)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">AI结果页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「历史版本」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">历史对比弹窗</td>
+          <td style="padding:8px 12px;color:#A0815F;">底部上滑 (sheet-up)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #F8F0E0;">
+          <td style="padding:8px 12px;color:#5C3D2E;">AI结果页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「发布至社区」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">社区页 / 发布确认</td>
+          <td style="padding:8px 12px;color:#A0815F;">向右推进 (push)</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;color:#5C3D2E;">AI结果页</td>
+          <td style="padding:8px 12px;color:#8B7355;">点击「存草稿」</td>
+          <td style="padding:8px 12px;color:#E87A5D;font-weight:500;">草稿箱 / 返回首页</td>
+          <td style="padding:8px 12px;color:#A0815F;">向左滑出 (pop) + Toast</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>
