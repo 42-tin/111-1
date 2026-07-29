@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>毛崽日记</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#FFF8EE;--primary:#E87A5D;--primary-d:#D4684A;--dark:#3D2817;--muted:#8B7355;--light:#A0815F;--border:#F0E4CE;--border2:#EDE4D3;--card:#FFFFFF;--accent:#FFF1DC;--accent2:#FAF3E8;--error:#E85D5D;--success:#5DAF6B;--warn:#C4852A;--radius:14px}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:#E8D5B5;display:flex;align-items:center;justify-content:center}
+#app{width:100%;max-width:393px;height:100vh;max-height:852px;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:394px){#app{border-radius:44px;box-shadow:0 0 60px rgba(0,0,0,.25);height:852px}}
+.page{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
+.page.no-scroll{overflow:hidden}
+.page::-webkit-scrollbar{display:none}
+/* statusbar */
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-size:13px;font-weight:600;color:var(--dark);flex-shrink:0}
+.statusbar-r{display:flex;gap:5px;align-items:center}
+/* navbar */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:6px 20px 10px;flex-shrink:0}
+.nav-title{font-size:17px;font-weight:600;color:var(--dark)}
+.nav-back{display:flex;align-items:center;cursor:pointer}
+.nav-right{display:flex;gap:14px;align-items:center}
+.nav-text{font-size:13px;color:var(--light);cursor:pointer}
+.nav-text.primary{color:var(--primary);font-weight:500}
+.nav-dot{position:absolute;top:-2px;right:-4px;width:7px;height:7px;background:var(--primary);border-radius:50%;border:1.2px solid var(--bg)}
+.nav-dot-wrap{position:relative}
+/* tabbar */
+.tabbar{display:flex;justify-content:space-around;align-items:center;background:var(--card);border-top:1px solid var(--border);padding:6px 6px 18px;flex-shrink:0}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer}
+.tab-label{font-size:10px;color:var(--muted)}
+.tab-item.on .tab-label{color:var(--primary);font-weight:600}
+.tab-create{width:48px;height:48px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);box-shadow:0 2px 8px rgba(232,122,93,.3)}
+/* content area */
+.content{padding:0 0 20px}
+.section{padding:16px 20px 0}
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-hdr h2{font-size:15px;font-weight:600;color:var(--dark)}
+.section-more{font-size:12px;color:var(--light);display:flex;align-items:center;gap:3px;cursor:pointer}
+/* cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+/* pet switcher */
+.pet-cards{display:flex;gap:10px}
+.pet-card{flex:1;background:var(--card);border-radius:16px;padding:10px 8px;display:flex;align-items:center;gap:8px;cursor:pointer;border:2px solid transparent}
+.pet-card.on{border:2px solid var(--primary)}
+.pet-card.off{border:1.5px solid var(--border2)}
+.pet-card.add{background:var(--accent2);border:1.5px dashed #D3B98C}
+.pet-av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#F5DCC2}
+.pet-av img{width:100%;height:100%;object-fit:cover}
+.pet-nm{font-size:13px;font-weight:500}
+.pet-nm.on{color:var(--dark)}.pet-nm.off{color:var(--muted)}.pet-nm.add{color:var(--light)}
+.pet-bd{font-size:11px;color:var(--light);margin-top:1px}
+/* selected info bar */
+.info-bar{padding:10px 20px 12px;background:var(--accent);border-top:1px solid #F0DDB5;border-bottom:1px solid #F0DDB5}
+.info-bar .t{font-size:13px;color:#5C3D2E}
+.info-bar .t .lbl{color:var(--muted)}.info-bar .t .nm{font-weight:500;color:var(--dark)}
+.info-bar .st{font-size:11px;color:var(--light);margin-top:3px;display:flex;align-items:center;gap:4px}
+.info-bar .st .dot{width:6px;height:6px;background:var(--primary);border-radius:50%}
+/* diary list item */
+.diary-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer}
+.diary-av{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#FFE6D5}
+.diary-av img{width:100%;height:100%;object-fit:cover}
+.diary-info{flex:1;min-width:0}
+.diary-tt{font-size:13px;font-weight:500;color:var(--dark)}
+.diary-tm{font-size:11px;color:var(--light);margin-top:2px}
+/* feed card */
+.feed-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin:0 20px 14px}
+.feed-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.feed-av{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1.5px solid #F0DDB5;background:#F5DCC2}
+.feed-av img{width:100%;height:100%;object-fit:cover}
+.feed-user{flex:1;min-width:0}
+.feed-nm{font-size:13px;font-weight:500;color:var(--dark)}
+.feed-meta{font-size:11px;color:var(--light);margin-top:1px}
+.style-tag{font-size:10px;padding:3px 8px;border-radius:10px;background:var(--accent);color:var(--warn);font-weight:500;flex-shrink:0}
+.feed-text{font-size:13px;color:#5C3D2E;line-height:1.6;margin-bottom:10px}
+.feed-text .fp{color:var(--primary);font-weight:500}
+.feed-imgs{display:flex;gap:6px;margin-bottom:10px}
+.feed-img{flex:1;height:90px;border-radius:10px;overflow:hidden;background:#F5E8D0}
+.feed-img img{width:100%;height:100%;object-fit:cover}
+.feed-acts{display:flex;gap:20px;align-items:center}
+.feed-act{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer}
+.feed-act.on{color:var(--primary)}
+/* sub tabs */
+.sub-tabs{display:flex;padding:0 20px;gap:24px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sub-tab{font-size:14px;color:var(--muted);padding:10px 0 12px;position:relative;cursor:pointer}
+.sub-tab.on{color:var(--dark);font-weight:600}
+.sub-tab.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--primary);border-radius:2px}
+/* chips */
+.chips{display:flex;gap:8px;padding:12px 20px 10px;overflow-x:auto;flex-shrink:0}
+.chip{font-size:12px;padding:6px 14px;border-radius:20px;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.chip.on{background:var(--primary);color:#fff;font-weight:500}
+.chip.off{background:var(--accent2);color:var(--muted);border:1px solid var(--border)}
+/* create page */
+.create-sec{padding:14px 20px 0}
+.create-lbl{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.create-lbl .sub{font-size:11px;color:var(--light);font-weight:400}
+.pet-sel-row{display:flex;gap:10px;overflow-x:auto}
+.pet-sel-card{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:8px 12px;flex-shrink:0;cursor:pointer}
+.pet-sel-card.on{border:2px solid var(--primary);background:var(--accent)}
+.pet-sel-card .ps-av{width:32px;height:32px;border-radius:50%;overflow:hidden;background:#F5DCC2}
+.pet-sel-card .ps-av img{width:100%;height:100%;object-fit:cover}
+.ps-nm{font-size:12px;font-weight:500;color:var(--dark)}
+.ps-bd{font-size:10px;color:var(--light)}
+.textarea-box{background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:14px;min-height:100px;position:relative}
+.textarea-box textarea{width:100%;border:none;outline:none;background:transparent;font-size:13px;color:var(--dark);font-family:inherit;resize:none;line-height:1.6}
+.textarea-box .ph{font-size:13px;color:#C4A87A;line-height:1.6}
+.char-count{position:absolute;bottom:8px;right:12px;font-size:11px;color:#C4A87A}
+.upload-grid{display:flex;gap:8px}
+.upload-item{width:72px;height:72px;border-radius:12px;background:#F5E8D0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0}
+.upload-item img{width:100%;height:100%;object-fit:cover}
+.upload-item.add{background:var(--accent2);border:1.5px dashed #D3B98C;cursor:pointer}
+.upload-item .rmv{position:absolute;top:3px;right:3px;width:16px;height:16px;background:rgba(0,0,0,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.style-tags{display:flex;gap:8px;flex-wrap:wrap}
+.st-tag{font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer}
+.st-tag.on{background:var(--primary);color:#fff;font-weight:500}
+.st-tag.off{background:var(--accent2);color:var(--muted);border:1px solid var(--border)}
+.gen-btn{width:100%;padding:14px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;font-size:15px;font-weight:600;text-align:center;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 12px rgba(232,122,93,.3)}
+.gen-btn:disabled{opacity:.5}
+.btn{padding:12px;border-radius:14px;font-size:14px;font-weight:500;text-align:center;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}
+.btn-ghost{background:var(--accent2);color:var(--muted)}
+.btn-full{width:100%}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:10px}
+/* messages */
+.msg-entry{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F8F0E0;cursor:pointer}
+.msg-av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1.5px solid #F0DDB5;background:#F5DCC2;position:relative}
+.msg-av img{width:100%;height:100%;object-fit:cover}
+.msg-av .sys-ic{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;background:var(--primary);border-radius:50%;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
+.msg-c{flex:1;min-width:0}
+.msg-nm{font-size:14px;font-weight:500;color:var(--dark)}
+.msg-pv{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-tm{font-size:11px;color:#C4A87A;flex-shrink:0}
+.msg-badge{background:var(--primary);color:#fff;font-size:10px;font-weight:600;min-width:18px;height:18px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.msg-divider{padding:10px 20px 6px;font-size:12px;color:var(--light);font-weight:500}
+.msg-entry.unread{background:var(--bg)}
+/* quick entries */
+.quick-row{display:flex;padding:12px 20px 8px;gap:0}
+.quick-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;position:relative}
+.quick-ic{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.quick-nm{font-size:11px;color:var(--dark);font-weight:500}
+.quick-badge{position:absolute;top:-2px;right:calc(50% - 34px);background:var(--primary);color:#fff;font-size:9px;font-weight:600;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+/* profile */
+.prof-hdr{padding:18px 20px 16px;display:flex;align-items:center;gap:14px}
+.prof-av{width:64px;height:64px;border-radius:50%;overflow:hidden;border:2.5px solid #F0DDB5;flex-shrink:0;background:#F5DCC2}
+.prof-av img{width:100%;height:100%;object-fit:cover}
+.prof-info{flex:1}
+.prof-nm{font-size:17px;font-weight:600;color:var(--dark)}
+.prof-bio{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.prof-edit{font-size:12px;padding:6px 14px;border-radius:20px;background:var(--accent);color:var(--warn);border:1px solid #F0DDB5;font-weight:500;cursor:pointer}
+.stats-row{display:flex;padding:0 20px 16px;gap:0}
+.stat-it{flex:1;text-align:center;position:relative;cursor:pointer}
+.stat-it:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:24px;background:var(--border)}
+.stat-num{font-size:18px;font-weight:600;color:var(--dark)}
+.stat-lbl{font-size:11px;color:var(--light);margin-top:2px}
+.menu-list{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:0 20px 12px}
+.menu-it{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #F8F0E0;cursor:pointer}
+.menu-it:last-child{border-bottom:none}
+.menu-ic{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.menu-tt{flex:1;font-size:14px;font-weight:500;color:var(--dark)}
+.menu-sub{font-size:11px;color:var(--light);margin-top:1px}
+.menu-badge{font-size:11px;background:#FFE6D5;color:var(--primary);padding:3px 8px;border-radius:10px;font-weight:500}
+.menu-arr{color:#D3B98C}
+/* auth */
+.auth-wrap{display:flex;flex-direction:column;align-items:center;padding:0 28px;flex:1}
+.auth-logo{width:64px;height:64px;border-radius:16px;object-fit:cover;border:2px solid #F0DDB5;margin-top:16px}
+.auth-name{font-size:22px;font-weight:600;color:var(--dark);margin-top:10px;letter-spacing:1px}
+.auth-h{font-size:18px;font-weight:600;color:var(--dark);margin-top:20px;align-self:flex-start}
+.auth-sub{font-size:13px;color:var(--muted);margin-top:4px;align-self:flex-start;line-height:1.5}
+.input-grp{width:100%;margin-top:16px}
+.input-lbl{font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.input-fld{width:100%;height:46px;background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:0 14px;display:flex;align-items:center;gap:10px;position:relative}
+.input-fld.on{border-color:var(--primary);box-shadow:0 0 0 3px rgba(232,122,93,.1)}
+.input-fld.err{border-color:var(--error);box-shadow:0 0 0 3px rgba(232,93,93,.08)}
+.input-fld input{border:none;outline:none;background:transparent;font-size:15px;color:var(--dark);flex:1;font-family:inherit}
+.input-fld .ph{font-size:14px;color:#C4A87A}
+.err-msg{font-size:12px;color:var(--error);margin-top:5px;display:flex;align-items:center;gap:4px}
+.ok-msg{font-size:12px;color:var(--success);margin-top:5px;display:flex;align-items:center;gap:4px}
+.code-row{display:flex;gap:8px;margin-top:4px}
+.code-box{flex:1;height:48px;background:var(--card);border:1.5px solid var(--border2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:var(--dark)}
+.code-box.on{border-color:var(--primary);box-shadow:0 0 0 3px rgba(232,122,93,.1)}
+.code-box.filled{border-color:var(--primary)}
+.code-box.err{border-color:var(--error)}
+/* step indicator */
+.steps{display:flex;align-items:center;padding:16px 28px 0;gap:0}
+.step{display:flex;align-items:center;flex:1}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.step-circle.done{background:var(--success);color:#fff}
+.step-circle.cur{background:var(--primary);color:#fff}
+.step-circle.todo{background:var(--accent2);color:var(--light)}
+.step-line{flex:1;height:2px;background:var(--border2);margin:0 4px}
+.step-line.done{background:var(--success)}
+.step-lbl{font-size:10px;color:var(--light);margin-top:4px;text-align:center;white-space:nowrap}
+.step-lbl.cur{color:var(--primary);font-weight:500}
+/* chat */
+.chat-area{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.chat-bubble{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
+.chat-bubble.me{background:var(--primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-bubble.other{background:var(--card);color:var(--dark);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-input-bar{display:flex;align-items:center;gap:8px;padding:8px 12px 12px;background:var(--card);border-top:1px solid var(--border);flex-shrink:0}
+.chat-input-bar input{flex:1;height:36px;border:1.5px solid var(--border2);border-radius:18px;padding:0 14px;font-size:14px;outline:none;background:var(--bg);font-family:inherit}
+/* modal */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:flex-end;animation:fadein .2s}
+.overlay.center{align-items:center}
+.sheet{background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-height:80%;overflow-y:auto;animation:slideup .25s ease-out}
+.sheet.center{border-radius:20px;margin:0 24px;animation:scalein .2s}
+.sheet-hdr{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 8px}
+.sheet-tt{font-size:16px;font-weight:600;color:var(--dark)}
+.sheet-close{font-size:13px;color:var(--light);cursor:pointer;padding:4px 8px}
+.sheet-body{padding:0 20px 24px}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes scalein{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes slideout{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@keyframes fadein2{from{opacity:0}to{opacity:1}}
+.page-anim{animation:slidein .25s ease-out}
+.page-anim-back{animation:slideout .2s ease-out}
+.page-anim-fade{animation:fadein2 .2s ease-out}
+/* toast */
+.toast-wrap{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;padding:0 20px}
+.toast{padding:10px 18px;border-radius:12px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;animation:fadein2 .2s;box-shadow:0 4px 12px rgba(0,0,0,.15);max-width:100%}
+.toast.success{background:var(--success);color:#fff}
+.toast.error{background:var(--error);color:#fff}
+.toast.warn{background:var(--warn);color:#fff}
+.toast.info{background:var(--dark);color:#fff}
+/* state components */
+.state-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;text-align:center}
+.state-ic{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px}
+.state-tt{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:6px}
+.state-desc{font-size:13px;color:var(--muted);line-height:1.6}
+/* loading skeleton */
+.skel{background:linear-gradient(90deg,var(--accent2) 25%,var(--accent) 50%,var(--accent2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-line{height:14px;margin-bottom:8px}
+.skel-circle{width:40px;height:40px;border-radius:50%}
+/* misc */
+.divider{height:8px;background:var(--accent2);flex-shrink:0}
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--border2);position:relative;cursor:pointer;flex-shrink:0;transition:.2s}
+.toggle.on{background:var(--primary)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(18px)}
+.pwd-strength{display:flex;gap:4px;margin-top:6px}
+.pwd-bar{flex:1;height:4px;border-radius:2px;background:var(--border2)}
+.pwd-bar.s1{background:var(--error)}.pwd-bar.s2{background:var(--warn)}.pwd-bar.s3{background:var(--success)}
+.heart-anim{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.loading-spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.third-login{display:flex;justify-content:center;gap:30px;margin-top:24px}
+.third-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+.agree-row{display:flex;align-items:flex-start;gap:8px;margin-top:16px;font-size:12px;color:var(--muted);line-height:1.5}
+.agree-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.agree-box.on{background:var(--primary);border-color:var(--primary)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ===== STATE =====
+var S = {
+  screen: 'login',
+  navStack: [],
+  activeTab: 0,
+  selectedPet: 0,
+  pets: [
+    {name:'咪咪',breed:'布偶猫',age:'2岁',avatar:'咪咪.jpg',personality:'高冷优雅'},
+    {name:'年糕',breed:'橘猫',age:'3岁',avatar:'年糕.jpg',personality:'贪吃傲娇'}
+  ],
+  createData: {desc:'',photos:[],style:0},
+  generateVersion: 0,
+  regenLoading: false,
+  editingDiary: null,
+  favorites: {},
+  likes: {},
+  msgTab: 0,
+  commTab: 0,
+  commFilter: 0,
+  pwdVisible: false,
+  agreeTerms: false,
+  forgotStep: 1,
+  codeInput: '',
+  chatMessages: [
+    {sender:'other',text:'你家咪咪太可爱了吧！那个叼拖鞋的照片笑死我了😂'}
+  ],
+  chatInput: '',
+  toastTimer: null,
+  diaryData: [
+    {title:'今日份拆家述职报告',time:'今天 10:30',style:0,petIdx:0,text:'今天本喵正式向铲屎官汇报：拖鞋已成功转移至沙发底下三双，袜子藏于床底两双。以上为今日拆家工作总结，请审阅。',photos:['咪咪叼拖鞋.jpg','咪咪叼拖鞋舔毛.jpg']},
+    {title:'窗外的鸟是我的梦想',time:'昨天 15:20',style:2,petIdx:0,text:'午后的阳光透过纱帘，一只麻雀停在窗台。本喵凝视了整整半小时，想象着如果有一天能飞出去……算了，还是躺着舒服。',photos:[]},
+    {title:'午睡的艺术',time:'前天 14:00',style:2,petIdx:0,text:'今日午睡时长：4小时32分。睡姿切换：侧卧→仰躺→蜷缩→趴着。质量评分：满分。铲屎官嫉妒的眼神给本喵加分不少。',photos:[]}
+  ],
+  communityFeed: [
+    {user:'布丁·金毛',avatar:'布丁.jpg',time:'2小时前',style:1,styleName:'热血风',text:'本汪今天正式向全小区的蝴蝶宣战！一口气追了15只，虽然一只都没抓到，但气势上已经赢了。铲屎官在后面追着跑，笑死，跑不过本汪的~',photos:['布丁追蝴蝶1.jpg','布丁追蝴蝶2.jpg','布丁追蝴蝶3.jpg'],likes:128,comments:32},
+    {user:'年糕·橘猫',avatar:'年糕.jpg',time:'4小时前',style:0,styleName:'傲娇风',text:'哼，铲屎官又给我买了新窝。你以为换个软垫子本喵就会原谅你昨天忘记加餐的事吗？……好吧，躺一下试试。也不是不行。就躺五分钟。',photos:['年糕打打滚.jpg','年糕生气.jpg'],likes:86,comments:18},
+    {user:'咪咪·布偶猫',avatar:'咪咪.jpg',time:'6小时前',style:2,styleName:'文艺风',text:'午后的阳光透过纱帘洒在地板上，形成一条金色的路。我沿着光走，每一步都踩在温暖里……',photos:[],likes:56,comments:9}
+  ],
+  styles: ['傲娇风','热血风','文艺风','搞笑风','哲理风'],
+  styleColors: ['#C4852A','#E85D5D','#7B9EA8','#D4A05A','#8B7EA8'],
+  styleTexts: [
+    {title:'今日份拆家述职报告',text:'呵，今天本喵又干了一件大事——把铲屎官最爱的拖鞋藏到了沙发底下。你以为我会愧疚？不存在的。本喵只是在帮你整理房间而已，不用谢。看着你满屋子找鞋的样子，本喵表示非常满意。啧，人类真是太好懂了。'},
+    {title:'拖鞋大作战！',text:'各位同志们！今天本汪发起了一场史诗级的拖鞋突袭战！目标：铲屎官的左脚拖鞋。战术：声东击西，先假装玩球，趁其不备一口叼走！结果：完美！拖鞋已被转移至秘密基地（床底）。铲屎官追了我三圈没追上，哈哈哈！'},
+    {title:'窗台的光与影',text:'午后的阳光透过纱帘，在地板上画出金色的格子。我沿着光线行走，每一步都踩在温暖里。窗外的麻雀在歌唱，风吹过我的毛发。这一刻，时间仿佛静止，世界只剩下光、影、和我。'},
+    {title:'哈哈哈本喵的自首书',text:'咳咳，本喵要坦白一件事。今天……本喵把拖鞋叼走了。不是一只，是两只！但是！本喵有理由的！那个拖鞋它先动的手，它一直瞪着本喵！所以本喵决定以牙还牙！现在拖鞋在床底反省呢，什么时候态度好了什么时候放出来。'},
+    {title:'论拖鞋的存在意义',text:'人类总是执着于拥有，而忽略了失去的价值。一只拖鞋的消失，不是终结，而是另一种存在的开始。它或许在沙发下找到了新的归宿，在尘埃中获得了宁静。本喵不是在藏拖鞋，本喵是在帮它完成一次哲学的迁徙。'}
+  ]
+};
+
+// ===== ICONS =====
+var IC = {
+  home: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8B7355" stroke-width="1.5" stroke-linejoin="round"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z"/></svg>',
+  homeOn: '<svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" fill="#E87A5D"/></svg>',
+  comm: '<svg width="22" height="22" viewBox="0 0 22 22" fill="#8B7355"><circle cx="6" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="6" cy="16" r="2"/><circle cx="16" cy="16" r="2"/></svg>',
+  commOn: '<svg width="22" height="22" viewBox="0 0 22 22" fill="#E87A5D"><circle cx="6" cy="6" r="2.5"/><circle cx="16" cy="6" r="2.5"/><circle cx="6" cy="16" r="2.5"/><circle cx="16" cy="16" r="2.5"/></svg>',
+  msg: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8B7355" stroke-width="1.5" stroke-linecap="round"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z"/><path d="M9 18 L13 18"/></svg>',
+  msgOn: '<svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z" fill="#E87A5D"/><path d="M9 18 L13 18" stroke="#E87A5D" stroke-width="2" stroke-linecap="round"/></svg>',
+  profile: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8B7355" stroke-width="1.5"><circle cx="11" cy="8" r="3.5"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke-linecap="round"/></svg>',
+  profileOn: '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" fill="#E87A5D"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" fill="#E87A5D"/></svg>',
+  plus: '<svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  back: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#3D2817" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 L6 10 L12 16"/></svg>',
+  search: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#3D2817" stroke-width="1.5"><circle cx="9" cy="9" r="6"/><path d="M14 14 L18 18" stroke-linecap="round"/></svg>',
+  bell: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#3D2817" stroke-width="1.5" stroke-linecap="round"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z"/><path d="M9 18 L13 18"/><circle cx="11" cy="10" r="3.5" stroke-width="1.2"/></svg>',
+  heart: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8B7355" stroke-width="1.3" stroke-linejoin="round"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z"/></svg>',
+  heartFill: '<svg width="16" height="16" viewBox="0 0 16 16" fill="#E87A5D"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z"/></svg>',
+  comment: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8B7355" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4 Q3 2 5 2 L11 2 Q13 2 13 4 L13 9 Q13 11 11 11 L6 11 L3 13 Z"/></svg>',
+  share: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8B7355" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2 L8 11 M4 7 Q4 4 8 4 Q12 4 12 7 M4 7 L4 10 Q4 12 8 12 Q12 12 12 10 L12 7 M5 14 L8 11 L11 14"/></svg>',
+  bookmark: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#8B7355" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3 L15 3 L15 17 L10 13 L5 17 Z"/></svg>',
+  bookmarkFill: '<svg width="20" height="20" viewBox="0 0 20 20" fill="#E87A5D"><path d="M5 3 L15 3 L15 17 L10 13 L5 17 Z"/></svg>',
+  more: '<svg width="20" height="20" viewBox="0 0 20 20" fill="#3D2817"><circle cx="4" cy="10" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="16" cy="10" r="2"/></svg>',
+  arrow: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D3B98C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4 L10 8 L6 12"/></svg>',
+  close: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8B7355" stroke-width="1.8" stroke-linecap="round"><path d="M3 3 L11 11 M11 3 L3 11"/></svg>',
+  eye: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#A0815F" stroke-width="1.3"><path d="M1 9 Q4 4 9 4 Q14 4 17 9 Q14 14 9 14 Q4 14 1 9 Z"/><circle cx="9" cy="9" r="2.5"/></svg>',
+  eyeOff: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#A0815F" stroke-width="1.3" stroke-linecap="round"><path d="M1 9 Q4 4 9 4 Q14 4 17 9 Q14 14 9 14 Q4 14 1 9 Z"/><path d="M3 3 L15 15"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7 L6 10 L11 4"/></svg>'
+};
+
+// ===== HELPERS =====
+function $(id) { return document.getElementById(id); }
+function toast(type, msg) {
+  var icons = {success:'✓',error:'✕',warn:'!',info:'i'};
+  var el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = '<span style="font-size:16px">' + (icons[type]||'') + '</span><span>' + msg + '</span>';
+  var wrap = $('toastWrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'toastWrap';
+    wrap.className = 'toast-wrap';
+    $('app').appendChild(wrap);
+  }
+  wrap.appendChild(el);
+  setTimeout(function() { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 1800);
+  setTimeout(function() { el.remove(); }, 2200);
+}
+
+function nav(screen, params) {
+  S.navStack.push({screen: S.screen, params: S.navParams || {}});
+  S.screen = screen;
+  S.navParams = params || {};
+  render('push');
+}
+
+function back() {
+  if (S.navStack.length > 0) {
+    var prev = S.navStack.pop();
+    S.screen = prev.screen;
+    S.navParams = prev.params;
+    render('pop');
+  } else if (S.activeTab >= 0) {
+    switchTab(S.activeTab);
+  }
+}
+
+function switchTab(idx) {
+  var screens = ['home','community','create','messages','profile'];
+  if (idx === 2) { nav('create'); return; }
+  S.activeTab = idx;
+  S.screen = screens[idx];
+  S.navStack = [];
+  S.navParams = {};
+  render('fade');
+}
+
+function showModal(name, params) {
+  S.modal = name;
+  S.modalParams = params || {};
+  render();
+}
+
+function hideModal() {
+  S.modal = null;
+  S.modalParams = null;
+  render();
+}
+
+function toggleLike(feedIdx) {
+  var key = 'feed_' + feedIdx;
+  S.likes[key] = !S.likes[key];
+  if (S.likes[key]) {
+    S.communityFeed[feedIdx].likes++;
+    toast('success','已点赞');
+  } else {
+    S.communityFeed[feedIdx].likes--;
+  }
+  render('fade');
+}
+
+function toggleFavorite(diaryKey) {
+  S.favorites[diaryKey] = !S.favorites[diaryKey];
+  if (S.favorites[diaryKey]) {
+    toast('success','已收藏到收藏夹');
+  } else {
+    toast('info','已取消收藏');
+  }
+  render('fade');
+}
+
+function selectPet(idx) {
+  S.selectedPet = idx;
+  render('fade');
+}
+
+function setCreateStyle(idx) {
+  S.createData.style = idx;
+  render('fade');
+}
+
+function addPhoto() {
+  var photos = ['咪咪叼拖鞋.jpg','咪咪叼拖鞋舔毛.jpg','布丁追蝴蝶1.jpg','布丁追蝴蝶2.jpg','年糕打打滚.jpg'];
+  if (S.createData.photos.length < 9) {
+    S.createData.photos.push(photos[S.createData.photos.length % photos.length]);
+    render('fade');
+  }
+}
+
+function removePhoto(idx) {
+  S.createData.photos.splice(idx, 1);
+  render('fade');
+}
+
+function doGenerate() {
+  if (!S.createData.desc.trim()) { toast('error','请先描述宠物行为'); return; }
+  if (S.createData.photos.length === 0) { toast('error','请至少上传一张照片'); return; }
+  S.generateVersion = 1;
+  S.editingDiary = null;
+  nav('createResult');
+}
+
+function doRegenerate() {
+  S.regenLoading = true;
+  render('fade');
+  setTimeout(function() {
+    S.generateVersion++;
+    S.createData.style = (S.createData.style + 1) % S.styles.length;
+    S.regenLoading = false;
+    S.editingDiary = null;
+    render('fade');
+    toast('success','新版本已生成');
+  }, 2000);
+}
+
+function saveDraft() {
+  toast('success','已保存到草稿箱');
+  setTimeout(function() { back(); }, 800);
+}
+
+function getDiaryTitle() {
+  if (S.editingDiary && S.editingDiary.title) return S.editingDiary.title;
+  return S.styleTexts[S.createData.style].title;
+}
+
+function getDiaryText() {
+  if (S.editingDiary && S.editingDiary.text) return S.editingDiary.text;
+  return S.styleTexts[S.createData.style].text;
+}
+
+function getDiaryPhotos() {
+  if (S.editingDiary && S.editingDiary.photos) return S.editingDiary.photos;
+  return S.createData.photos;
+}
+
+function sendChat() {
+  if (!S.chatInput.trim()) return;
+  S.chatMessages.push({sender:'me', text: S.chatInput});
+  S.chatInput = '';
+  render('fade');
+  setTimeout(function() {
+    S.chatMessages.push({sender:'other', text:'哈哈，你家毛孩子也太可爱了吧！'});
+    render('fade');
+    var ca = $('chatArea');
+    if (ca) ca.scrollTop = ca.scrollHeight;
+  }, 1500);
+}
+
+// ===== RENDER ENGINE =====
+function render(anim) {
+  var app = $('app');
+  // Remove existing toast wrap to preserve it
+  var existingToast = $('toastWrap');
+  var toastHTML = existingToast ? existingToast.outerHTML : '';
+  if (existingToast) existingToast.remove();
+  
+  var html = '';
+  
+  // Toast container
+  html += '<div id="toastWrap" class="toast-wrap"></div>';
+  
+  // Main content
+  var screenFn = SCREENS[S.screen];
+  var result;
+  if (screenFn) {
+    result = screenFn();
+  } else {
+    result = { html: stateBox('error', '页面不存在', '找不到页面：' + S.screen, '返回', function(){ back(); }) };
+  }
+  
+  var animClass = anim === 'push' ? 'page-anim' : anim === 'pop' ? 'page-anim-back' : 'page-anim-fade';
+  var showTabbar = result.tabbar !== false && S.navStack.length === 0;
+  var hideTabbarScreens = ['login','register','forgotPassword','create','createResult','editDiary','chat'];
+  if (hideTabbarScreens.indexOf(S.screen) >= 0) showTabbar = false;
+  
+  html += '<div class="' + animClass + '" style="display:flex;flex-direction:column;flex:1;overflow:hidden">';
+  html += '<div class="page' + (result.noScroll ? ' no-scroll' : '') + '">';
+  html += result.html;
+  html += '</div>';
+  if (showTabbar) {
+    html += tabBar();
+  }
+  html += '</div>';
+  
+  // Modal overlay
+  if (S.modal && MODALS[S.modal]) {
+    html += MODALS[S.modal]();
+  }
+  
+  app.innerHTML = html;
+  
+  // Scroll chat to bottom
+  if (S.screen === 'chat') {
+    var ca = $('chatArea');
+    if (ca) ca.scrollTop = ca.scrollHeight;
+  }
+}
+
+function tabBar() {
+  var tabs = [
+    {ic: IC.home, icOn: IC.homeOn, label: '首页'},
+    {ic: IC.comm, icOn: IC.commOn, label: '社区'},
+    {ic: IC.plus, label: '创作', center: true},
+    {ic: IC.msg, icOn: IC.msgOn, label: '消息', badge: true},
+    {ic: IC.profile, icOn: IC.profileOn, label: '我的'}
+  ];
+  var html = '<div class="tabbar">';
+  for (var i = 0; i < tabs.length; i++) {
+    var t = tabs[i];
+    var on = S.activeTab === i;
+    if (t.center) {
+      html += '<div class="tab-item" onclick="switchTab(' + i + ')"><div class="tab-create">' + IC.plus + '</div><span class="tab-label">创作</span></div>';
+    } else {
+      var icon = on ? t.icOn : t.ic;
+      var badge = t.badge ? '<div class="nav-dot-wrap">' + icon + '<div class="nav-dot"></div></div>' : icon;
+      html += '<div class="tab-item' + (on ? ' on' : '') + '" onclick="switchTab(' + i + ')">' + badge + '<span class="tab-label">' + t.label + '</span></div>';
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+function navbar(title, showBack, rightHtml) {
+  var html = '<div class="navbar">';
+  if (showBack) {
+    html += '<div class="nav-back" onclick="back()">' + IC.back + '</div>';
+  } else {
+    html += '<div style="width:20px"></div>';
+  }
+  html += '<div class="nav-title">' + title + '</div>';
+  html += '<div class="nav-right">' + (rightHtml || '<div style="width:20px"></div>') + '</div>';
+  html += '</div>';
+  return html;
+}
+
+function navbarHome() {
+  return '<div class="navbar">' +
+    '<div style="display:flex;align-items:center;gap:8px">' +
+    '<img src="logo.jpg" style="width:30px;height:30px;border-radius:8px;object-fit:cover;border:1px solid #F0DDB5">' +
+    '<span style="font-size:17px;font-weight:600;color:#3D2817">毛崽日记</span>' +
+    '</div>' +
+    '<div class="nav-right">' +
+    '<span onclick="nav(\'search\')" style="cursor:pointer">' + IC.search + '</span>' +
+    '<span class="nav-dot-wrap" onclick="switchTab(3)" style="cursor:pointer">' + IC.bell + '<div class="nav-dot"></div></span>' +
+    '</div></div>';
+}
+
+function stateBox(type, title, desc, btnText, btnFn) {
+  var icons = {loading:'<div class="loading-spin" style="border-color:rgba(232,122,93,.3);border-top-color:#E87A5D"></div>',empty:'📭',error:'😵',success:'✓',network:'📡'};
+  var colors = {loading:'#FAF3E8',empty:'#FAF3E8',error:'#FFE6E6',success:'#E8F5E9',network:'#FFF3E0'};
+  var html = '<div class="state-box">';
+  html += '<div class="state-ic" style="background:' + (colors[type]||'#FAF3E8') + '">' + (icons[type]||'') + '</div>';
+  html += '<div class="state-tt">' + title + '</div>';
+  if (desc) html += '<div class="state-desc">' + desc + '</div>';
+  if (btnText) html += '<button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="' + btnFn + '">' + btnText + '</button>';
+  html += '</div>';
+  return html;
+}
+
+function styleTag(idx) {
+  return '<span class="style-tag" style="color:' + S.styleColors[idx] + ';background:' + S.styleColors[idx].replace(')',',0.1)').replace('rgb','rgba').replace('#','rgba(') + '">' + S.styles[idx] + '</span>';
+}
+
+// Placeholder for screens and modals
+var SCREENS = {};
+var MODALS = {};
+// ===== AUTH SCREENS =====
+SCREENS.login = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    '<div class="auth-wrap">' +
+      '<img class="auth-logo" src="logo.jpg">' +
+      '<div class="auth-name">毛崽日记</div>' +
+      '<div class="auth-h">欢迎回来</div>' +
+      '<div class="auth-sub">记录毛孩子的每一天，用Ta的视角看世界</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">手机号 / 邮箱</div>' +
+        '<div class="input-fld on">' +
+          '<span class="input-icon">' + '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#E87A5D" stroke-width="1.3"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2 5 L9 10 L16 5" stroke-linecap="round"/></svg>' + '</span>' +
+          '<input type="text" placeholder="请输入手机号或邮箱" value="138****8888" onfocus="this.parentElement.classList.add(\'on\')" onblur="this.parentElement.classList.remove(\'on\')">' +
+        '</div>' +
+      '</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">密码</div>' +
+        '<div class="input-fld">' +
+          '<span class="input-icon">' + '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#A0815F" stroke-width="1.3"><rect x="3" y="7" width="12" height="8" rx="2"/><path d="M5 7 L5 5 Q5 2 9 2 Q13 2 13 5 L13 7" stroke-linecap="round"/></svg>' + '</span>' +
+          '<input type="' + (S.pwdVisible ? 'text' : 'password') + '" placeholder="请输入密码" value="123456" onfocus="this.parentElement.classList.add(\'on\')" onblur="this.parentElement.classList.remove(\'on\')">' +
+          '<span onclick="S.pwdVisible=!S.pwdVisible;render(\'fade\')" style="cursor:pointer">' + (S.pwdVisible ? IC.eyeOff : IC.eye) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="width:100%;display:flex;justify-content:space-between;margin-top:12px;font-size:12px">' +
+        '<span style="color:#A0815F;cursor:pointer" onclick="nav(\'register\')">还没有账号？去注册</span>' +
+        '<span style="color:#E87A5D;cursor:pointer" onclick="nav(\'forgotPassword\')">忘记密码？</span>' +
+      '</div>' +
+      '<button class="gen-btn" style="margin-top:24px" onclick="doLogin()">' +
+        '<span class="loading-spin" style="display:none"></span><span>登 录</span>' +
+      '</button>' +
+      '<div class="third-login">' +
+        '<div class="third-btn" style="background:#E8F5E9;color:#5DAF6B" onclick="toast(\'info\',\'微信登录开发中\')">💬</div>' +
+        '<div class="third-btn" style="background:#000;color:#fff" onclick="toast(\'info\',\'Apple登录开发中\')">🍎</div>' +
+        '<div class="third-btn" style="background:#E3F2FD;color:#1976D2" onclick="toast(\'info\',\'QQ登录开发中\')">🐧</div>' +
+      '</div>' +
+    '</div>'
+  };
+};
+
+function doLogin() {
+  toast('success', '登录成功，正在跳转...');
+  setTimeout(function() {
+    S.screen = 'home';
+    S.activeTab = 0;
+    S.navStack = [];
+    render('fade');
+  }, 1000);
+}
+
+SCREENS.register = function() {
+  var pwdStrength = 3;
+  var strengthLabels = ['弱','中','强'];
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('注册', true, '<span class="nav-text" onclick="nav(\'login\')">登录</span>') +
+    '<div class="auth-wrap" style="padding-top:8px">' +
+      '<div class="auth-h">创建账号</div>' +
+      '<div class="auth-sub">加入毛崽日记，为你的宠物写第一篇日记</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">手机号</div>' +
+        '<div class="input-fld"><input type="tel" placeholder="请输入手机号" value="138 8888 8888"></div>' +
+      '</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">验证码</div>' +
+        '<div style="display:flex;gap:10px">' +
+          '<div class="input-fld" style="flex:1"><input type="text" placeholder="请输入验证码" value="888"></div>' +
+          '<button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="toast(\'info\',\'验证码已发送\')">59s后重发</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">密码</div>' +
+        '<div class="input-fld on">' +
+          '<input type="' + (S.pwdVisible ? 'text' : 'password') + '" placeholder="请设置密码" value="Abc123456">' +
+          '<span onclick="S.pwdVisible=!S.pwdVisible;render(\'fade\')" style="cursor:pointer">' + (S.pwdVisible ? IC.eyeOff : IC.eye) + '</span>' +
+        '</div>' +
+        '<div class="pwd-strength">' +
+          '<div class="pwd-bar s3"></div><div class="pwd-bar s3"></div><div class="pwd-bar s3"></div>' +
+        '</div>' +
+        '<div style="font-size:11px;color:#5DAF6B;margin-top:4px">密码强度：强</div>' +
+      '</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">昵称</div>' +
+        '<div class="input-fld"><input type="text" placeholder="给自己起个昵称" value="咪咪的铲屎官"></div>' +
+      '</div>' +
+      '<div class="agree-row">' +
+        '<div class="agree-box on" onclick="S.agreeTerms=!S.agreeTerms;render(\'fade\')">' + (S.agreeTerms ? '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5 L4 7 L8 3"/></svg>' : '') + '</div>' +
+        '<span>我已阅读并同意<span style="color:#E87A5D">《用户协议》</span>和<span style="color:#E87A5D">《隐私政策》</span></span>' +
+      '</div>' +
+      '<button class="gen-btn" style="margin-top:16px" onclick="doRegister()">注 册</button>' +
+    '</div>'
+  };
+};
+
+function doRegister() {
+  if (!S.agreeTerms) { toast('error', '请先同意用户协议'); return; }
+  toast('success', '注册成功！');
+  setTimeout(function() {
+    nav('registerSuccess');
+  }, 1000);
+}
+
+SCREENS.registerSuccess = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:0 40px;text-align:center">' +
+      '<div style="width:72px;height:72px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin-bottom:20px">' +
+        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#5DAF6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 18 L15 25 L28 12"/></svg>' +
+      '</div>' +
+      '<div style="font-size:20px;font-weight:600;color:#3D2817;margin-bottom:8px">注册成功！</div>' +
+      '<div style="font-size:14px;color:#8B7355;line-height:1.6;margin-bottom:32px">欢迎加入毛崽日记<br>先创建你的宠物档案，开始写第一篇日记吧</div>' +
+      '<button class="gen-btn" style="width:100%" onclick="nav(\'petEdit\',{isNew:true})">创建宠物档案</button>' +
+      '<button class="btn btn-ghost btn-full" style="margin-top:12px" onclick="S.screen=\'home\';S.activeTab=0;S.navStack=[];render(\'fade\')">先逛逛看</button>' +
+    '</div>'
+  };
+};
+
+SCREENS.forgotPassword = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('找回密码', true) +
+    '<div class="steps">' +
+      stepCircle(S.forgotStep, 1, '验证身份') +
+      '<div class="step-line' + (S.forgotStep > 1 ? ' done' : '') + '"></div>' +
+      stepCircle(S.forgotStep, 2, '输入验证码') +
+      '<div class="step-line' + (S.forgotStep > 2 ? ' done' : '') + '"></div>' +
+      stepCircle(S.forgotStep, 3, '重置密码') +
+    '</div>' +
+    forgotContent()
+  };
+};
+
+function stepCircle(cur, step, lbl) {
+  var cls = cur > step ? 'done' : cur === step ? 'cur' : 'todo';
+  var content = cur > step ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7 L6 10 L11 4"/></svg>' : step;
+  return '<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">' +
+    '<div class="step-circle ' + cls + '">' + content + '</div>' +
+    '<div class="step-lbl' + (cur === step ? ' cur' : '') + '">' + lbl + '</div>' +
+    '</div>';
+}
+
+function forgotContent() {
+  if (S.forgotStep === 1) {
+    return '<div class="auth-wrap" style="padding-top:24px">' +
+      '<div class="auth-h">验证身份</div>' +
+      '<div class="auth-sub">请输入注册时绑定的手机号</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">手机号</div>' +
+        '<div class="input-fld on"><input type="tel" placeholder="请输入手机号" value="138 8888 8888"></div>' +
+      '</div>' +
+      '<button class="gen-btn" style="margin-top:24px" onclick="S.forgotStep=2;render(\'fade\')">获取验证码</button>' +
+    '</div>';
+  } else if (S.forgotStep === 2) {
+    return '<div class="auth-wrap" style="padding-top:24px">' +
+      '<div class="auth-h">输入验证码</div>' +
+      '<div class="auth-sub">验证码已发送至 138****8888</div>' +
+      '<div class="input-grp">' +
+        '<div class="code-row">' +
+          codeBox(S.codeInput.length >= 1, '8') +
+          codeBox(S.codeInput.length >= 2, '8') +
+          codeBox(S.codeInput.length >= 3, '8') +
+          codeBox(S.codeInput.length >= 4, '') +
+          codeBox(S.codeInput.length >= 5, '') +
+          codeBox(S.codeInput.length >= 6, '') +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#A0815F;text-align:center;margin-top:12px">59s后可重新获取</div>' +
+      '<button class="gen-btn" style="margin-top:20px" onclick="S.forgotStep=3;render(\'fade\')">下一步</button>' +
+    '</div>';
+  } else {
+    return '<div class="auth-wrap" style="padding-top:24px">' +
+      '<div class="auth-h">重置密码</div>' +
+      '<div class="auth-sub">请设置新密码</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">新密码</div>' +
+        '<div class="input-fld on">' +
+          '<input type="' + (S.pwdVisible ? 'text' : 'password') + '" placeholder="请输入新密码" value="Abc123456">' +
+          '<span onclick="S.pwdVisible=!S.pwdVisible;render(\'fade\')" style="cursor:pointer">' + (S.pwdVisible ? IC.eyeOff : IC.eye) + '</span>' +
+        '</div>' +
+        '<div class="pwd-strength"><div class="pwd-bar s3"></div><div class="pwd-bar s3"></div><div class="pwd-bar s3"></div></div>' +
+      '</div>' +
+      '<div class="input-grp">' +
+        '<div class="input-lbl">确认密码</div>' +
+        '<div class="input-fld on">' +
+          '<input type="' + (S.pwdVisible ? 'text' : 'password') + '" placeholder="请再次输入密码" value="Abc123456">' +
+        '</div>' +
+        '<div class="ok-msg">' + IC.check + ' 两次密码一致</div>' +
+      '</div>' +
+      '<button class="gen-btn" style="margin-top:20px" onclick="resetSuccess()">完成重置</button>' +
+    '</div>';
+  }
+}
+
+function codeBox(active, val) {
+  var cls = val ? 'filled' : active ? 'on' : '';
+  return '<div class="code-box ' + cls + '">' + val + '</div>';
+}
+
+function resetSuccess() {
+  toast('success', '密码重置成功！');
+  S.forgotStep = 1;
+  setTimeout(function() {
+    S.screen = 'login';
+    S.navStack = [];
+    render('fade');
+  }, 1500);
+}
+
+function statusBarIcons() {
+  return '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="#3D2817" stroke-width="1.2" stroke-linecap="round"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11"/></svg>' +
+  '<svg width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="#3D2817" stroke-width="1.2" stroke-linecap="round"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10"/></svg>' +
+  '<svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>';
+}
+// ===== HOME =====
+SCREENS.home = function() {
+  var pet = S.pets[S.selectedPet];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbarHome();
+  // Pet switcher
+  html += '<div style="padding:0 20px 12px"><div class="pet-cards">';
+  for (var i = 0; i < S.pets.length; i++) {
+    var p = S.pets[i];
+    html += '<div class="pet-card ' + (i === S.selectedPet ? 'on' : 'off') + '" onclick="selectPet(' + i + ')">' +
+      '<div class="pet-av"><img src="' + p.avatar + '"></div>' +
+      '<div><div class="pet-nm ' + (i === S.selectedPet ? 'on' : 'off') + '">' + p.name + '</div>' +
+      '<div class="pet-bd">' + p.breed + '</div></div></div>';
+  }
+  html += '<div class="pet-card add" onclick="nav(\'petEdit\',{isNew:true})">' +
+    '<div class="pet-av" style="background:#F5E8D0"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 4 L10 16 M4 10 L16 10" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg></div>' +
+    '<div><div class="pet-nm add">添加</div><div class="pet-bd">新宠物</div></div></div>';
+  html += '</div></div>';
+  // Info bar
+  html += '<div class="info-bar"><div class="t"><span class="lbl">当前选中：</span><span class="nm">' + pet.name + '</span><span class="lbl"> · ' + pet.breed + '</span></div>' +
+    '<div class="st"><span class="dot"></span>今日已记录 1 篇日记</div></div>';
+  // Recent diaries
+  html += '<div class="section"><div class="section-hdr"><h2>最近日记</h2><span class="section-more" onclick="nav(\'allDiaries\')">查看全部 ' + IC.arrow + '</span></div>';
+  html += '<div>';
+  for (var i = 0; i < S.diaryData.length; i++) {
+    var d = S.diaryData[i];
+    html += '<div class="diary-item" onclick="nav(\'diaryDetail\',{idx:' + i + ',isMine:true})">' +
+      '<div class="diary-av"><img src="' + pet.avatar + '"></div>' +
+      '<div class="diary-info"><div class="diary-tt">' + d.title + '</div><div class="diary-tm">' + d.time + '</div></div>' +
+      IC.arrow + '</div>';
+  }
+  html += '</div></div>';
+  // Community pick
+  html += '<div class="section" style="padding-top:20px"><div class="section-hdr"><h2>社区精选</h2><span class="section-more" onclick="switchTab(1)">查看更多 ' + IC.arrow + '</span></div>';
+  var cf = S.communityFeed[0];
+  html += '<div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer" onclick="nav(\'diaryDetail\',{feedIdx:0})">' +
+    '<div class="pet-av" style="width:42px;height:42px;border:1.5px solid #F0DDB5"><img src="' + cf.avatar + '"></div>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:#5C3D2E">' + cf.user + '</div>' +
+    '<div style="font-size:12px;color:#8B7355;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + cf.text.substring(0,20) + '...</div></div>' +
+    '<div style="display:flex;align-items:center;gap:4px;color:#E87A5D;flex-shrink:0">' + IC.heartFill + '<span style="font-size:13px;font-weight:500">' + cf.likes + '</span></div></div></div>';
+  html += '<div style="margin:20px 20px 0;border:1.5px dashed #D3B98C;border-radius:14px;padding:12px;text-align:center;color:#A0815F;font-size:12px">下滑加载更多社区内容</div>';
+  return { tabbar: true, html: html };
+};
+
+// ===== COMMUNITY =====
+SCREENS.community = function() {
+  S.commTab = S.commTab || 0;
+  S.commFilter = S.commFilter || 0;
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += '<div class="navbar"><div class="nav-title">社区</div><div class="nav-right"><span onclick="nav(\'search\')" style="cursor:pointer">' + IC.search + '</span></div></div>';
+  // Sub tabs
+  html += '<div class="sub-tabs"><div class="sub-tab' + (S.commTab===0?' on':'') + '" onclick="S.commTab=0;render(\'fade\')">推荐</div>';
+  html += '<div class="sub-tab' + (S.commTab===1?' on':'') + '" onclick="S.commTab=1;render(\'fade\')">关注</div></div>';
+  // Filter chips
+  var chips = ['全部','拆家日记','卖萌日常','出门遛弯','美食时刻'];
+  html += '<div class="chips">';
+  for (var i = 0; i < chips.length; i++) {
+    html += '<span class="chip ' + (S.commFilter===i?'on':'off') + '" onclick="S.commFilter=' + i + ';render(\'fade\')">' + chips[i] + '</span>';
+  }
+  html += '</div>';
+  // Feed
+  html += '<div class="content" style="padding-top:8px">';
+  if (S.commTab === 1) {
+    // 关注 tab - fewer items
+    html += '<div class="feed-card"><div class="feed-hdr"><div class="feed-av"><img src="咪咪.jpg"></div>' +
+      '<div class="feed-user"><div class="feed-nm">咪咪 · 布偶猫</div><div class="feed-meta">6小时前</div></div>' +
+      '<span class="style-tag" style="color:#7B9EA8;background:rgba(123,158,168,0.1)">文艺风</span></div>' +
+      '<div class="feed-text"><span class="fp">午后的阳光</span>透过纱帘洒在地板上，形成一条金色的路。我沿着光走，每一步都踩在温暖里……</div>' +
+      '<div class="feed-acts"><div class="feed-act">' + IC.heart + '<span>56</span></div><div class="feed-act">' + IC.comment + '<span>9</span></div><div class="feed-act" onclick="showModal(\'share\')">' + IC.share + '<span>分享</span></div></div></div>';
+    html += '<div style="padding:20px;text-align:center;font-size:12px;color:#A0815F">没有更多了</div>';
+  } else {
+    for (var i = 0; i < S.communityFeed.length; i++) {
+      var f = S.communityFeed[i];
+      var liked = S.likes['feed_'+i];
+      html += '<div class="feed-card">' +
+        '<div class="feed-hdr"><div class="feed-av" style="cursor:pointer" onclick="nav(\'userProfile\',{user:\'' + f.user + '\'})"><img src="' + f.avatar + '"></div>' +
+        '<div class="feed-user"><div class="feed-nm">' + f.user + '</div><div class="feed-meta">' + f.time + '</div></div>' +
+        '<span class="style-tag" style="color:' + S.styleColors[f.style] + ';background:' + S.styleColors[f.style] + '22">' + f.styleName + '</span></div>' +
+        '<div class="feed-text" style="cursor:pointer" onclick="nav(\'diaryDetail\',{feedIdx:' + i + '})">' + f.text + '</div>';
+      if (f.photos.length > 0) {
+        html += '<div class="feed-imgs">';
+        for (var j = 0; j < f.photos.length; j++) {
+          html += '<div class="feed-img" onclick="nav(\'diaryDetail\',{feedIdx:' + i + '})"><img src="' + f.photos[j] + '"></div>';
+        }
+        html += '</div>';
+      }
+      html += '<div class="feed-acts">' +
+        '<div class="feed-act' + (liked?' on':'') + '" onclick="toggleLike(' + i + ')">' + (liked?IC.heartFill:IC.heart) + '<span>' + f.likes + '</span></div>' +
+        '<div class="feed-act" onclick="nav(\'diaryDetail\',{feedIdx:' + i + '})">' + IC.comment + '<span>' + f.comments + '</span></div>' +
+        '<div class="feed-act" onclick="showModal(\'share\')">' + IC.share + '<span>分享</span></div>' +
+      '</div></div>';
+    }
+  }
+  html += '</div>';
+  return { tabbar: true, html: html };
+};
+
+// ===== DIARY DETAIL =====
+SCREENS.diaryDetail = function() {
+  var p = S.navParams || {};
+  var diary, avatar, userName, isMine;
+  if (p.feedIdx !== undefined) {
+    var f = S.communityFeed[p.feedIdx];
+    diary = { title: f.text.substring(0,12), text: f.text, style: f.style, photos: f.photos };
+    avatar = f.avatar;
+    userName = f.user;
+    isMine = false;
+  } else {
+    diary = S.diaryData[p.idx || 0];
+    avatar = S.pets[diary.petIdx].avatar;
+    userName = S.pets[diary.petIdx].name + '的铲屎官';
+    isMine = true;
+  }
+  var favKey = (p.feedIdx !== undefined ? 'feed_' : 'mine_') + (p.feedIdx !== undefined ? p.feedIdx : (p.idx || 0));
+  var isFav = S.favorites[favKey];
+  
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  var rightHtml = isMine 
+    ? '<span class="nav-text primary" onclick="showModal(\'share\')">分享</span>'
+    : '<span onclick="showModal(\'report\')" style="cursor:pointer">' + IC.more + '</span>';
+  html += navbar('日记详情', true, rightHtml);
+  html += '<div class="content" style="padding-bottom:70px">';
+  html += '<div class="section" style="padding-top:14px">';
+  // Author
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">' +
+    '<div class="pet-av" style="width:42px;height:42px;cursor:pointer" onclick="nav(\'userProfile\',{user:\'' + userName + '\'})"><img src="' + avatar + '"></div>' +
+    '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:#3D2817">' + userName + '</div>' +
+    '<div style="font-size:11px;color:#A0815F;margin-top:2px">' + new Date().toLocaleDateString('zh-CN') + ' · ' + S.pets[0].breed + '</div></div>' +
+    styleTag(diary.style) + '</div>';
+  // Title
+  html += '<h1 style="font-size:20px;font-weight:700;color:#3D2817;margin-bottom:12px">' + diary.title + '</h1>';
+  // Text
+  html += '<p style="font-size:15px;color:#5C3D2E;line-height:1.9;margin-bottom:14px">' + diary.text + '</p>';
+  // Photos
+  if (diary.photos && diary.photos.length > 0) {
+    html += '<div style="display:flex;gap:6px;margin-bottom:14px">';
+    for (var i = 0; i < diary.photos.length; i++) {
+      html += '<div style="flex:1;height:120px;border-radius:10px;overflow:hidden"><img src="' + diary.photos[i] + '" style="width:100%;height:100%;object-fit:cover"></div>';
+    }
+    html += '</div>';
+  }
+  if (isMine) {
+    html += '<button class="btn btn-outline btn-full" style="margin-bottom:10px" onclick="nav(\'createResult\')">🔄 重新生成</button>';
+    html += '<button class="btn btn-ghost btn-full" style="margin-bottom:10px" onclick="nav(\'editDiary\')">✏️ 编辑日记</button>';
+  }
+  html += '</div>';
+  // Comments
+  html += '<div class="divider"></div>';
+  html += '<div class="section" style="padding-top:14px"><div class="section-hdr"><h2>评论 (32)</h2></div>';
+  var comments = [
+    {user:'布丁的铲屎官',avatar:'布丁.jpg',text:'哈哈哈太可爱了！那个叼拖鞋的照片笑死我了😂',time:'2小时前',likes:12},
+    {user:'年糕的日常',avatar:'年糕.jpg',text:'我家年糕也这样！猫咪的爱好都一样吗',time:'1小时前',likes:5},
+    {user:'柚子妈',avatar:'咪咪.jpg',text:'布偶猫真的很优雅，这日记写得很有个性',time:'30分钟前',likes:3}
+  ];
+  for (var i = 0; i < comments.length; i++) {
+    var c = comments[i];
+    html += '<div style="display:flex;gap:10px;margin-bottom:14px">' +
+      '<div class="pet-av" style="width:34px;height:34px"><img src="' + c.avatar + '"></div>' +
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:#3D2817">' + c.user + '</div>' +
+      '<div style="font-size:13px;color:#5C3D2E;margin-top:4px;line-height:1.6">' + c.text + '</div>' +
+      '<div style="display:flex;gap:16px;margin-top:6px;font-size:11px;color:#A0815F"><span>' + c.time + '</span><span style="cursor:pointer">回复</span><span style="cursor:pointer;display:flex;align-items:center;gap:3px">' + IC.heart + '<span>' + c.likes + '</span></span></div></div></div>';
+  }
+  html += '</div></div>';
+  // Bottom action bar
+  html += '<div style="background:#fff;border-top:1px solid #F0E4CE;padding:8px 16px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">' +
+    '<input class="input-fld" placeholder="写评论..." style="flex:1;font-size:13px;padding:0 14px;height:38px">' +
+    '<div class="feed-act' + (isFav?' on':'') + '" onclick="toggleFavorite(\'' + favKey + '\')">' + (isFav?IC.bookmarkFill:IC.bookmark) + '</div>' +
+    '<div class="feed-act" onclick="showModal(\'share\')">' + IC.share + '</div></div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== SEARCH =====
+SCREENS.search = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('搜索', true) +
+    '<div style="padding:0 20px 12px"><div class="input-fld on"><span>' + IC.search + '</span><input type="text" placeholder="搜索宠物、日记、用户" autofocus></div></div>' +
+    '<div class="section"><div class="section-hdr"><h2>热门搜索</h2></div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
+    ['拆家日记','布偶猫','金毛日常','傲娇风','追蝴蝶','午睡艺术'].map(function(t) {
+      return '<span class="chip off" onclick="toast(\'info\',\'搜索：' + t + '\')">' + t + '</span>';
+    }).join('') + '</div></div>' +
+    '<div class="section" style="padding-top:20px"><div class="section-hdr"><h2>搜索结果</h2></div>' +
+    '<div class="diary-item" onclick="nav(\'diaryDetail\',{feedIdx:0})"><div class="diary-av"><img src="布丁.jpg"></div><div class="diary-info"><div class="diary-tt">追蝴蝶大作战</div><div class="diary-tm">布丁·金毛 · 2小时前</div></div>' + IC.arrow + '</div>' +
+    '<div class="diary-item" onclick="nav(\'diaryDetail\',{feedIdx:2})"><div class="diary-av"><img src="咪咪.jpg"></div><div class="diary-info"><div class="diary-tt">午后的阳光</div><div class="diary-tm">咪咪·布偶猫 · 6小时前</div></div>' + IC.arrow + '</div>' +
+    '</div>'
+  };
+};
+
+// ===== ALL DIARIES =====
+SCREENS.allDiaries = function() {
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('我的日记', true, '<span class="nav-text" onclick="showModal(\'sort\')">排序</span>');
+  html += '<div class="content" style="padding-top:10px">';
+  for (var i = 0; i < S.diaryData.length; i++) {
+    var d = S.diaryData[i];
+    html += '<div class="diary-item" onclick="nav(\'diaryDetail\',{idx:' + i + ',isMine:true})">' +
+      '<div class="diary-av"><img src="' + S.pets[d.petIdx].avatar + '"></div>' +
+      '<div class="diary-info"><div class="diary-tt">' + d.title + '</div><div class="diary-tm">' + d.time + '</div></div>' +
+      styleTag(d.style) + IC.arrow + '</div>';
+  }
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== USER PROFILE =====
+SCREENS.userProfile = function() {
+  var p = S.navParams || {};
+  var userName = p.user || '布丁的铲屎官';
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar(userName, true, '<span onclick="showModal(\'report\')" style="cursor:pointer">' + IC.more + '</span>') +
+    '<div class="prof-hdr"><div class="prof-av"><img src="布丁.jpg"></div>' +
+    '<div class="prof-info"><div class="prof-nm">' + userName + '</div>' +
+    '<div class="prof-bio">家有金毛布丁，热爱记录每一天</div></div>' +
+    '<button class="prof-edit" onclick="toast(\'success\',\'已关注\')">+ 关注</button></div>' +
+    '<div class="stats-row"><div class="stat-it"><div class="stat-num">86</div><div class="stat-lbl">关注</div></div>' +
+    '<div class="stat-it"><div class="stat-num">1.2k</div><div class="stat-lbl">粉丝</div></div>' +
+    '<div class="stat-it"><div class="stat-num">4.5k</div><div class="stat-lbl">获赞</div></div></div>' +
+    '<div class="section"><div class="section-hdr"><h2>Ta的日记</h2></div>' +
+    '<div class="feed-card" onclick="nav(\'diaryDetail\',{feedIdx:0})"><div class="feed-hdr"><div class="feed-av"><img src="布丁.jpg"></div>' +
+    '<div class="feed-user"><div class="feed-nm">布丁·金毛</div><div class="feed-meta">2小时前</div></div>' +
+    '<span class="style-tag" style="color:#E85D5D;background:rgba(232,93,93,0.1)">热血风</span></div>' +
+    '<div class="feed-text">本汪今天正式向全小区的蝴蝶宣战！一口气追了15只...</div></div></div>'
+  };
+};
+// ===== CREATE =====
+SCREENS.create = function() {
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('为Ta写日记', true, '<span class="nav-text" onclick="saveDraft()">存草稿</span>');
+  // Pet selection
+  html += '<div class="create-sec"><div class="create-lbl">选择宠物<span class="sub">（已选' + S.pets[S.selectedPet].name + '）</span></div>';
+  html += '<div class="pet-sel-row">';
+  for (var i = 0; i < S.pets.length; i++) {
+    var p = S.pets[i];
+    html += '<div class="pet-sel-card' + (i === S.selectedPet ? ' on' : '') + '" onclick="selectPet(' + i + ')">' +
+      '<div class="ps-av"><img src="' + p.avatar + '"></div>' +
+      '<div><div class="ps-nm">' + p.name + '</div><div class="ps-bd">' + p.breed + '</div></div></div>';
+  }
+  html += '<div class="pet-sel-card" style="border:1.5px dashed #D3B98C;background:#FAF3E8" onclick="nav(\'petEdit\',{isNew:true})">' +
+    '<div style="width:32px;height:32px;border-radius:50%;background:#F5E8D0;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8" stroke="#A0815F" stroke-width="1.8" stroke-linecap="round"/></svg></div>' +
+    '<div><div class="ps-nm" style="color:#A0815F">添加</div><div class="ps-bd">新宠物</div></div></div>';
+  html += '</div></div>';
+  // Description
+  html += '<div class="create-sec"><div class="create-lbl">描述Ta今天的行为<span class="sub">（越详细越好）</span></div>';
+  html += '<div class="textarea-box">' +
+    '<textarea rows="4" placeholder="比如：今天把拖鞋藏到了沙发底下，然后假装什么都没发生。被发现了还一脸无辜地眨眼睛……" ' +
+    'oninput="S.createData.desc=this.value;document.getElementById(\'charCount\').textContent=this.value.length+\'/500\'">' + (S.createData.desc || '') + '</textarea>' +
+    '<div class="char-count" id="charCount">' + (S.createData.desc ? S.createData.desc.length : 0) + '/500</div></div></div>';
+  // Photos
+  html += '<div class="create-sec"><div class="create-lbl">上传照片<span class="sub">（可选，最多9张）</span></div>';
+  html += '<div class="upload-grid">';
+  for (var i = 0; i < S.createData.photos.length; i++) {
+    html += '<div class="upload-item"><img src="' + S.createData.photos[i] + '"><div class="rmv" onclick="removePhoto(' + i + ')"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>';
+  }
+  if (S.createData.photos.length < 9) {
+    html += '<div class="upload-item add" onclick="addPhoto()"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L12 18 M6 12 L18 12" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg></div>';
+  }
+  html += '</div></div>';
+  // Style
+  html += '<div class="create-sec"><div class="create-lbl">日记风格<span class="sub">（AI将以此风格生成）</span></div>';
+  html += '<div class="style-tags">';
+  for (var i = 0; i < S.styles.length; i++) {
+    html += '<span class="st-tag' + (S.createData.style === i ? ' on' : ' off') + '" onclick="setCreateStyle(' + i + ')">' + S.styles[i] + '</span>';
+  }
+  html += '</div></div>';
+  // Generate button
+  html += '<div class="create-sec" style="padding-bottom:8px"><button class="gen-btn" onclick="doGenerate()">' +
+    '<svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2 L11.5 7 L17 8 L13 12 L14 18 L10 15 L6 18 L7 12 L3 8 L8.5 7 Z" fill="#FFF" opacity="0.9"/></svg>AI 生成日记</button></div>';
+  html += '<div style="padding:6px 22px 0;display:flex;align-items:center;gap:6px">' +
+    '<svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" stroke="#C4A87A" stroke-width="1" fill="none"/><path d="M6 3 L6 6.5 L8.5 8" stroke="#C4A87A" stroke-width="1" fill="none" stroke-linecap="round"/></svg>' +
+    '<span style="font-size:11px;color:#C4A87A">预计生成时间约 5 秒，生成后可重新换风格</span></div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== CREATE RESULT =====
+SCREENS.createResult = function() {
+  if (S.regenLoading) {
+    return {
+      tabbar: false,
+      html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+      navbar('日记预览', true) +
+      '<div style="padding:20px">' +
+        '<div class="card" style="margin-bottom:14px">' +
+          '<div class="skel skel-line" style="width:60%;height:20px;margin-bottom:14px"></div>' +
+          '<div class="skel skel-line"></div><div class="skel skel-line"></div>' +
+          '<div class="skel skel-line" style="width:80%"></div><div class="skel skel-line" style="width:90%"></div>' +
+          '<div class="skel skel-line" style="width:70%"></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;margin-bottom:14px">' +
+          '<div class="skel" style="flex:1;height:80px;border-radius:10px"></div>' +
+          '<div class="skel" style="flex:1;height:80px;border-radius:10px"></div>' +
+        '</div>' +
+        '<div style="text-align:center;padding:20px;color:#A0815F;font-size:14px">' +
+          '<div class="loading-spin" style="width:24px;height:24px;border-color:rgba(232,122,93,.3);border-top-color:#E87A5D;margin:0 auto 10px"></div>' +
+          'AI正在以' + S.styles[S.createData.style] + '重新生成日记...' +
+        '</div>' +
+      '</div>'
+    };
+  }
+  
+  var title = getDiaryTitle();
+  var text = getDiaryText();
+  var photos = getDiaryPhotos();
+  var pet = S.pets[S.selectedPet];
+  
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('日记预览', true, '<span class="nav-text" onclick="saveDraft()">保存草稿</span>');
+  html += '<div class="content" style="padding-bottom:80px">';
+  // Pet info
+  html += '<div style="padding:14px 20px 0;display:flex;align-items:center;gap:10px">' +
+    '<div class="pet-av" style="width:36px;height:36px"><img src="' + pet.avatar + '"></div>' +
+    '<div><div style="font-size:14px;font-weight:500;color:#3D2817">' + pet.name + '</div>' +
+    '<div style="font-size:11px;color:#A0815F">' + pet.breed + ' · ' + pet.age + '</div></div>' +
+    '<div style="flex:1"></div>' +
+    '<span class="style-tag" style="color:' + S.styleColors[S.createData.style] + ';background:' + S.styleColors[S.createData.style] + '22">第' + S.generateVersion + '版 · ' + S.styles[S.createData.style] + '</span></div>';
+  // Diary card
+  html += '<div class="section"><div class="card">' +
+    '<h1 style="font-size:18px;font-weight:700;color:#3D2817;margin-bottom:12px">' + title + '</h1>' +
+    '<p style="font-size:14px;color:#5C3D2E;line-height:1.9">' + text + '</p></div></div>';
+  // Photos
+  if (photos.length > 0) {
+    html += '<div class="section" style="padding-top:14px"><div class="style-tags" style="flex-wrap:wrap">';
+    for (var i = 0; i < photos.length; i++) {
+      html += '<div style="width:100px;height:100px;border-radius:12px;overflow:hidden"><img src="' + photos[i] + '" style="width:100%;height:100%;object-fit:cover"></div>';
+    }
+    html += '</div></div>';
+  }
+  // Actions
+  html += '<div class="section" style="padding-top:18px">';
+  if (S.generateVersion > 1) {
+    html += '<button class="btn btn-ghost btn-full" style="margin-bottom:10px" onclick="showModal(\'historyVersions\')">📋 查看历史版本 (' + S.generateVersion + '版)</button>';
+  }
+  html += '<button class="btn btn-outline btn-full" style="margin-bottom:10px" onclick="doRegenerate()">🔄 重新生成</button>';
+  html += '<button class="btn btn-ghost btn-full" style="margin-bottom:10px" onclick="nav(\'editDiary\')">✏️ 编辑日记</button>';
+  html += '<button class="btn btn-primary btn-full" style="margin-bottom:10px" onclick="nav(\'publishSettings\')">📢 发布至社区</button>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== EDIT DIARY =====
+SCREENS.editDiary = function() {
+  if (!S.editingDiary) {
+    S.editingDiary = {
+      title: getDiaryTitle(),
+      text: getDiaryText(),
+      photos: getDiaryPhotos().slice()
+    };
+  }
+  var ed = S.editingDiary;
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('编辑日记', true, '<span class="nav-text primary" onclick="saveEdit()">保存</span>');
+  html += '<div class="content">';
+  // Title edit
+  html += '<div class="create-sec"><div class="create-lbl">日记标题</div>';
+  html += '<div class="textarea-box" style="min-height:auto"><input type="text" value="' + ed.title + '" style="width:100%;border:none;outline:none;font-size:16px;font-weight:600;color:#3D2817;background:transparent;font-family:inherit" oninput="S.editingDiary.title=this.value"></div></div>';
+  // Text edit
+  html += '<div class="create-sec"><div class="create-lbl">日记正文<span class="sub" id="editCharCount">(' + ed.text.length + '字)</span></div>';
+  html += '<div class="textarea-box"><textarea rows="10" style="width:100%;border:none;outline:none;font-size:14px;color:#5C3D2E;line-height:1.8;resize:none;font-family:inherit" oninput="S.editingDiary.text=this.value;document.getElementById(\'editCharCount\').textContent=\'(\'+this.value.length+\'字)\'">' + ed.text + '</textarea></div></div>';
+  // Photo management
+  html += '<div class="create-sec"><div class="create-lbl">配图管理<span class="sub">（可增删）</span></div>';
+  html += '<div class="upload-grid">';
+  for (var i = 0; i < ed.photos.length; i++) {
+    html += '<div class="upload-item"><img src="' + ed.photos[i] + '"><div class="rmv" onclick="removeEditPhoto(' + i + ')"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>';
+  }
+  if (ed.photos.length < 9) {
+    html += '<div class="upload-item add" onclick="addEditPhoto()"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L12 18 M6 12 L18 12" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg></div>';
+  }
+  html += '</div></div>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+function removeEditPhoto(idx) {
+  S.editingDiary.photos.splice(idx, 1);
+  render('fade');
+}
+
+function addEditPhoto() {
+  var photos = ['咪咪叼拖鞋.jpg','咪咪叼拖鞋舔毛.jpg','布丁追蝴蝶1.jpg','布丁追蝴蝶2.jpg','年糕打打滚.jpg'];
+  if (S.editingDiary.photos.length < 9) {
+    S.editingDiary.photos.push(photos[S.editingDiary.photos.length % photos.length]);
+    render('fade');
+  }
+}
+
+function saveEdit() {
+  if (!S.editingDiary.title.trim()) { toast('error', '标题不能为空'); return; }
+  if (!S.editingDiary.text.trim()) { toast('error', '正文不能为空'); return; }
+  toast('success', '修改已保存');
+  setTimeout(function() { back(); }, 800);
+}
+
+// ===== PUBLISH SETTINGS =====
+SCREENS.publishSettings = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('发布设置', true, '<span class="nav-text primary" onclick="doPublish()">发布</span>') +
+    '<div class="content">' +
+    '<div class="section"><div class="create-lbl">发布到</div>' +
+    '<div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer">' +
+    '<div style="width:36px;height:36px;border-radius:10px;background:#FFE6D5;display:flex;align-items:center;justify-content:center;font-size:18px">📢</div>' +
+    '<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#3D2817">社区广场</div><div style="font-size:11px;color:#A0815F;margin-top:2px">所有用户可见</div></div>' +
+    IC.check.replace('currentColor','#E87A5D') + '</div></div>' +
+    '<div class="section"><div class="create-lbl">添加话题</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
+    '<span class="chip on">#拆家日记</span><span class="chip off">+ 添加话题</span>' +
+    '</div></div>' +
+    '<div class="section"><div class="create-lbl">隐私设置</div>' +
+    '<div class="card" style="display:flex;align-items:center;gap:10px">' +
+    '<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#3D2817">允许评论</div><div style="font-size:11px;color:#A0815F;margin-top:2px">其他用户可以评论你的日记</div></div>' +
+    '<div class="toggle on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="card" style="display:flex;align-items:center;gap:10px;margin-top:10px">' +
+    '<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#3D2817">允许转载</div><div style="font-size:11px;color:#A0815F;margin-top:2px">其他用户可以分享你的日记</div></div>' +
+    '<div class="toggle on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '</div></div>'
+  };
+};
+
+function doPublish() {
+  showModal('publishProgress');
+  setTimeout(function() {
+    hideModal();
+    toast('success', '发布成功！已分享至社区');
+    setTimeout(function() {
+      S.screen = 'community';
+      S.activeTab = 1;
+      S.navStack = [];
+      render('fade');
+    }, 1000);
+  }, 2500);
+}
+// ===== MESSAGES (redesigned) =====
+SCREENS.messages = function() {
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += '<div class="navbar"><div class="nav-title">消息</div><div class="nav-right"></div></div>';
+  // Quick entries
+  html += '<div class="quick-row">';
+  var entries = [
+    {icon:'❤️',name:'赞和收藏',badge:12,color:'#FFE6E6',fn:"nav('likesFavorites')"},
+    {icon:'👤',name:'新增关注',badge:5,color:'#E3F2FD',fn:"nav('newFollowers')"},
+    {icon:'💬',name:'评论和@',badge:8,color:'#FFF3E0',fn:"nav('commentsMentions')"}
+  ];
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i];
+    html += '<div class="quick-item" onclick="' + e.fn + '">' +
+      '<div class="quick-ic" style="background:' + e.color + '">' + e.icon + '</div>' +
+      '<div class="quick-nm">' + e.name + '</div>' +
+      '<div class="quick-badge">' + e.badge + '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  // Conversation list
+  html += '<div class="msg-divider">私信</div>';
+  var chats = [
+    {user:'布丁的铲屎官',avatar:'布丁.jpg',last:'你家咪咪太可爱了吧！',time:'14:25',unread:2},
+    {user:'年糕的日常',avatar:'年糕.jpg',last:'下次一起遛宠物呀',time:'昨天',unread:0},
+    {user:'柚子妈',avatar:'咪咪.jpg',last:'布偶猫真的好优雅啊',time:'昨天',unread:1},
+    {user:'小橘和小白',avatar:'年糕打打滚.jpg',last:'收到啦，谢谢分享！',time:'3天前',unread:0}
+  ];
+  for (var i = 0; i < chats.length; i++) {
+    var c = chats[i];
+    html += '<div class="msg-entry' + (c.unread ? ' unread' : '') + '" onclick="nav(\'chat\',{user:\'' + c.user + '\',avatar:\'' + c.avatar + '\'})">' +
+      '<div class="msg-av' + (c.unread ? '' : '') + '"><img src="' + c.avatar + '"></div>' +
+      '<div class="msg-c"><div class="msg-nm">' + c.user + '</div><div class="msg-pv">' + c.last + '</div></div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
+      '<span class="msg-tm">' + c.time + '</span>' +
+      (c.unread ? '<div class="msg-badge">' + c.unread + '</div>' : '') +
+      '</div></div>';
+  }
+  return { tabbar: true, html: html };
+};
+
+// ===== LIKES & FAVORITES =====
+SCREENS.likesFavorites = function() {
+  var items = [
+    {type:'like',user:'布丁的铲屎官',avatar:'布丁.jpg',content:'赞了你的日记「今日份拆家述职报告」',time:'5分钟前'},
+    {type:'fav',user:'年糕的日常',avatar:'年糕.jpg',content:'收藏了你的日记「窗外的鸟是我的梦想」',time:'1小时前'},
+    {type:'like',user:'柚子妈',avatar:'咪咪.jpg',content:'赞了你的日记「午睡的艺术」',time:'3小时前'},
+    {type:'like',user:'小橘和小白',avatar:'年糕打打滚.jpg',content:'赞了你的日记「今日份拆家述职报告」',time:'昨天'},
+    {type:'fav',user:'布丁的铲屎官',avatar:'布丁.jpg',content:'收藏了你的日记「午睡的艺术」',time:'2天前'}
+  ];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('赞和收藏', true);
+  html += '<div class="content">';
+  for (var i = 0; i < items.length; i++) {
+    var n = items[i];
+    html += '<div class="msg-entry" onclick="nav(\'diaryDetail\',{feedIdx:0})">' +
+      '<div class="msg-av"><img src="' + n.avatar + '"></div>' +
+      '<div class="msg-c"><div class="msg-nm">' + n.user + '</div><div class="msg-pv">' + (n.type==='like'?'❤️ ':'⭐ ') + n.content + '</div></div>' +
+      '<span class="msg-tm">' + n.time + '</span></div>';
+  }
+  html += '<div style="padding:20px;text-align:center;font-size:12px;color:#A0815F">没有更多了</div>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== NEW FOLLOWERS =====
+SCREENS.newFollowers = function() {
+  var items = [
+    {user:'布丁的铲屎官',avatar:'布丁.jpg',bio:'家有金毛布丁',followed:false},
+    {user:'年糕的日常',avatar:'年糕.jpg',bio:'橘猫年糕的铲屎官',followed:true},
+    {user:'柚子妈',avatar:'咪咪.jpg',bio:'爱猫人士',followed:false},
+    {user:'小橘和小白',avatar:'年糕打打滚.jpg',bio:'两只橘猫的日常',followed:false}
+  ];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('新增关注', true);
+  html += '<div class="content">';
+  for (var i = 0; i < items.length; i++) {
+    var f = items[i];
+    html += '<div class="msg-entry">' +
+      '<div class="msg-av" style="cursor:pointer" onclick="nav(\'userProfile\',{user:\'' + f.user + '\'})"><img src="' + f.avatar + '"></div>' +
+      '<div class="msg-c"><div class="msg-nm">' + f.user + '</div><div class="msg-pv">' + f.bio + '</div></div>' +
+      '<button class="btn ' + (f.followed ? 'btn-ghost' : 'btn-primary') + ' btn-sm" onclick="this.textContent=this.textContent===\'+ 关注\'?\'已关注\':\'+ 关注\';this.className=this.className.indexOf(\'btn-primary\')>=0?\'btn btn-ghost btn-sm\':\'btn btn-primary btn-sm\'">' + (f.followed ? '已关注' : '+ 关注') + '</button>' +
+    '</div>';
+  }
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== COMMENTS & MENTIONS =====
+SCREENS.commentsMentions = function() {
+  var items = [
+    {type:'comment',user:'布丁的铲屎官',avatar:'布丁.jpg',content:'回复：哈哈哈太可爱了！那个叼拖鞋的照片笑死我了😂',time:'5分钟前'},
+    {type:'mention',user:'年糕的日常',avatar:'年糕.jpg',content:'在日记中@了你：你家咪咪和我家年糕好像啊！',time:'1小时前'},
+    {type:'comment',user:'柚子妈',avatar:'咪咪.jpg',content:'回复：布偶猫真的很优雅，这日记写得很有个性',time:'3小时前'},
+    {type:'mention',user:'小橘和小白',avatar:'年糕打打滚.jpg',content:'在评论中@了你：可以交流一下养猫心得吗',time:'昨天'}
+  ];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('评论和@', true);
+  html += '<div class="content">';
+  for (var i = 0; i < items.length; i++) {
+    var n = items[i];
+    html += '<div class="msg-entry" onclick="nav(\'diaryDetail\',{feedIdx:0})">' +
+      '<div class="msg-av"><img src="' + n.avatar + '"></div>' +
+      '<div class="msg-c"><div class="msg-nm">' + n.user + '</div><div class="msg-pv">' + (n.type==='comment'?'💬 ':'📢 ') + n.content + '</div></div>' +
+      '<span class="msg-tm">' + n.time + '</span></div>';
+  }
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== CHAT =====
+SCREENS.chat = function() {
+  var p = S.navParams || {};
+  var user = p.user || '布丁的铲屎官';
+  var avatar = p.avatar || '布丁.jpg';
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar(user, true, '<span onclick="showModal(\'chatSettings\')" style="cursor:pointer">' + IC.more + '</span>');
+  html += '<div class="chat-area" id="chatArea">';
+  for (var i = 0; i < S.chatMessages.length; i++) {
+    var m = S.chatMessages[i];
+    html += '<div class="chat-bubble ' + (m.sender === 'me' ? 'me' : 'other') + '">' + m.text + '</div>';
+  }
+  html += '</div>';
+  html += '<div class="chat-input-bar">' +
+    '<input type="text" placeholder="输入消息..." value="' + (S.chatInput||'') + '" oninput="S.chatInput=this.value" onkeydown="if(event.key===\'Enter\')sendChat()">' +
+    '<button class="btn btn-primary btn-sm" onclick="sendChat()">发送</button></div>';
+  return { tabbar: false, html: html };
+};
+// ===== PROFILE =====
+SCREENS.profile = function() {
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += '<div class="navbar"><div class="nav-title">我的</div><div class="nav-right"><span onclick="nav(\'settings\')" style="cursor:pointer">' + '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#3D2817" stroke-width="1.5"><circle cx="10" cy="10" r="2.5"/><path d="M10 1 L10 3 M10 17 L10 19 M1 10 L3 10 M17 10 L19 10 M3.5 3.5 L5 5 M15 15 L16.5 16.5 M3.5 16.5 L5 15 M15 5 L16.5 3.5" stroke-linecap="round"/></svg>' + '</span></div></div>';
+  // Profile header
+  html += '<div class="prof-hdr"><div class="prof-av"><img src="咪咪.jpg"></div>' +
+    '<div class="prof-info"><div class="prof-nm">咪咪的铲屎官</div>' +
+    '<div class="prof-bio">家有布偶咪咪和橘猫年糕，记录每一天的可爱</div></div>' +
+    '<button class="prof-edit" onclick="nav(\'editProfile\')">编辑资料</button></div>';
+  // Stats
+  html += '<div class="stats-row"><div class="stat-it"><div class="stat-num">128</div><div class="stat-lbl">关注</div></div>' +
+    '<div class="stat-it"><div class="stat-num">2,346</div><div class="stat-lbl">粉丝</div></div>' +
+    '<div class="stat-it"><div class="stat-num">8,921</div><div class="stat-lbl">获赞</div></div></div>';
+  // Pet preview
+  html += '<div class="section"><div class="section-hdr"><h2>我的宠物</h2><span class="section-more" onclick="nav(\'petManage\')">管理 ' + IC.arrow + '</span></div>';
+  html += '<div style="display:flex;gap:10px">';
+  for (var i = 0; i < S.pets.length; i++) {
+    var p = S.pets[i];
+    html += '<div class="card" style="flex:1;text-align:center;cursor:pointer" onclick="nav(\'petDetail\',{idx:' + i + '})">' +
+      '<div class="pet-av" style="width:48px;height:48px;margin:0 auto 8px"><img src="' + p.avatar + '"></div>' +
+      '<div style="font-size:13px;font-weight:500;color:#3D2817">' + p.name + '</div>' +
+      '<div style="font-size:11px;color:#A0815F;margin-top:2px">' + p.breed + ' · ' + p.age + '</div></div>';
+  }
+  html += '</div></div>';
+  // Menu list
+  html += '<div class="section" style="padding-top:14px">';
+  var menus = [
+    {icon:'📖',color:'#FFE6D5',title:'我的日记',sub:'42篇',fn:"nav('allDiaries')"},
+    {icon:'🐾',color:'#FFF3E0',title:'宠物档案管理',sub:S.pets.length+'只宠物',fn:"nav('petManage')"},
+    {icon:'📝',color:'#E3F2FD',title:'我的草稿箱',sub:'3篇未完成',badge:'3',fn:"nav('drafts')"},
+    {icon:'⭐',color:'#FFF9C4',title:'收藏的日记',sub:'15篇',fn:"nav('favorites')"}
+  ];
+  html += '<div class="menu-list">';
+  for (var i = 0; i < menus.length; i++) {
+    var m = menus[i];
+    html += '<div class="menu-it" onclick="' + m.fn + '">' +
+      '<div class="menu-ic" style="background:' + m.color + '">' + m.icon + '</div>' +
+      '<div><div class="menu-tt">' + m.title + '</div><div class="menu-sub">' + m.sub + '</div></div>' +
+      (m.badge ? '<div class="menu-badge">' + m.badge + '</div>' : '') +
+      '<span class="menu-arr">' + IC.arrow + '</span></div>';
+  }
+  html += '</div>';
+  // Settings menu
+  html += '<div class="menu-list"><div class="menu-it" onclick="nav(\'settings\')">' +
+    '<div class="menu-ic" style="background:#F5F5F5">⚙️</div><div class="menu-tt">设置</div><span class="menu-arr">' + IC.arrow + '</span></div></div>';
+  html += '</div>';
+  return { tabbar: true, html: html };
+};
+
+// ===== PET MANAGE =====
+SCREENS.petManage = function() {
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('宠物档案管理', true, '<span class="nav-text primary" onclick="nav(\'petEdit\',{isNew:true})">+ 添加</span>');
+  html += '<div class="content" style="padding-top:10px">';
+  for (var i = 0; i < S.pets.length; i++) {
+    var p = S.pets[i];
+    html += '<div class="card" style="display:flex;align-items:center;gap:12px;margin:0 20px 10px;cursor:pointer" onclick="nav(\'petDetail\',{idx:' + i + '})">' +
+      '<div class="pet-av" style="width:48px;height:48px"><img src="' + p.avatar + '"></div>' +
+      '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:#3D2817">' + p.name + '</div>' +
+      '<div style="font-size:12px;color:#A0815F;margin-top:2px">' + p.breed + ' · ' + p.age + ' · ' + p.personality + '</div></div>' +
+      IC.arrow + '</div>';
+  }
+  html += '<div style="padding:20px;text-align:center;font-size:12px;color:#A0815F">滑动可编辑或删除</div>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== PET DETAIL =====
+SCREENS.petDetail = function() {
+  var p = S.navParams || {};
+  var idx = p.idx || 0;
+  var pet = S.pets[idx];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('宠物档案', true, '<span class="nav-text primary" onclick="nav(\'petEdit\',{idx:' + idx + '})">编辑</span>');
+  html += '<div class="content">';
+  // Big avatar
+  html += '<div style="text-align:center;padding:20px 0"><div style="width:88px;height:88px;border-radius:50%;overflow:hidden;border:3px solid #F0DDB5;margin:0 auto 12px"><img src="' + pet.avatar + '" style="width:100%;height:100%;object-fit:cover"></div>' +
+    '<div style="font-size:20px;font-weight:700;color:#3D2817">' + pet.name + '</div>' +
+    '<div style="font-size:13px;color:#A0815F;margin-top:4px">' + pet.breed + ' · ' + pet.age + '</div></div>';
+  // Info
+  html += '<div class="section"><div class="card">' +
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F8F0E0"><span style="font-size:13px;color:#8B7355">品种</span><span style="font-size:13px;font-weight:500;color:#3D2817">' + pet.breed + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F8F0E0"><span style="font-size:13px;color:#8B7355">年龄</span><span style="font-size:13px;font-weight:500;color:#3D2817">' + pet.age + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F8F0E0"><span style="font-size:13px;color:#8B7355">性格</span><span style="font-size:13px;font-weight:500;color:#3D2817">' + pet.personality + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-size:13px;color:#8B7355">性别</span><span style="font-size:13px;font-weight:500;color:#3D2817">母</span></div>' +
+    '</div></div>';
+  // Stats
+  html += '<div class="stats-row" style="padding-top:14px"><div class="stat-it"><div class="stat-num">42</div><div class="stat-lbl">日记</div></div>' +
+    '<div class="stat-it"><div class="stat-num">8.9k</div><div class="stat-lbl">获赞</div></div>' +
+    '<div class="stat-it"><div class="stat-num">2.3k</div><div class="stat-lbl">粉丝</div></div></div>';
+  // Diaries
+  html += '<div class="section"><div class="section-hdr"><h2>Ta的日记</h2><span class="section-more">按时间排序</span></div>';
+  for (var i = 0; i < S.diaryData.length; i++) {
+    var d = S.diaryData[i];
+    html += '<div class="diary-item" onclick="nav(\'diaryDetail\',{idx:' + i + ',isMine:true})">' +
+      '<div class="diary-av"><img src="' + pet.avatar + '"></div>' +
+      '<div class="diary-info"><div class="diary-tt">' + d.title + '</div><div class="diary-tm">' + d.time + '</div></div>' +
+      styleTag(d.style) + '</div>';
+  }
+  html += '</div>';
+  html += '<div class="section" style="padding-bottom:20px"><button class="btn btn-primary btn-full" onclick="nav(\'create\')">为Ta写日记</button></div>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== PET EDIT =====
+SCREENS.petEdit = function() {
+  var p = S.navParams || {};
+  var isNew = p.isNew;
+  var pet = isNew ? {name:'',breed:'',age:'',personality:'',avatar:'咪咪.jpg'} : S.pets[p.idx || 0];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar(isNew ? '添加宠物' : '编辑档案', true, '<span class="nav-text primary" onclick="savePet()">保存</span>');
+  html += '<div class="content">';
+  // Avatar
+  html += '<div style="text-align:center;padding:24px 0"><div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #F0DDB5;margin:0 auto;position:relative;cursor:pointer" onclick="toast(\'info\',\'选择头像\')">' +
+    '<img src="' + pet.avatar + '" style="width:100%;height:100%;object-fit:cover">' +
+    '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.4);color:#fff;font-size:10px;text-align:center;padding:2px">更换</div></div></div>';
+  // Form
+  html += '<div class="section">';
+  var fields = [
+    {label:'名字',value:pet.name,ph:'请输入宠物名字'},
+    {label:'品种',value:pet.breed,ph:'如：布偶猫、金毛'},
+    {label:'年龄',value:pet.age,ph:'如：2岁'},
+    {label:'性别',value:'母',ph:'公/母'},
+    {label:'性格标签',value:pet.personality,ph:'如：高冷优雅、活泼好动'}
+  ];
+  for (var i = 0; i < fields.length; i++) {
+    var f = fields[i];
+    html += '<div class="input-grp"><div class="input-lbl">' + f.label + '</div>' +
+      '<div class="input-fld"><input type="text" placeholder="' + f.ph + '" value="' + f.value + '"></div></div>';
+  }
+  html += '</div>';
+  if (!isNew) {
+    html += '<div class="section" style="padding-top:20px"><button class="btn btn-outline btn-full" style="border-color:#E85D5D;color:#E85D5D" onclick="showModal(\'deleteConfirm\')">删除宠物档案</button></div>';
+  }
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+function savePet() {
+  toast('success', '已保存');
+  setTimeout(function() { back(); }, 800);
+}
+
+// ===== DRAFTS =====
+SCREENS.drafts = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('我的草稿箱', true) +
+    '<div class="content" style="padding-top:10px">' +
+    '<div class="diary-item" onclick="nav(\'create\')"><div class="diary-av"><img src="咪咪.jpg"></div><div class="diary-info"><div class="diary-tt">咪咪的阳台探险</div><div class="diary-tm">草稿 · 2小时前</div></div><span class="style-tag" style="color:#C4852A;background:rgba(196,133,42,0.1)">傲娇风</span>' + IC.arrow + '</div>' +
+    '<div class="diary-item" onclick="nav(\'create\')"><div class="diary-av"><img src="年糕.jpg"></div><div class="diary-info"><div class="diary-tt">年糕的美食日记</div><div class="diary-tm">草稿 · 昨天</div></div><span class="style-tag" style="color:#D4A05A;background:rgba(212,160,90,0.1)">搞笑风</span>' + IC.arrow + '</div>' +
+    '<div class="diary-item" onclick="nav(\'create\')"><div class="diary-av"><img src="咪咪.jpg"></div><div class="diary-info"><div class="diary-tt">窗台观鸟记</div><div class="diary-tm">草稿 · 3天前</div></div><span class="style-tag" style="color:#7B9EA8;background:rgba(123,158,168,0.1)">文艺风</span>' + IC.arrow + '</div>' +
+    '</div>'
+  };
+};
+
+// ===== FAVORITES =====
+SCREENS.favorites = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('收藏的日记', true) +
+    '<div class="content" style="padding-top:10px">' +
+    '<div class="diary-item" onclick="nav(\'diaryDetail\',{feedIdx:0})"><div class="diary-av"><img src="布丁.jpg"></div><div class="diary-info"><div class="diary-tt">追蝴蝶大作战</div><div class="diary-tm">布丁·金毛 · 2小时前</div></div>' + IC.arrow + '</div>' +
+    '<div class="diary-item" onclick="nav(\'diaryDetail\',{feedIdx:1})"><div class="diary-av"><img src="年糕.jpg"></div><div class="diary-info"><div class="diary-tt">新窝试用报告</div><div class="diary-tm">年糕·橘猫 · 4小时前</div></div>' + IC.arrow + '</div>' +
+    '<div class="diary-item" onclick="nav(\'diaryDetail\',{feedIdx:2})"><div class="diary-av"><img src="咪咪.jpg"></div><div class="diary-info"><div class="diary-tt">午后的光与影</div><div class="diary-tm">咪咪·布偶猫 · 6小时前</div></div>' + IC.arrow + '</div>' +
+    '</div>'
+  };
+};
+
+// ===== EDIT PROFILE =====
+SCREENS.editProfile = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('编辑资料', true, '<span class="nav-text primary" onclick="toast(\'success\',\'已保存\');back()">保存</span>') +
+    '<div class="content">' +
+    '<div style="text-align:center;padding:20px 0"><div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2.5px solid #F0DDB5;margin:0 auto;position:relative;cursor:pointer" onclick="toast(\'info\',\'选择头像\')"><img src="咪咪.jpg" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.4);color:#fff;font-size:10px;text-align:center;padding:2px">更换</div></div></div>' +
+    '<div class="section">' +
+    '<div class="input-grp"><div class="input-lbl">昵称</div><div class="input-fld on"><input type="text" value="咪咪的铲屎官"></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">简介</div><div class="textarea-box" style="min-height:80px"><textarea rows="3" style="width:100%;border:none;outline:none;font-size:14px;color:#3D2817;resize:none;font-family:inherit;line-height:1.6">家有布偶咪咪和橘猫年糕，记录每一天的可爱</textarea></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">性别</div><div class="input-fld"><input type="text" value="女" readonly></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">城市</div><div class="input-fld"><input type="text" value="北京"></div></div>' +
+    '</div></div>'
+  };
+};
+
+// ===== SETTINGS =====
+SCREENS.settings = function() {
+  var items = [
+    {icon:'🔒',color:'#FFE6E6',title:'账号安全',fn:"nav('accountSecurity')"},
+    {icon:'🔔',color:'#FFF3E0',title:'通知设置',fn:"toast('info','通知设置')"},
+    {icon:'🚫',color:'#F5F5F5',title:'免打扰',toggle:true,on:false},
+    {icon:'🌙',color:'#E8EAF6',title:'深色模式',toggle:true,on:false},
+    {icon:'🧹',color:'#E0F7FA',title:'清除缓存',sub:'23.5MB',fn:"showModal('clearCache')"},
+    {icon:'ℹ️',color:'#E3F2FD',title:'关于毛崽日记',fn:"nav('about')"},
+    {icon:'📤',color:'#F1F8E9',title:'退出登录',fn:"showModal('logoutConfirm')"}
+  ];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('设置', true);
+  html += '<div class="content" style="padding-top:10px">';
+  html += '<div class="menu-list">';
+  for (var i = 0; i < items.length; i++) {
+    var m = items[i];
+    html += '<div class="menu-it"' + (m.fn ? ' onclick="' + m.fn + '"' : '') + '>' +
+      '<div class="menu-ic" style="background:' + m.color + '">' + m.icon + '</div>';
+    if (m.sub) {
+      html += '<div><div class="menu-tt">' + m.title + '</div></div><div class="menu-sub">' + m.sub + '</div>';
+    } else if (m.toggle) {
+      html += '<div class="menu-tt">' + m.title + '</div><div style="flex:1"></div><div class="toggle' + (m.on ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></div>';
+    } else {
+      html += '<div class="menu-tt">' + m.title + '</div><div style="flex:1"></div><span class="menu-arr">' + IC.arrow + '</span>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  html += '<div style="padding:30px 20px;text-align:center;font-size:11px;color:#C4A87A">毛崽日记 v2.2.0</div>';
+  html += '</div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== ACCOUNT SECURITY =====
+SCREENS.accountSecurity = function() {
+  var items = [
+    {icon:'📱',color:'#E3F2FD',title:'绑定手机',sub:'138****8888',fn:"nav('bindPhone')"},
+    {icon:'🔑',color:'#FFF3E0',title:'修改密码',fn:"nav('changePassword')"},
+    {icon:'📧',color:'#F1F8E9',title:'绑定邮箱',sub:'未绑定',fn:"toast('info','绑定邮箱')"},
+    {icon:'❌',color:'#FFEBEE',title:'注销账号',fn:"nav('deleteAccount')"}
+  ];
+  var html = '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>';
+  html += navbar('账号安全', true);
+  html += '<div class="content" style="padding-top:10px"><div class="menu-list">';
+  for (var i = 0; i < items.length; i++) {
+    var m = items[i];
+    html += '<div class="menu-it" onclick="' + m.fn + '"><div class="menu-ic" style="background:' + m.color + '">' + m.icon + '</div><div><div class="menu-tt">' + m.title + '</div>' + (m.sub?'<div class="menu-sub">'+m.sub+'</div>':'') + '</div><span class="menu-arr">' + IC.arrow + '</span></div>';
+  }
+  html += '</div></div>';
+  return { tabbar: false, html: html };
+};
+
+// ===== CHANGE PASSWORD =====
+SCREENS.changePassword = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('修改密码', true, '<span class="nav-text primary" onclick="toast(\'success\',\'密码已修改\');back()">完成</span>') +
+    '<div class="content"><div class="section">' +
+    '<div class="input-grp"><div class="input-lbl">当前密码</div><div class="input-fld"><input type="password" placeholder="请输入当前密码"></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">新密码</div><div class="input-fld on"><input type="password" placeholder="请输入新密码" value="Abc123456"></div>' +
+    '<div class="pwd-strength"><div class="pwd-bar s3"></div><div class="pwd-bar s3"></div><div class="pwd-bar s3"></div></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">确认新密码</div><div class="input-fld on"><input type="password" placeholder="请再次输入" value="Abc123456"></div>' +
+    '<div class="ok-msg">' + IC.check + ' 两次密码一致</div></div>' +
+    '</div></div>'
+  };
+};
+
+// ===== BIND PHONE =====
+SCREENS.bindPhone = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('绑定手机', true, '<span class="nav-text primary" onclick="toast(\'success\',\'已绑定\');back()">完成</span>') +
+    '<div class="content"><div class="section">' +
+    '<div class="input-grp"><div class="input-lbl">当前手机</div><div class="input-fld"><input type="text" value="138****8888" readonly style="color:#A0815F"></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">新手机号</div><div class="input-fld"><input type="tel" placeholder="请输入新手机号"></div></div>' +
+    '<div class="input-grp"><div class="input-lbl">验证码</div><div style="display:flex;gap:10px"><div class="input-fld" style="flex:1"><input type="text" placeholder="请输入验证码"></div><button class="btn btn-ghost btn-sm" onclick="toast(\'info\',\'验证码已发送\')">获取验证码</button></div></div>' +
+    '</div></div>'
+  };
+};
+
+// ===== DELETE ACCOUNT =====
+SCREENS.deleteAccount = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('注销账号', true) +
+    '<div class="content">' +
+    '<div style="padding:20px;text-align:center"><div style="font-size:48px;margin-bottom:12px">⚠️</div><div style="font-size:16px;font-weight:600;color:#3D2817;margin-bottom:8px">注销账号</div><div style="font-size:13px;color:#8B7355;line-height:1.6">注销后，你的所有日记、宠物档案、收藏和关注数据将被永久删除，且无法恢复。</div></div>' +
+    '<div class="section"><div class="card" style="background:#FFF0F0;border-color:#FFCDD2">' +
+    '<div style="font-size:13px;font-weight:600;color:#E85D5D;margin-bottom:10px">⚠️ 注销后以下数据将被清除：</div>' +
+    '<div style="font-size:12px;color:#8B7355;line-height:2">• 全部日记和草稿<br>• 全部宠物档案<br>• 收藏和点赞记录<br>• 关注和粉丝关系<br>• 个人资料和账号信息</div>' +
+    '</div></div>' +
+    '<div class="section"><div class="agree-row"><div class="agree-box" onclick="this.classList.toggle(\'on\')"></div><span>我已了解注销后果，确认要注销账号</span></div></div>' +
+    '<div class="section" style="padding-bottom:20px"><button class="btn btn-full" style="background:#E85D5D;color:#fff" onclick="toast(\'success\',\'已提交注销申请\');back()">确认注销</button></div>' +
+    '</div>'
+  };
+};
+
+// ===== ABOUT =====
+SCREENS.about = function() {
+  return {
+    tabbar: false,
+    html: '<div class="statusbar"><span>9:41</span><div class="statusbar-r">' + statusBarIcons() + '</div></div>' +
+    navbar('关于毛崽日记', true) +
+    '<div class="content" style="text-align:center;padding-top:40px">' +
+    '<img src="logo.jpg" style="width:72px;height:72px;border-radius:18px;border:2px solid #F0DDB5;margin-bottom:12px">' +
+    '<div style="font-size:20px;font-weight:600;color:#3D2817">毛崽日记</div>' +
+    '<div style="font-size:13px;color:#A0815F;margin-top:4px">v2.2.0</div>' +
+    '<div style="font-size:13px;color:#8B7355;margin-top:16px;padding:0 40px;line-height:1.6">用AI为你的宠物写日记，以Ta的视角记录每一天的可爱瞬间。</div>' +
+    '<div class="section" style="padding-top:30px"><div class="menu-list">' +
+    '<div class="menu-it" onclick="toast(\'info\',\'用户协议\')"><div class="menu-tt">用户协议</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '<div class="menu-it" onclick="toast(\'info\',\'隐私政策\')"><div class="menu-tt">隐私政策</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '<div class="menu-it" onclick="showModal(\'versionUpdate\')"><div class="menu-tt">检查更新</div><div class="menu-sub">已是最新版</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '</div></div>' +
+    '<div style="padding:30px;font-size:11px;color:#C4A87A">© 2026 毛崽日记<br>用爱记录每一个毛孩子</div>' +
+    '</div>'
+  };
+};
+// ===== MODALS =====
+MODALS.share = function() {
+  var platforms = [
+    {icon:'💬',name:'微信',color:'#E8F5E9'},
+    {icon:'朋友圈',name:'朋友圈',color:'#E8F5E9'},
+    {icon:'🐧',name:'QQ',color:'#E3F2FD'},
+    {icon:'📑',name:'微博',color:'#FFEBEE'},
+    {icon:'🔗',name:'复制链接',color:'#F5F5F5'},
+    {icon:'📥',name:'保存图片',color:'#FFF3E0'}
+  ];
+  var html = '<div class="overlay" onclick="hideModal()"><div class="sheet" onclick="event.stopPropagation()">' +
+    '<div class="sheet-hdr"><div class="sheet-tt">分享</div><div class="sheet-close" onclick="hideModal()">' + IC.close + '</div></div>' +
+    '<div class="sheet-body"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-bottom:10px">';
+  for (var i = 0; i < platforms.length; i++) {
+    var p = platforms[i];
+    html += '<div style="text-align:center;cursor:pointer" onclick="toast(\'success\',\'已分享至' + p.name + '\');hideModal()">' +
+      '<div style="width:48px;height:48px;border-radius:14px;background:' + p.color + ';display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 6px">' + p.icon + '</div>' +
+      '<div style="font-size:11px;color:#8B7355">' + p.name + '</div></div>';
+  }
+  html += '</div></div></div></div>';
+  return html;
+};
+
+MODALS.sort = function() {
+  var options = ['按时间排序','按点赞数排序','按评论数排序'];
+  var html = '<div class="overlay" onclick="hideModal()"><div class="sheet" onclick="event.stopPropagation()">' +
+    '<div class="sheet-hdr"><div class="sheet-tt">排序方式</div><div class="sheet-close" onclick="hideModal()">' + IC.close + '</div></div>' +
+    '<div class="sheet-body">';
+  for (var i = 0; i < options.length; i++) {
+    html += '<div style="padding:14px 0;border-bottom:1px solid #F8F0E0;font-size:15px;color:#3D2817;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="toast(\'success\',\'' + options[i] + '\');hideModal()">' + options[i] + (i===0?'<span style="color:#E87A5D">' + IC.check + '</span>':'') + '</div>';
+  }
+  html += '</div></div></div>';
+  return html;
+};
+
+MODALS.report = function() {
+  var reasons = ['内容不相关','含有不良信息','涉嫌抄袭','广告推销','其他原因'];
+  var html = '<div class="overlay" onclick="hideModal()"><div class="sheet" onclick="event.stopPropagation()">' +
+    '<div class="sheet-hdr"><div class="sheet-tt">举报</div><div class="sheet-close" onclick="hideModal()">' + IC.close + '</div></div>' +
+    '<div class="sheet-body"><div style="font-size:12px;color:#8B7355;margin-bottom:10px">请选择举报原因</div>';
+  for (var i = 0; i < reasons.length; i++) {
+    html += '<div style="padding:14px 0;border-bottom:1px solid #F8F0E0;font-size:15px;color:#3D2817;cursor:pointer" onclick="toast(\'success\',\'举报已提交\');hideModal()">' + reasons[i] + '</div>';
+  }
+  html += '</div></div></div>';
+  return html;
+};
+
+MODALS.historyVersions = function() {
+  var versions = [
+    {ver:1,style:'傲娇风',title:S.styleTexts[0].title,preview:S.styleTexts[0].text.substring(0,40)+'...'},
+    {ver:2,style:'热血风',title:S.styleTexts[1].title,preview:S.styleTexts[1].text.substring(0,40)+'...'}
+  ];
+  if (S.generateVersion >= 3) {
+    versions.push({ver:3,style:'文艺风',title:S.styleTexts[2].title,preview:S.styleTexts[2].text.substring(0,40)+'...'});
+  }
+  var html = '<div class="overlay" onclick="hideModal()"><div class="sheet" onclick="event.stopPropagation()">' +
+    '<div class="sheet-hdr"><div class="sheet-tt">历史版本 (' + S.generateVersion + '版)</div><div class="sheet-close" onclick="hideModal()">' + IC.close + '</div></div>' +
+    '<div class="sheet-body">';
+  for (var i = 0; i < versions.length; i++) {
+    var v = versions[i];
+    var isCurrent = v.ver === S.generateVersion;
+    html += '<div class="card" style="margin-bottom:10px;' + (isCurrent?'border:2px solid #E87A5D':'') + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+      '<span style="font-size:13px;font-weight:600;color:#3D2817">第' + v.ver + '版</span>' +
+      '<span class="style-tag" style="color:' + S.styleColors[v.ver-1] + ';background:' + S.styleColors[v.ver-1] + '22">' + v.style + '</span>' +
+      (isCurrent ? '<span style="font-size:11px;color:#E87A5D;font-weight:500">当前</span>' : '') +
+      '</div><div style="font-size:13px;font-weight:500;color:#3D2817;margin-bottom:4px">' + v.title + '</div>' +
+      '<div style="font-size:12px;color:#8B7355;line-height:1.5">' + v.preview + '</div>' +
+      (isCurrent ? '' : '<button class="btn btn-outline btn-sm btn-full" style="margin-top:10px" onclick="S.createData.style=' + (v.ver-1) + ';hideModal();render(\'fade\');toast(\'success\',\'已切换至第' + v.ver + '版\')">使用此版本</button>') +
+      '</div>';
+  }
+  html += '</div></div></div>';
+  return html;
+};
+
+MODALS.publishProgress = function() {
+  return '<div class="overlay center" onclick="event.stopPropagation()"><div class="sheet center" style="padding:30px;width:200px;text-align:center">' +
+    '<div class="loading-spin" style="width:32px;height:32px;border-color:rgba(232,122,93,.3);border-top-color:#E87A5D;margin:0 auto 16px"></div>' +
+    '<div style="font-size:14px;font-weight:500;color:#3D2817;margin-bottom:4px">正在发布...</div>' +
+    '<div style="font-size:12px;color:#A0815F">请稍候</div></div></div>';
+};
+
+MODALS.logoutConfirm = function() {
+  return '<div class="overlay center" onclick="hideModal()"><div class="sheet center" style="padding:24px;width:300px" onclick="event.stopPropagation()">' +
+    '<div style="font-size:16px;font-weight:600;color:#3D2817;text-align:center;margin-bottom:8px">退出登录</div>' +
+    '<div style="font-size:13px;color:#8B7355;text-align:center;margin-bottom:20px;line-height:1.5">确定要退出当前账号吗？</div>' +
+    '<div style="display:flex;gap:10px"><button class="btn btn-ghost btn-full" onclick="hideModal()">取消</button>' +
+    '<button class="btn btn-full" style="background:#E85D5D;color:#fff" onclick="hideModal();S.screen=\'login\';S.navStack=[];render(\'fade\')">退出</button></div>' +
+    '</div></div>';
+};
+
+MODALS.clearCache = function() {
+  return '<div class="overlay center" onclick="hideModal()"><div class="sheet center" style="padding:24px;width:300px" onclick="event.stopPropagation()">' +
+    '<div style="font-size:16px;font-weight:600;color:#3D2817;text-align:center;margin-bottom:8px">清除缓存</div>' +
+    '<div style="font-size:13px;color:#8B7355;text-align:center;margin-bottom:20px">将清除 23.5MB 缓存数据，不会影响你的日记和设置</div>' +
+    '<div style="display:flex;gap:10px"><button class="btn btn-ghost btn-full" onclick="hideModal()">取消</button>' +
+    '<button class="btn btn-primary btn-full" onclick="hideModal();toast(\'success\',\'缓存已清除\')">清除</button></div>' +
+    '</div></div>';
+};
+
+MODALS.deleteConfirm = function() {
+  return '<div class="overlay center" onclick="hideModal()"><div class="sheet center" style="padding:24px;width:300px" onclick="event.stopPropagation()">' +
+    '<div style="font-size:16px;font-weight:600;color:#3D2817;text-align:center;margin-bottom:8px">删除宠物档案</div>' +
+    '<div style="font-size:13px;color:#8B7355;text-align:center;margin-bottom:20px">删除后该宠物的所有日记将无法恢复，确定删除吗？</div>' +
+    '<div style="display:flex;gap:10px"><button class="btn btn-ghost btn-full" onclick="hideModal()">取消</button>' +
+    '<button class="btn btn-full" style="background:#E85D5D;color:#fff" onclick="hideModal();toast(\'success\',\'已删除\');back()">删除</button></div>' +
+    '</div></div>';
+};
+
+MODALS.versionUpdate = function() {
+  return '<div class="overlay center" onclick="hideModal()"><div class="sheet center" style="padding:24px;width:300px" onclick="event.stopPropagation()">' +
+    '<div style="font-size:32px;text-align:center;margin-bottom:12px">✨</div>' +
+    '<div style="font-size:16px;font-weight:600;color:#3D2817;text-align:center;margin-bottom:4px">发现新版本</div>' +
+    '<div style="font-size:12px;color:#A0815F;text-align:center;margin-bottom:16px">v2.3.0</div>' +
+    '<div style="font-size:13px;color:#8B7355;line-height:1.6;margin-bottom:20px;padding:0 10px">' +
+    '• 新增日记合辑功能<br>• 优化AI生成速度<br>• 修复已知问题</div>' +
+    '<button class="btn btn-primary btn-full" onclick="hideModal();toast(\'success\',\'开始下载更新\')">立即更新</button>' +
+    '<button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="hideModal()">稍后再说</button>' +
+    '</div></div>';
+};
+
+MODALS.chatSettings = function() {
+  return '<div class="overlay" onclick="hideModal()"><div class="sheet" onclick="event.stopPropagation()">' +
+    '<div class="sheet-hdr"><div class="sheet-tt">聊天设置</div><div class="sheet-close" onclick="hideModal()">' + IC.close + '</div></div>' +
+    '<div class="sheet-body">' +
+    '<div class="menu-list" style="margin:0">' +
+    '<div class="menu-it"><div class="menu-ic" style="background:#E3F2FD">👤</div><div class="menu-tt">查看资料</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '<div class="menu-it"><div class="menu-ic" style="background:#FFF3E0">🔔</div><div class="menu-tt">消息免打扰</div><div class="toggle" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="menu-it" onclick="showModal(\'report\')"><div class="menu-ic" style="background:#FFEBEE">🚩</div><div class="menu-tt">举报</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '<div class="menu-it" onclick="showModal(\'deleteConfirm\')"><div class="menu-ic" style="background:#FFEBEE">🗑️</div><div class="menu-tt" style="color:#E85D5D">清空聊天记录</div><span class="menu-arr">' + IC.arrow + '</span></div>' +
+    '</div></div></div></div>';
+};
+
+// ===== INIT =====
+render('fade');
+
+</script>
+</body>
+</html>
