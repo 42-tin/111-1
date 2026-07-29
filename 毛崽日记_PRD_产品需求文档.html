@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>毛崽日记 PRD - 产品需求文档</title>
+<style>
+:root{--bg:#FFF8EE;--primary:#E87A5D;--primary-d:#D4684A;--dark:#3D2817;--muted:#8B7355;--light:#A0815F;--border:#F0E4CE;--card:#FFFFFF;--accent:#FFF1DC;--error:#E85D5D;--success:#5DAF6B;--warn:#C4852A;--info:#7B9EA8;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--dark);line-height:1.8;font-size:15px}
+.container{max-width:960px;margin:0 auto;padding:40px 32px 80px}
+/* cover */
+.cover{text-align:center;padding:60px 0 40px;border-bottom:2px solid var(--border)}
+.cover-logo{width:72px;height:72px;border-radius:18px;border:2px solid #F0DDB5;margin-bottom:16px}
+.cover h1{font-size:32px;font-weight:700;color:var(--dark);letter-spacing:2px}
+.cover .subtitle{font-size:16px;color:var(--muted);margin-top:8px}
+.cover .meta{margin-top:24px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+.cover .meta-item{font-size:13px;color:var(--light)}
+.cover .meta-item strong{color:var(--dark);font-weight:600}
+/* toc */
+.toc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin:32px 0}
+.toc h3{font-size:14px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.toc ol{list-style:none;counter-reset:toc-counter}
+.toc li{counter-increment:toc-counter;margin-bottom:6px}
+.toc li a{color:var(--dark);text-decoration:none;font-size:14px}
+.toc li a:hover{color:var(--primary)}
+.toc li::before{content:counter(toc-counter) ". ";color:var(--primary);font-weight:600}
+.toc .sub{padding-left:28px;font-size:13px;color:var(--muted)}
+.toc .sub::before{content:"· ";color:var(--light)}
+/* sections */
+section{margin-top:40px}
+h2{font-size:22px;font-weight:700;color:var(--dark);padding-bottom:10px;border-bottom:2px solid var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+h2 .num{background:var(--primary);color:#fff;font-size:14px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+h3{font-size:17px;font-weight:600;color:var(--dark);margin:24px 0 12px}
+h4{font-size:15px;font-weight:600;color:var(--primary-d);margin:16px 0 8px}
+p{margin-bottom:12px;color:#5C3D2E}
+ul,ol{margin-bottom:12px;padding-left:24px}
+li{margin-bottom:6px;color:#5C3D2E}
+strong{color:var(--dark)}
+/* tables */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{background:var(--accent);color:var(--dark);font-weight:600;padding:10px 12px;text-align:left;border:1px solid var(--border)}
+td{padding:8px 12px;border:1px solid var(--border);color:#5C3D2E;vertical-align:top}
+tr:nth-child(even){background:#FDFBF6}
+/* priority badges */
+.pri{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+.pri-p0{background:#FFEBEE;color:#C62828}
+.pri-p1{background:#FFF3E0;color:#E65100}
+.pri-p2{background:#E8F5E9;color:#2E7D32}
+/* info boxes */
+.info-box{background:var(--accent);border-left:4px solid var(--warn);border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:#5C3D2E}
+.info-box strong{color:var(--warn)}
+.note-box{background:#E8F5E9;border-left:4px solid var(--success);border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:#2E7D32}
+/* persona cards */
+.persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:16px 0}
+.persona-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.persona-card .emoji{font-size:32px;margin-bottom:8px}
+.persona-card h4{font-size:15px;color:var(--dark);margin-bottom:6px}
+.persona-card .desc{font-size:13px;color:var(--muted);line-height:1.6}
+.persona-card .tags{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.persona-card .tag{font-size:11px;padding:3px 8px;border-radius:6px;background:var(--accent2);color:var(--warn)}
+/* user story */
+.story{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:12px 0}
+.story .story-id{font-size:11px;color:var(--light);font-weight:600}
+.story .story-text{font-size:14px;color:var(--dark);margin:4px 0}
+.story .story-acc{font-size:12px;color:var(--success);margin-top:6px}
+/* flowchart svg */
+.flowchart-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto}
+.flowchart-wrap svg{display:block;margin:0 auto;min-width:600px}
+.flowchart-cap{text-align:center;font-size:12px;color:var(--muted);margin-top:8px}
+/* data model */
+.entity{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:12px 0;overflow:hidden}
+.entity-hdr{background:var(--accent);padding:10px 16px;font-size:14px;font-weight:600;color:var(--dark);border-bottom:1px solid var(--border)}
+.entity-body{padding:0}
+.entity-body table{margin:0}
+.entity-body th{background:#FDFBF6}
+/* acceptance criteria */
+.ac-item{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
+.ac-checkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--primary);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px}
+.ac-text{font-size:14px;color:#5C3D2E}
+/* metric cards */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.metric-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.metric-card .val{font-size:24px;font-weight:700;color:var(--primary)}
+.metric-card .lbl{font-size:12px;color:var(--muted);margin-top:4px}
+/* footer */
+.footer{text-align:center;padding:32px 0;font-size:12px;color:var(--light);border-top:1px solid var(--border);margin-top:40px}
+@media print{body{background:#fff}.container{max-width:none}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+<img class="cover-logo" src="logo.jpg" alt="logo">
+<h1>毛崽日记</h1>
+<div class="subtitle">产品需求文档（PRD）</div>
+<div class="meta">
+<div class="meta-item"><strong>版本：</strong>v2.2.0</div>
+<div class="meta-item"><strong>日期：</strong>2026-07-28</div>
+<div class="meta-item"><strong>状态：</strong>评审中</div>
+<div class="meta-item"><strong>平台：</strong>iOS / Android</div>
+</div>
+</div>
+
+<!-- ===== TOC ===== -->
+<div class="toc">
+<h3>目录</h3>
+<ol>
+<li><a href="#s1">产品概述与背景</a></li>
+<li><a href="#s2">目标用户群体分析</a></li>
+<li><a href="#s3">用户故事</a></li>
+<li><a href="#s4">功能需求清单</a></li>
+<li><a href="#s5">非功能需求</a></li>
+<li><a href="#s6">业务流程说明</a></li>
+<li><a href="#s7">数据需求</a></li>
+<li><a href="#s8">验收标准</a></li>
+<li><a href="#s9">假设前提与约束</a></li>
+</ol>
+</div>
+
+<!-- ===== 1. 产品概述与背景 ===== -->
+<section id="s1">
+<h2><span class="num">1</span>产品概述与背景</h2>
+
+<h3>1.1 产品定位</h3>
+<p><strong>毛崽日记</strong>是一款以 AI 技术为核心的宠物主题内容创作与社交应用。用户通过输入宠物行为描述和上传照片，由 AI 以宠物第一视角自动生成趣味日记，支持多种文风切换与重新生成，生成内容可编辑后发布至社区与其他宠物主人互动分享。</p>
+
+<h3>1.2 产品背景</h3>
+<p>中国宠物经济持续高速增长，养宠人群年轻化趋势明显。据行业数据，2025 年中国城镇犬猫数量已超 1.2 亿只，宠物主以 90 后、00 后为主力。这一人群具有以下特征：</p>
+<ul>
+<li>将宠物视为家庭成员，乐于记录和分享宠物的日常</li>
+<li>社交媒体使用频率高，对内容的趣味性和个性化有强烈需求</li>
+<li>缺乏专业写作能力，但希望以创意方式表达对宠物的爱</li>
+<li>渴望与同好建立社交连接，形成养宠社区认同感</li>
+</ul>
+<p>当前市场上的宠物类 App 主要集中在健康管理和电商领域，缺乏以"宠物视角内容创作"为核心的产品。毛崽日记精准切入这一空白，通过 AI 生成降低创作门槛，以趣味化、拟人化的第一视角日记满足宠物主人的表达和社交需求。</p>
+
+<h3>1.3 产品目标</h3>
+<div class="metric-grid">
+<div class="metric-card"><div class="val">3秒</div><div class="lbl">AI 日记生成响应（目标 ≤5s）</div></div>
+<div class="metric-card"><div class="val">60%</div><div class="lbl">生成日记发布至社区率</div></div>
+<div class="metric-card"><div class="val">40%</div><div class="lbl">次日留存率</div></div>
+<div class="metric-card"><div class="val">2.5篇</div><div class="lbl">周人均创作篇数</div></div>
+</div>
+
+<h3>1.4 核心价值主张</h3>
+<table>
+<tr><th>维度</th><th>价值描述</th></tr>
+<tr><td>创作价值</td><td>AI 自动生成宠物第一视角趣味日记，将"不会写"变为"一键生成"，降低内容创作门槛至零</td></tr>
+<tr><td>情感价值</td><td>以宠物视角记录日常，赋予平凡行为以故事性和情感张力，增强人宠情感连接</td></tr>
+<tr><td>社交价值</td><td>宠物主题社区聚集同好用户，通过点赞/评论/私信形成高质量社交互动</td></tr>
+<tr><td>记录价值</td><td>多宠物档案管理 + 时间线日记归档，构建完整的宠物成长记忆库</td></tr>
+</table>
+
+<h3>1.5 设计系统概览</h3>
+<table>
+<tr><th>属性</th><th>规格</th></tr>
+<tr><td>主背景色</td><td>奶油色 #FFF8EE</td></tr>
+<tr><td>强调色</td><td>珊瑚橙 #E87A5D</td></tr>
+<tr><td>文字主色</td><td>深棕 #3D2817</td></tr>
+<tr><td>辅助色</td><td>错误 #E85D5D / 成功 #5DAF6B / 警告 #C4852A / 信息 #7B9EA8</td></tr>
+<tr><td>圆角规格</td><td>卡片 14px / 按钮 14px / 标签 20px</td></tr>
+<tr><td>适配机型</td><td>iPhone 15 Pro 基准（393×852pt），兼容 Android 主流机型</td></tr>
+</table>
+</section>
+
+<!-- ===== 2. 目标用户群体分析 ===== -->
+<section id="s2">
+<h2><span class="num">2</span>目标用户群体分析</h2>
+
+<h3>2.1 用户画像</h3>
+<div class="persona-grid">
+<div class="persona-card">
+<div class="emoji">🐱</div>
+<h4>小林 · 猫奴记录控</h4>
+<div class="desc">26岁，女性，互联网公司设计师。养了一只布偶猫"咪咪"，每天拍摄大量猫咪照片但不知道怎么写出有趣的内容。希望用创意方式记录猫咪日常，分享到朋友圈获赞。</div>
+<div class="tags"><span class="tag">内容消费者→创作者</span><span class="tag">视觉导向</span><span class="tag">社交分享</span></div>
+</div>
+<div class="persona-card">
+<div class="emoji">🐶</div>
+<h4>阿杰 · 多宠家庭</h4>
+<div class="desc">32岁，男性，自由职业者。同时养了金毛"布丁"和橘猫"年糕"，希望为每只宠物分别建立档案和日记记录。乐于在宠物社区结交同好，交流养宠经验。</div>
+<div class="tags"><span class="tag">多宠物管理</span><span class="tag">社区活跃</span><span class="tag">经验交流</span></div>
+</div>
+<div class="persona-card">
+<div class="emoji">🐰</div>
+<h4>小美 · 萌宠社交达人</h4>
+<div class="desc">24岁，女性，大学生。各类社交平台重度用户，喜欢刷萌宠内容。希望通过有趣的方式参与宠物社区互动，发现更多可爱的宠物内容并与其他主人交流。</div>
+<div class="tags"><span class="tag">社区浏览</span><span class="tag">互动参与</span><span class="tag">内容消费</span></div>
+</div>
+</div>
+
+<h3>2.2 用户特征统计（推导假设）</h3>
+<table>
+<tr><th>维度</th><th>分布</th></tr>
+<tr><td>性别比例</td><td>女性 70% / 男性 30%</td></tr>
+<tr><td>年龄分布</td><td>18-25岁 35% / 26-30岁 40% / 31-35岁 20% / 35+ 5%</td></tr>
+<tr><td>宠物类型</td><td>猫 55% / 狗 35% / 其他（兔/仓鼠等）10%</td></tr>
+<tr><td>养宠数量</td><td>1只 60% / 2只 28% / 3只+ 12%</td></tr>
+<tr><td>日活时长目标</td><td>15-25 分钟/天</td></tr>
+</table>
+
+<h3>2.3 用户需求层次</h3>
+<table>
+<tr><th>层次</th><th>需求</th><th>产品对应</th></tr>
+<tr><td>基础需求</td><td>记录宠物日常、管理宠物信息</td><td>日记创建/编辑、宠物档案管理</td></tr>
+<tr><td>期望需求</td><td>内容有趣味性、操作简单快捷</td><td>AI 多风格生成、一键创作流程</td></tr>
+<tr><td>兴奋需求</td><td>社交认同、社区归属感、个性化表达</td><td>社区分享、互动通知、风格切换</td></tr>
+</table>
+</section>
+
+<!-- ===== 3. 用户故事 ===== -->
+<section id="s3">
+<h2><span class="num">3</span>用户故事</h2>
+
+<h3>3.1 认证模块</h3>
+<div class="story">
+<div class="story-id">US-AUTH-01</div>
+<div class="story-text">作为一名新用户，我希望通过手机号注册账号并设置密码，以便开始使用毛崽日记。</div>
+<div class="story-acc">验收：输入手机号→获取验证码→设置密码（含强度提示）→填写昵称→同意协议→注册成功→引导创建宠物档案</div>
+</div>
+<div class="story">
+<div class="story-id">US-AUTH-02</div>
+<div class="story-text">作为一名已注册用户，我希望通过手机号/邮箱和密码登录，也可使用微信/Apple/QQ第三方快捷登录。</div>
+<div class="story-acc">验收：支持账密登录 + 3种第三方登录入口；密码可切换显示/隐藏；忘记密码可通过手机号3步找回</div>
+</div>
+
+<h3>3.2 核心创作模块</h3>
+<div class="story">
+<div class="story-id">US-CREATE-01</div>
+<div class="story-text">作为一名宠物主人，我希望选择我的宠物、描述它今天的行为、上传照片、选择文风，然后由 AI 自动生成一篇宠物第一视角的趣味日记。</div>
+<div class="story-acc">验收：宠物选择→行为描述（≤500字）→照片上传（≤9张，可选）→风格选择（5种）→点击生成→≤5秒内返回结果</div>
+</div>
+<div class="story">
+<div class="story-id">US-CREATE-02</div>
+<div class="story-text">作为一名对文风不满意的用户，我希望可以一键重新生成日记，并自动切换到不同的文风，同时保留之前的历史版本以便对比和回退。</div>
+<div class="story-acc">验收：点击"重新生成"→加载动画（~2秒）→返回新版本→可查看全部历史版本→可选择使用任意历史版本</div>
+</div>
+<div class="story">
+<div class="story-id">US-CREATE-03</div>
+<div class="story-text">作为一名想微调日记的用户，我希望可以编辑 AI 生成日记的标题、正文和配图。</div>
+<div class="story-acc">验收：编辑页可修改标题（非空校验）、正文（非空校验）、增删配图（≤9张）；保存后返回预览页显示修改后内容</div>
+</div>
+<div class="story">
+<div class="story-id">US-CREATE-04</div>
+<div class="story-text">作为一名还没完成创作的用户，我希望可以保存草稿，稍后继续。</div>
+<div class="story-acc">验收：创作页点击"存草稿"→Toast 提示"已保存到草稿箱"→返回上一页；草稿箱列表可继续编辑</div>
+</div>
+
+<h3>3.3 社区模块</h3>
+<div class="story">
+<div class="story-id">US-COMM-01</div>
+<div class="story-text">作为一名用户，我希望将生成的日记发布到社区广场，并可以添加话题标签和设置隐私选项。</div>
+<div class="story-acc">验收：预览页点击"发布至社区"→发布设置页（选择发布目标/添加话题/允许评论开关/允许转载开关）→点击发布→进度弹窗→成功Toast→跳转社区页</div>
+</div>
+<div class="story">
+<div class="story-id">US-COMM-02</div>
+<div class="story-text">作为一名社区浏览者，我希望通过"推荐"和"关注"两个频道浏览日记，并通过分类标签筛选感兴趣的内容。</div>
+<div class="story-acc">验收：Tab 切换推荐/关注；筛选 chips：全部/拆家日记/卖萌日常/出门遛弯/美食时刻；Feed 流展示卡片含作者/文风标签/正文/配图/点赞/评论/分享</div>
+</div>
+<div class="story">
+<div class="story-id">US-COMM-03</div>
+<div class="story-text">作为一名用户，我希望可以点赞、收藏、评论和分享其他用户的日记，并能查看日记详情和评论列表。</div>
+<div class="story-acc">验收：Feed 卡片点赞（可取消）；日记详情页收藏（可取消）、底部评论输入、分享弹窗（6种渠道）；评论列表展示</div>
+</div>
+
+<h3>3.4 消息模块</h3>
+<div class="story">
+<div class="story-id">US-MSG-01</div>
+<div class="story-text">作为一名用户，我希望在消息页快速查看谁赞了我/收藏了我的日记、谁新关注了我、谁评论或@了我，并通过私信与其他用户聊天。</div>
+<div class="story-acc">验收：消息页 3 个快捷入口（赞和收藏/新增关注/评论和@）带未读 Badge；下方私信列表含未读标记；点击进入对应列表或聊天页</div>
+</div>
+
+<h3>3.5 个人中心模块</h3>
+<div class="story">
+<div class="story-id">US-PROF-01</div>
+<div class="story-text">作为一名养了多只宠物的用户，我希望为每只宠物创建独立的档案（名字/品种/年龄/性别/性格），并能查看每只宠物的专属日记列表。</div>
+<div class="story-acc">验收：宠物档案管理页列表展示+添加入口；编辑页填写 5 项信息+头像；宠物详情页展示档案+统计+专属日记列表+"为Ta写日记"入口</div>
+</div>
+<div class="story">
+<div class="story-id">US-PROF-02</div>
+<div class="story-text">作为一名用户，我希望在设置中管理账号安全（绑定手机/修改密码/注销）、通知偏好、缓存清理等。</div>
+<div class="story-acc">验收：设置页 7 项菜单；账号安全 4 项子菜单；修改密码含强度校验；注销账号需二次确认</div>
+</div>
+</section>
+
+<!-- ===== 4. 功能需求清单 ===== -->
+<section id="s4">
+<h2><span class="num">4</span>功能需求清单</h2>
+
+<h3>4.1 认证模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-AUTH-01</td><td><span class="pri pri-p0">P0</span></td><td>手机号注册</td><td>输入手机号→获取短信验证码（60s倒计时）→设置密码（含强度检测：弱/中/强）→填写昵称→勾选用户协议→注册成功</td><td>注册页</td></tr>
+<tr><td>F-AUTH-02</td><td><span class="pri pri-p0">P0</span></td><td>账密登录</td><td>支持手机号/邮箱 + 密码登录；密码支持显示/隐藏切换；登录成功后跳转首页</td><td>登录页</td></tr>
+<tr><td>F-AUTH-03</td><td><span class="pri pri-p1">P1</span></td><td>第三方登录</td><td>支持微信、Apple、QQ 三种第三方快捷登录（V1.0 可仅展示入口，后续接入）</td><td>登录页</td></tr>
+<tr><td>F-AUTH-04</td><td><span class="pri pri-p0">P0</span></td><td>忘记密码</td><td>3 步流程：①验证身份（输入手机号）→②输入验证码（6 位数字）→③重置密码（新密码+确认密码，含强度检测）</td><td>找回密码页</td></tr>
+<tr><td>F-AUTH-05</td><td><span class="pri pri-p1">P1</span></td><td>注册成功引导</td><td>注册成功后展示引导页，提供"创建宠物档案"和"先逛逛看"两个入口</td><td>注册成功页</td></tr>
+</table>
+
+<h3>4.2 首页模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-HOME-01</td><td><span class="pri pri-p0">P0</span></td><td>宠物切换</td><td>横向宠物卡片列表，支持切换选中宠物；选中状态高亮边框；末尾"添加"卡片跳转宠物编辑页</td><td>首页</td></tr>
+<tr><td>F-HOME-02</td><td><span class="pri pri-p0">P0</span></td><td>今日记录状态</td><td>信息栏展示当前选中宠物名称+品种+"今日已记录 N 篇日记"状态</td><td>首页</td></tr>
+<tr><td>F-HOME-03</td><td><span class="pri pri-p0">P0</span></td><td>最近日记</td><td>展示当前宠物最近 3 篇日记（标题+时间+宠物头像），点击进入日记详情；"查看全部"进入全部日记列表</td><td>首页</td></tr>
+<tr><td>F-HOME-04</td><td><span class="pri pri-p1">P1</span></td><td>社区精选</td><td>展示 1 条社区精选日记卡片（用户名+内容摘要+点赞数），点击进入日记详情</td><td>首页</td></tr>
+<tr><td>F-HOME-05</td><td><span class="pri pri-p1">P1</span></td><td>顶部导航</td><td>左侧 Logo + 应用名；右侧搜索图标（跳转搜索页）+ 消息铃铛（带未读红点，跳转消息 Tab）</td><td>首页</td></tr>
+<tr><td>F-HOME-06</td><td><span class="pri pri-p1">P1</span></td><td>全部日记列表</td><td>展示当前用户全部日记（标题+时间+文风标签），支持排序（按时间/按点赞/按评论）</td><td>全部日记页</td></tr>
+<tr><td>F-HOME-07</td><td><span class="pri pri-p2">P2</span></td><td>搜索功能</td><td>搜索宠物、日记、用户；展示热门搜索标签；展示搜索结果列表</td><td>搜索页</td></tr>
+</table>
+
+<h3>4.3 核心创作模块（AI 日记生成）</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-CREATE-01</td><td><span class="pri pri-p0">P0</span></td><td>宠物选择</td><td>横向宠物选择卡片，高亮当前选中；支持"添加新宠物"入口</td><td>创作页</td></tr>
+<tr><td>F-CREATE-02</td><td><span class="pri pri-p0">P0</span></td><td>行为描述输入</td><td>多行文本输入框，最大 500 字，实时字数统计；placeholder 提供示例</td><td>创作页</td></tr>
+<tr><td>F-CREATE-03</td><td><span class="pri pri-p0">P0</span></td><td>照片上传</td><td>可选上传，最多 9 张；已上传照片可删除（右上角删除按钮）；点击添加按钮可继续上传</td><td>创作页</td></tr>
+<tr><td>F-CREATE-04</td><td><span class="pri pri-p0">P0</span></td><td>文风选择</td><td>5 种文风标签可选：傲娇风 / 热血风 / 文艺风 / 搞笑风 / 哲理风；单选高亮</td><td>创作页</td></tr>
+<tr><td>F-CREATE-05</td><td><span class="pri pri-p0">P0</span></td><td>AI 生成</td><td>校验：描述非空（否则 Toast 提示），照片可选；点击"AI 生成日记"→跳转生成结果预览页；预计生成时间 ≤5 秒</td><td>创作页→结果页</td></tr>
+<tr><td>F-CREATE-06</td><td><span class="pri pri-p0">P0</span></td><td>生成结果预览</td><td>展示宠物信息+文风版本标签+日记标题+正文+配图；底部操作：查看历史版本/重新生成/编辑日记/发布至社区/保存草稿</td><td>结果预览页</td></tr>
+<tr><td>F-CREATE-07</td><td><span class="pri pri-p0">P0</span></td><td>重新生成</td><td>点击后展示 Skeleton 加载动画 + "AI 正在以 XX 风重新生成日记..."提示；~2 秒后返回新版本；文风自动切换至下一种</td><td>结果预览页</td></tr>
+<tr><td>F-CREATE-08</td><td><span class="pri pri-p1">P1</span></td><td>历史版本管理</td><td>多次生成后保留全部版本；底部展示"查看历史版本(N版)"按钮；弹窗展示各版本卡片（版本号+文风+标题+摘要），当前版本高亮；非当前版本提供"使用此版本"按钮</td><td>结果预览页+弹窗</td></tr>
+<tr><td>F-CREATE-09</td><td><span class="pri pri-p0">P0</span></td><td>日记编辑</td><td>可编辑标题（非空校验）、正文（非空校验、实时字数统计）、配图增删（≤9 张）；保存后返回预览页</td><td>编辑日记页</td></tr>
+<tr><td>F-CREATE-10</td><td><span class="pri pri-p1">P1</span></td><td>保存草稿</td><td>创作页和结果预览页均支持"存草稿"；Toast 提示后返回；草稿箱可继续编辑</td><td>创作页/结果页</td></tr>
+<tr><td>F-CREATE-11</td><td><span class="pri pri-p0">P0</span></td><td>发布至社区</td><td>发布设置页：发布目标（社区广场）、添加话题（如#拆家日记）、隐私设置（允许评论开关/允许转载开关）；点击发布→进度弹窗→成功 Toast→跳转社区页</td><td>发布设置页</td></tr>
+</table>
+
+<h3>4.4 社区模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-COMM-01</td><td><span class="pri pri-p0">P0</span></td><td>推荐流</td><td>展示全部社区日记 Feed 卡片：作者头像/昵称/时间/文风标签/正文/配图/点赞数/评论数/分享</td><td>社区页</td></tr>
+<tr><td>F-COMM-02</td><td><span class="pri pri-p1">P1</span></td><td>关注流</td><td>仅展示已关注用户的日记</td><td>社区页</td></tr>
+<tr><td>F-COMM-03</td><td><span class="pri pri-p1">P1</span></td><td>分类筛选</td><td>5 个筛选标签：全部 / 拆家日记 / 卖萌日常 / 出门遛弯 / 美食时刻；单选高亮</td><td>社区页</td></tr>
+<tr><td>F-COMM-04</td><td><span class="pri pri-p0">P0</span></td><td>日记详情</td><td>展示作者信息+文风标签+标题+正文+配图+评论区；自己日记有"重新生成"和"编辑"按钮；他人日记有"举报"入口</td><td>日记详情页</td></tr>
+<tr><td>F-COMM-05</td><td><span class="pri pri-p0">P0</span></td><td>点赞</td><td>Feed 卡片和详情页均可点赞/取消点赞；点赞数实时更新；点赞动画（心形放大效果）</td><td>社区页/详情页</td></tr>
+<tr><td>F-COMM-06</td><td><span class="pri pri-p0">P0</span></td><td>收藏</td><td>日记详情页底部收藏按钮，可收藏/取消；收藏后存入"收藏的日记"列表</td><td>日记详情页</td></tr>
+<tr><td>F-COMM-07</td><td><span class="pri pri-p0">P0</span></td><td>评论</td><td>日记详情页底部评论输入框；评论列表展示（用户/头像/内容/时间/回复/点赞数）</td><td>日记详情页</td></tr>
+<tr><td>F-COMM-08</td><td><span class="pri pri-p1">P1</span></td><td>分享</td><td>分享弹窗支持 6 种渠道：微信/朋友圈/QQ/微博/复制链接/保存图片</td><td>详情页+弹窗</td></tr>
+<tr><td>F-COMM-09</td><td><span class="pri pri-p1">P1</span></td><td>用户主页</td><td>展示用户头像/昵称/简介/关注按钮/关注·粉丝·获赞统计/Ta的日记列表</td><td>用户主页</td></tr>
+<tr><td>F-COMM-10</td><td><span class="pri pri-p2">P2</span></td><td>举报</td><td>他人日记详情页"更多"→举报弹窗：5 种举报原因（内容不相关/不良信息/涉嫌抄袭/广告推销/其他）</td><td>详情页+弹窗</td></tr>
+</table>
+
+<h3>4.5 消息模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-MSG-01</td><td><span class="pri pri-p0">P0</span></td><td>消息总览</td><td>3 个快捷入口（赞和收藏/新增关注/评论和@）带未读 Badge；下方私信对话列表</td><td>消息页</td></tr>
+<tr><td>F-MSG-02</td><td><span class="pri pri-p0">P0</span></td><td>赞和收藏列表</td><td>展示谁赞了/收藏了哪篇日记，点击可跳转对应日记详情</td><td>赞和收藏页</td></tr>
+<tr><td>F-MSG-03</td><td><span class="pri pri-p0">P0</span></td><td>新增关注列表</td><td>展示新粉丝头像/昵称/简介+关注/已关注切换按钮</td><td>新增关注页</td></tr>
+<tr><td>F-MSG-04</td><td><span class="pri pri-p0">P0</span></td><td>评论和@列表</td><td>展示评论内容和@提及，点击跳转对应日记详情</td><td>评论和@页</td></tr>
+<tr><td>F-MSG-05</td><td><span class="pri pri-p1">P1</span></td><td>私信聊天</td><td>聊天气泡（己方右/对方左）+输入框+发送按钮；支持模拟自动回复；顶部更多按钮含聊天设置</td><td>聊天页</td></tr>
+<tr><td>F-MSG-06</td><td><span class="pri pri-p2">P2</span></td><td>聊天设置</td><td>查看资料/消息免打扰/举报/清空聊天记录</td><td>聊天页+弹窗</td></tr>
+</table>
+
+<h3>4.6 个人中心模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-PROF-01</td><td><span class="pri pri-p0">P0</span></td><td>个人主页</td><td>头像/昵称/简介/编辑资料按钮；关注/粉丝/获赞统计；我的宠物预览卡片；菜单入口（我的日记/宠物档案管理/草稿箱/收藏/设置）</td><td>我的页</td></tr>
+<tr><td>F-PROF-02</td><td><span class="pri pri-p0">P0</span></td><td>宠物档案管理</td><td>宠物列表（头像/名字/品种/年龄/性格）；添加入口；支持滑动编辑/删除</td><td>宠物管理页</td></tr>
+<tr><td>F-PROF-03</td><td><span class="pri pri-p0">P0</span></td><td>宠物详情</td><td>大头像+基本信息（品种/年龄/性格/性别）+统计（日记数/获赞/粉丝）+专属日记列表+"为Ta写日记"入口</td><td>宠物详情页</td></tr>
+<tr><td>F-PROF-04</td><td><span class="pri pri-p0">P0</span></td><td>宠物档案编辑</td><td>头像选择+5 项信息（名字/品种/年龄/性别/性格标签）；编辑模式含删除按钮（二次确认）</td><td>宠物编辑页</td></tr>
+<tr><td>F-PROF-05</td><td><span class="pri pri-p1">P1</span></td><td>草稿箱</td><td>展示未完成草稿列表（标题/时间/文风标签），点击继续编辑</td><td>草稿箱页</td></tr>
+<tr><td>F-PROF-06</td><td><span class="pri pri-p0">P0</span></td><td>收藏列表</td><td>展示已收藏日记列表，点击进入详情</td><td>收藏页</td></tr>
+<tr><td>F-PROF-07</td><td><span class="pri pri-p1">P1</span></td><td>编辑个人资料</td><td>修改头像/昵称/简介/性别/城市</td><td>编辑资料页</td></tr>
+</table>
+
+<h3>4.7 设置模块</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th><th style="width:90px">对应页面</th></tr>
+<tr><td>F-SET-01</td><td><span class="pri pri-p0">P0</span></td><td>设置主页</td><td>7 项菜单：账号安全/通知设置/免打扰/深色模式/清除缓存/关于/退出登录</td><td>设置页</td></tr>
+<tr><td>F-SET-02</td><td><span class="pri pri-p0">P0</span></td><td>账号安全</td><td>4 项：绑定手机（可更换）/修改密码/绑定邮箱/注销账号</td><td>账号安全页</td></tr>
+<tr><td>F-SET-03</td><td><span class="pri pri-p0">P0</span></td><td>修改密码</td><td>输入当前密码+新密码（强度检测）+确认密码（一致性校验）</td><td>修改密码页</td></tr>
+<tr><td>F-SET-04</td><td><span class="pri pri-p1">P1</span></td><td>更换绑定手机</td><td>展示当前手机号（脱敏）+输入新手机号+获取验证码</td><td>绑定手机页</td></tr>
+<tr><td>F-SET-05</td><td><span class="pri pri-p0">P0</span></td><td>注销账号</td><td>风险提示页+数据清除说明+勾选确认+二次确认按钮</td><td>注销账号页</td></tr>
+<tr><td>F-SET-06</td><td><span class="pri pri-p1">P1</span></td><td>清除缓存</td><td>展示缓存大小+二次确认弹窗+清除成功 Toast</td><td>设置页+弹窗</td></tr>
+<tr><td>F-SET-07</td><td><span class="pri pri-p1">P1</span></td><td>关于页</td><td>应用 Logo+名称+版本号+简介+用户协议/隐私政策/检查更新入口</td><td>关于页</td></tr>
+<tr><td>F-SET-08</td><td><span class="pri pri-p1">P1</span></td><td>退出登录</td><td>二次确认弹窗→确认后返回登录页</td><td>设置页+弹窗</td></tr>
+<tr><td>F-SET-09</td><td><span class="pri pri-p2">P2</span></td><td>版本更新</td><td>检查更新弹窗：展示新版本号+更新内容+立即更新/稍后再说</td><td>关于页+弹窗</td></tr>
+</table>
+
+<h3>4.8 通用组件与交互</h3>
+<table>
+<tr><th style="width:60px">编号</th><th style="width:70px">优先级</th><th>功能项</th><th>需求描述</th></tr>
+<tr><td>F-UI-01</td><td><span class="pri pri-p0">P0</span></td><td>底部 Tab 栏</td><td>5 Tab：首页/社区/创作（中间凸起圆形按钮）/消息（带未读红点）/我的；选中态高亮（珊瑚橙）</td></tr>
+<tr><td>F-UI-02</td><td><span class="pri pri-p0">P0</span></td><td>Toast 提示</td><td>4 种类型：success（绿）/error（红）/warn（橙）/info（深棕）；2 秒后淡出</td></tr>
+<tr><td>F-UI-03</td><td><span class="pri pri-p0">P0</span></td><td>页面过渡动画</td><td>push（右滑入）/pop（左滑出）/fade（渐入）三种动画</td></tr>
+<tr><td>F-UI-04</td><td><span class="pri pri-p1">P1</span></td><td>状态组件</td><td>加载中（Skeleton 骨架屏+旋转动画）/空数据/错误/无网络</td></tr>
+<tr><td>F-UI-05</td><td><span class="pri pri-p1">P1</span></td><td>弹窗系统</td><td>底部 Sheet（滑入动画）/居中 Modal（缩放动画）/遮罩层点击关闭</td></tr>
+<tr><td>F-UI-06</td><td><span class="pri pri-p1">P1</span></td><td>导航栈管理</td><td>支持前进/返回多级；Tab 切换清空导航栈</td></tr>
+</table>
+</section>
+
+<!-- ===== 5. 非功能需求 ===== -->
+<section id="s5">
+<h2><span class="num">5</span>非功能需求</h2>
+
+<h3>5.1 性能需求</h3>
+<table>
+<tr><th style="width:120px">指标</th><th>要求</th><th style="width:70px">优先级</th></tr>
+<tr><td>AI 生成响应</td><td>首次生成 ≤5 秒；重新生成 ≤3 秒</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>页面加载</td><td>首屏渲染 ≤1.5 秒；页面切换 ≤300ms</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>图片加载</td><td>缩略图 ≤500ms；大图懒加载+渐进式加载</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>列表滚动</td><td>Feed 流 60fps 流畅滚动；预加载下一屏数据</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>并发承载</td><td>支持 10 万 DAU；AI 生成接口 QPS ≥2000</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>缓存策略</td><td>社区 Feed 本地缓存 5 分钟；图片 CDN 缓存 7 天</td><td><span class="pri pri-p2">P2</span></td></tr>
+</table>
+
+<h3>5.2 安全需求</h3>
+<table>
+<tr><th style="width:120px">指标</th><th>要求</th><th style="width:70px">优先级</th></tr>
+<tr><td>密码安全</td><td>传输层 HTTPS 加密；存储 bcrypt 哈希；最短 8 位含大小写+数字</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>短信验证码</td><td>6 位数字；有效期 5 分钟；同一手机号 60 秒内仅发 1 次；每日上限 10 次</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>Token 管理</td><td>JWT 有效期 7 天；支持续签；退出登录即失效</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>内容安全</td><td>用户生成内容（日记/评论）经敏感词过滤+AI 审核后发布</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>图片安全</td><td>上传图片经 NSFW 检测；存储私有 OSS+防盗链</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>接口防刷</td><td>关键接口（生成/发布/验证码）限流：单用户 10 次/分钟</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>隐私保护</td><td>手机号脱敏展示（138****8888）；遵守《个人信息保护法》</td><td><span class="pri pri-p0">P0</span></td></tr>
+</table>
+
+<h3>5.3 兼容性需求</h3>
+<table>
+<tr><th style="width:120px">指标</th><th>要求</th><th style="width:70px">优先级</th></tr>
+<tr><td>iOS</td><td>iOS 14.0+；适配 iPhone SE ~ iPhone 15 Pro Max</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>Android</td><td>Android 8.0+；适配主流品牌（华为/小米/OPPO/vivo）</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>屏幕适配</td><td>基准 393×852pt；支持 Dynamic Type / 字体大小调节</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>网络兼容</td><td>4G/5G/WiFi 均可正常使用；弱网降级策略（超时提示+重试）</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>深色模式</td><td>支持系统深色模式跟随（设置中可手动切换）</td><td><span class="pri pri-p2">P2</span></td></tr>
+</table>
+
+<h3>5.4 可用性与体验需求</h3>
+<table>
+<tr><th style="width:120px">指标</th><th>要求</th><th style="width:70px">优先级</th></tr>
+<tr><td>操作反馈</td><td>所有可点击元素 100ms 内响应；关键操作有 Toast/Haptic 反馈</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>错误处理</td><td>网络错误/空数据/加载失败均有友好状态页和重试按钮</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>输入校验</td><td>前端实时校验+后端二次校验；错误信息清晰可定位</td><td><span class="pri pri-p0">P0</span></td></tr>
+<tr><td>无障碍</td><td>支持 VoiceOver/TalkBack；色彩对比度 ≥4.5:1</td><td><span class="pri pri-p2">P2</span></td></tr>
+<tr><td>离线能力</td><td>已加载的日记/社区内容可离线浏览；草稿本地存储</td><td><span class="pri pri-p2">P2</span></td></tr>
+</table>
+
+<h3>5.5 可维护性与扩展性</h3>
+<table>
+<tr><th style="width:120px">指标</th><th>要求</th><th style="width:70px">优先级</th></tr>
+<tr><td>文风扩展</td><td>文风列表设计为可配置项，后续可增加新文风无需发版</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>分类扩展</td><td>社区分类标签可后台动态配置</td><td><span class="pri pri-p1">P1</span></td></tr>
+<tr><td>分享渠道</td><td>分享平台接入设计为插件化，可按需扩展</td><td><span class="pri pri-p2">P2</span></td></tr>
+<tr><td>多语言</td><td>代码结构预留 i18n 支持，首版仅中文</td><td><span class="pri pri-p2">P2</span></td></tr>
+</table>
+</section>
+
+<!-- ===== 6. 业务流程说明 ===== -->
+<section id="s6">
+<h2><span class="num">6</span>业务流程说明</h2>
+
+<h3>6.1 核心流程：AI 日记创作与发布</h3>
+<div class="flowchart-wrap">
+<svg viewBox="0 0 820 640" style="width:100%;max-width:820px">
+<defs>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 Z" fill="#A0815F"/></marker>
+</defs>
+<!-- Start -->
+<rect x="320" y="10" width="180" height="40" rx="20" fill="#E87A5D"/><text x="410" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">用户点击「创作」</text>
+<!-- Step 1 -->
+<rect x="300" y="80" width="220" height="50" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="410" y="110" text-anchor="middle" fill="#3D2817" font-size="13">选择宠物</text>
+<line x1="410" y1="50" x2="410" y2="78" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Step 2 -->
+<rect x="300" y="160" width="220" height="50" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="410" y="190" text-anchor="middle" fill="#3D2817" font-size="13">输入行为描述（≤500字）</text>
+<line x1="410" y1="130" x2="410" y2="158" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Step 3 -->
+<rect x="300" y="240" width="220" height="50" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="410" y="270" text-anchor="middle" fill="#3D2817" font-size="13">上传照片（可选，≤9张）</text>
+<line x1="410" y1="210" x2="410" y2="238" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Step 4 -->
+<rect x="300" y="320" width="220" height="50" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="410" y="350" text-anchor="middle" fill="#3D2817" font-size="13">选择文风（5种）</text>
+<line x1="410" y1="290" x2="410" y2="318" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Step 5 -->
+<rect x="300" y="400" width="220" height="50" rx="10" fill="#E87A5D"/><text x="410" y="430" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">AI 生成日记（≤5s）</text>
+<line x1="410" y1="370" x2="410" y2="398" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Decision -->
+<polygon points="410,475 530,520 410,565 290,520" fill="#FFF1DC" stroke="#F0DDB5"/><text x="410" y="525" text-anchor="middle" fill="#3D2817" font-size="12">满意？</text>
+<line x1="410" y1="450" x2="410" y2="473" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- No branch -->
+<rect x="570" y="495" width="160" height="50" rx="10" fill="#FAF3E8" stroke="#D3B98C"/><text x="650" y="520" text-anchor="middle" fill="#3D2817" font-size="12">重新生成（换文风）</text>
+<line x1="530" y1="520" x2="568" y2="520" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="545" y="510" fill="#E85D5D" font-size="11">否</text>
+<!-- Loop back -->
+<path d="M650 495 L650 425 L522 425" fill="none" stroke="#A0815F" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<!-- Yes branch -->
+<rect x="80" y="495" width="170" height="50" rx="10" fill="#FAF3E8" stroke="#D3B98C"/><text x="165" y="515" text-anchor="middle" fill="#3D2817" font-size="12">编辑标题/正文/配图</text>
+<line x1="290" y1="520" x2="252" y2="520" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="270" y="510" fill="#5DAF6B" font-size="11">是</text>
+<!-- Publish -->
+<rect x="80" y="580" width="170" height="40" rx="20" fill="#5DAF6B"/><text x="165" y="605" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">发布至社区</text>
+<line x1="165" y1="545" x2="165" y2="578" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Save draft -->
+<rect x="570" y="580" width="160" height="40" rx="20" fill="#C4852A"/><text x="650" y="605" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">保存草稿</text>
+<line x1="650" y1="545" x2="650" y2="578" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>
+</div>
+<div class="flowchart-cap">图 6-1 AI 日记创作与发布流程</div>
+
+<h3>6.2 用户注册与首次使用流程</h3>
+<div class="flowchart-wrap">
+<svg viewBox="0 0 760 420" style="width:100%;max-width:760px">
+<defs><marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 Z" fill="#A0815F"/></marker></defs>
+<rect x="290" y="10" width="180" height="40" rx="20" fill="#E87A5D"/><text x="380" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">打开 App</text>
+<line x1="380" y1="50" x2="380" y2="73" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<polygon points="380,75 460,110 380,145 300,110" fill="#FFF1DC" stroke="#F0DDB5"/><text x="380" y="115" text-anchor="middle" fill="#3D2817" font-size="12">已登录？</text>
+<!-- Yes -->
+<rect x="530" y="90" width="140" height="40" rx="20" fill="#5DAF6B"/><text x="600" y="115" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">进入首页</text>
+<line x1="460" y1="110" x2="528" y2="110" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<text x="490" y="100" fill="#5DAF6B" font-size="11">是</text>
+<!-- No -->
+<rect x="90" y="90" width="120" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="150" y="115" text-anchor="middle" fill="#3D2817" font-size="12">注册账号</text>
+<line x1="300" y1="110" x2="212" y2="110" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<text x="255" y="100" fill="#E85D5D" font-size="11">否</text>
+<line x1="150" y1="130" x2="150" y2="158" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<rect x="80" y="160" width="140" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="150" y="185" text-anchor="middle" fill="#3D2817" font-size="12">手机号+验证码</text>
+<line x1="150" y1="200" x2="150" y2="228" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<rect x="80" y="230" width="140" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="150" y="255" text-anchor="middle" fill="#3D2817" font-size="12">设置密码+昵称</text>
+<line x1="150" y1="270" x2="150" y2="298" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<rect x="70" y="300" width="160" height="40" rx="10" fill="#5DAF6B"/><text x="150" y="325" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">注册成功</text>
+<line x1="230" y1="320" x2="298" y2="320" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<rect x="300" y="300" width="160" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="380" y="325" text-anchor="middle" fill="#3D2817" font-size="12">创建宠物档案</text>
+<line x1="380" y1="300" x2="380" y2="278" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<rect x="300" y="230" width="160" height="40" rx="20" fill="#E87A5D"/><text x="380" y="255" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">进入首页</text>
+<!-- skip -->
+<line x1="230" y1="320" x2="298" y2="250" stroke="#A0815F" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="265" y="295" fill="#A0815F" font-size="10">或跳过</text>
+</svg>
+</div>
+<div class="flowchart-cap">图 6-2 用户注册与首次使用流程</div>
+
+<h3>6.3 社区互动流程</h3>
+<div class="flowchart-wrap">
+<svg viewBox="0 0 780 380" style="width:100%;max-width:780px">
+<defs><marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 Z" fill="#A0815F"/></marker></defs>
+<rect x="300" y="10" width="180" height="40" rx="20" fill="#E87A5D"/><text x="390" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">浏览社区 Feed</text>
+<line x1="390" y1="50" x2="390" y2="78" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<rect x="300" y="80" width="180" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="390" y="105" text-anchor="middle" fill="#3D2817" font-size="12">点击日记卡片</text>
+<line x1="390" y1="120" x2="390" y2="148" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<rect x="300" y="150" width="180" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="390" y="175" text-anchor="middle" fill="#3D2817" font-size="12">查看日记详情</text>
+<!-- Branches -->
+<line x1="390" y1="190" x2="120" y2="230" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<line x1="390" y1="190" x2="390" y2="228" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<line x1="390" y1="190" x2="660" y2="230" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<rect x="60" y="232" width="120" height="36" rx="10" fill="#FFE6E6" stroke="#E85D5D"/><text x="120" y="255" text-anchor="middle" fill="#C62828" font-size="12">❤️ 点赞</text>
+<rect x="330" y="232" width="120" height="36" rx="10" fill="#FFF3E0" stroke="#C4852A"/><text x="390" y="255" text-anchor="middle" fill="#C4852A" font-size="12">⭐ 收藏</text>
+<rect x="600" y="232" width="120" height="36" rx="10" fill="#E3F2FD" stroke="#7B9EA8"/><text x="660" y="255" text-anchor="middle" fill="#1565C0" font-size="12">💬 评论</text>
+<line x1="120" y1="268" x2="120" y2="298" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<line x1="390" y1="268" x2="390" y2="298" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<line x1="660" y1="268" x2="660" y2="298" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow3)"/>
+<rect x="50" y="300" width="140" height="36" rx="18" fill="#5DAF6B"/><text x="120" y="323" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">通知作者</text>
+<rect x="320" y="300" width="140" height="36" rx="18" fill="#5DAF6B"/><text x="390" y="323" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">存入收藏夹</text>
+<rect x="590" y="300" width="140" height="36" rx="18" fill="#5DAF6B"/><text x="660" y="323" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">展示在评论区</text>
+</svg>
+</div>
+<div class="flowchart-cap">图 6-3 社区互动流程</div>
+
+<h3>6.4 消息通知流程</h3>
+<div class="flowchart-wrap">
+<svg viewBox="0 0 700 340" style="width:100%;max-width:700px">
+<defs><marker id="arrow4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 Z" fill="#A0815F"/></marker></defs>
+<rect x="260" y="10" width="180" height="40" rx="20" fill="#E87A5D"/><text x="350" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">收到互动通知</text>
+<line x1="350" y1="50" x2="120" y2="88" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<line x1="350" y1="50" x2="350" y2="88" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<line x1="350" y1="50" x2="580" y2="88" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<rect x="40" y="90" width="160" height="50" rx="10" fill="#FFE6E6" stroke="#E85D5D"/><text x="120" y="115" text-anchor="middle" fill="#3D2817" font-size="12">❤️ 赞和收藏</text><text x="120" y="130" text-anchor="middle" fill="#8B7355" font-size="10">谁赞/收藏了你的日记</text>
+<rect x="270" y="90" width="160" height="50" rx="10" fill="#E3F2FD" stroke="#7B9EA8"/><text x="350" y="115" text-anchor="middle" fill="#3D2817" font-size="12">👤 新增关注</text><text x="350" y="130" text-anchor="middle" fill="#8B7355" font-size="10">谁关注了你</text>
+<rect x="500" y="90" width="160" height="50" rx="10" fill="#FFF3E0" stroke="#C4852A"/><text x="580" y="115" text-anchor="middle" fill="#3D2817" font-size="12">💬 评论和@</text><text x="580" y="130" text-anchor="middle" fill="#8B7355" font-size="10">谁评论/@了你</text>
+<line x1="120" y1="140" x2="120" y2="168" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<line x1="350" y1="140" x2="350" y2="168" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<line x1="580" y1="140" x2="580" y2="168" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<rect x="40" y="170" width="160" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="120" y="195" text-anchor="middle" fill="#3D2817" font-size="11">查看列表→跳转日记</text>
+<rect x="270" y="170" width="160" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="350" y="195" text-anchor="middle" fill="#3D2817" font-size="11">查看列表→回关</text>
+<rect x="500" y="170" width="160" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="580" y="195" text-anchor="middle" fill="#3D2817" font-size="11">查看列表→跳转日记</text>
+<!-- Private message -->
+<line x1="350" y1="210" x2="350" y2="248" stroke="#A0815F" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow4)"/>
+<rect x="260" y="250" width="180" height="40" rx="10" fill="#FFF1DC" stroke="#F0DDB5"/><text x="350" y="275" text-anchor="middle" fill="#3D2817" font-size="12">私信对话列表</text>
+<line x1="350" y1="290" x2="350" y2="308" stroke="#A0815F" stroke-width="1.5" marker-end="url(#arrow4)"/>
+<rect x="270" y="310" width="160" height="30" rx="15" fill="#5DAF6B"/><text x="350" y="330" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">进入聊天页</text>
+</svg>
+</div>
+<div class="flowchart-cap">图 6-4 消息通知流程</div>
+</section>
+
+<!-- ===== 7. 数据需求 ===== -->
+<section id="s7">
+<h2><span class="num">7</span>数据需求</h2>
+
+<h3>7.1 核心数据实体</h3>
+
+<div class="entity">
+<div class="entity-hdr">User（用户）</div>
+<div class="entity-body">
+<table>
+<tr><th style="width:140px">字段</th><th style="width:100px">类型</th><th style="width:80px">必填</th><th>说明</th></tr>
+<tr><td>user_id</td><td>String</td><td>是</td><td>用户唯一 ID，UUID</td></tr>
+<tr><td>phone</td><td>String</td><td>是</td><td>手机号（加密存储，脱敏展示）</td></tr>
+<tr><td>email</td><td>String</td><td>否</td><td>邮箱（可选绑定）</td></tr>
+<tr><td>password_hash</td><td>String</td><td>是</td><td>密码哈希（bcrypt）</td></tr>
+<tr><td>nickname</td><td>String</td><td>是</td><td>昵称（≤20字）</td></tr>
+<tr><td>avatar</td><td>String</td><td>否</td><td>头像 URL</td></tr>
+<tr><td>bio</td><td>String</td><td>否</td><td>个人简介（≤100字）</td></tr>
+<tr><td>gender</td><td>Enum</td><td>否</td><td>性别：male/female/other</td></tr>
+<tr><td>city</td><td>String</td><td>否</td><td>城市</td></tr>
+<tr><td>following_count</td><td>Integer</td><td>是</td><td>关注数</td></tr>
+<tr><td>followers_count</td><td>Integer</td><td>是</td><td>粉丝数</td></tr>
+<tr><td>likes_count</td><td>Integer</td><td>是</td><td>获赞总数</td></tr>
+<tr><td>created_at</td><td>DateTime</td><td>是</td><td>注册时间</td></tr>
+<tr><td>status</td><td>Enum</td><td>是</td><td>状态：active/deleted</td></tr>
+</table>
+</div>
+</div>
+
+<div class="entity">
+<div class="entity-hdr">Pet（宠物档案）</div>
+<div class="entity-body">
+<table>
+<tr><th style="width:140px">字段</th><th style="width:100px">类型</th><th style="width:80px">必填</th><th>说明</th></tr>
+<tr><td>pet_id</td><td>String</td><td>是</td><td>宠物唯一 ID</td></tr>
+<tr><td>user_id</td><td>String</td><td>是</td><td>所属用户 ID（外键）</td></tr>
+<tr><td>name</td><td>String</td><td>是</td><td>宠物名字（≤10字）</td></tr>
+<tr><td>breed</td><td>String</td><td>是</td><td>品种（如：布偶猫、金毛）</td></tr>
+<tr><td>age</td><td>String</td><td>是</td><td>年龄（如：2岁）</td></tr>
+<tr><td>gender</td><td>Enum</td><td>是</td><td>性别：male/female</td></tr>
+<tr><td>personality</td><td>String</td><td>否</td><td>性格标签（如：高冷优雅）</td></tr>
+<tr><td>avatar</td><td>String</td><td>是</td><td>宠物头像 URL</td></tr>
+<tr><td>diary_count</td><td>Integer</td><td>是</td><td>日记总数</td></tr>
+<tr><td>created_at</td><td>DateTime</td><td>是</td><td>创建时间</td></tr>
+</table>
+</div>
+</div>
+
+<div class="entity">
+<div class="entity-hdr">Diary（日记）</div>
+<div class="entity-body">
+<table>
+<tr><th style="width:140px">字段</th><th style="width:100px">类型</th><th style="width:80px">必填</th><th>说明</th></tr>
+<tr><td>diary_id</td><td>String</td><td>是</td><td>日记唯一 ID</td></tr>
+<tr><td>user_id</td><td>String</td><td>是</td><td>作者用户 ID</td></tr>
+<tr><td>pet_id</td><td>String</td><td>是</td><td>关联宠物 ID</td></tr>
+<tr><td>title</td><td>String</td><td>是</td><td>日记标题（≤30字）</td></tr>
+<tr><td>content</td><td>Text</td><td>是</td><td>日记正文（≤2000字）</td></tr>
+<tr><td>style</td><td>Integer</td><td>是</td><td>文风索引：0傲娇/1热血/2文艺/3搞笑/4哲理</td></tr>
+<tr><td>photos</td><td>JSON</td><td>否</td><td>配图 URL 数组（≤9张）</td></tr>
+<tr><td>source_desc</td><td>Text</td><td>是</td><td>原始行为描述（用户输入）</td></tr>
+<tr><td>version</td><td>Integer</td><td>是</td><td>生成版本号（第几版）</td></tr>
+<tr><td>status</td><td>Enum</td><td>是</td><td>状态：draft/published/private</td></tr>
+<tr><td>allow_comment</td><td>Boolean</td><td>是</td><td>是否允许评论（默认 true）</td></tr>
+<tr><td>allow_repost</td><td>Boolean</td><td>是</td><td>是否允许转载（默认 true）</td></tr>
+<tr><td>topics</td><td>JSON</td><td>否</td><td>话题标签数组（如：["拆家日记"]）</td></tr>
+<tr><td>likes_count</td><td>Integer</td><td>是</td><td>点赞数</td></tr>
+<tr><td>comments_count</td><td>Integer</td><td>是</td><td>评论数</td></tr>
+<tr><td>created_at</td><td>DateTime</td><td>是</td><td>创建时间</td></tr>
+<tr><td>published_at</td><td>DateTime</td><td>否</td><td>发布时间</td></tr>
+</table>
+</div>
+</div>
+
+<div class="entity">
+<div class="entity-hdr">DiaryVersion（日记版本）</div>
+<div class="entity-body">
+<table>
+<tr><th style="width:140px">字段</th><th style="width:100px">类型</th><th style="width:80px">必填</th><th>说明</th></tr>
+<tr><td>version_id</td><td>String</td><td>是</td><td>版本唯一 ID</td></tr>
+<tr><td>diary_id</td><td>String</td><td>是</td><td>关联日记 ID</td></tr>
+<tr><td>version_num</td><td>Integer</td><td>是</td><td>版本序号（1, 2, 3...）</td></tr>
+<tr><td>style</td><td>Integer</td><td>是</td><td>该版本文风</td></tr>
+<tr><td>title</td><td>String</td><td>是</td><td>该版本标题</td></tr>
+<tr><td>content</td><td>Text</td><td>是</td><td>该版本正文</td></tr>
+<tr><td>is_current</td><td>Boolean</td><td>是</td><td>是否为当前使用版本</td></tr>
+<tr><td>created_at</td><td>DateTime</td><td>是</td><td>生成时间</td></tr>
+</table>
+</div>
+</div>
+
+<div class="entity">
+<div class="entity-hdr">Comment（评论）/ Like（点赞）/ Favorite（收藏）/ Follow（关注）/ Chat（私信）</div>
+<div class="entity-body">
+<table>
+<tr><th style="width:140px">实体</th><th>核心字段</th></tr>
+<tr><td>Comment</td><td>comment_id, diary_id, user_id, content, parent_id（回复）, likes_count, created_at</td></tr>
+<tr><td>Like</td><td>like_id, diary_id, user_id, created_at（联合唯一索引 diary_id+user_id）</td></tr>
+<tr><td>Favorite</td><td>fav_id, diary_id, user_id, created_at（联合唯一索引）</td></tr>
+<tr><td>Follow</td><td>follow_id, follower_id, following_id, created_at（联合唯一索引）</td></tr>
+<tr><td>ChatMessage</td><td>msg_id, sender_id, receiver_id, content, is_read, created_at</td></tr>
+<tr><td>Notification</td><td>notif_id, user_id, type(like/fav/follow/comment/mention), source_user_id, diary_id, is_read, created_at</td></tr>
+<tr><td>Draft</td><td>draft_id, user_id, pet_id, desc, photos, style, updated_at</td></tr>
+</table>
+</div>
+</div>
+
+<h3>7.2 AI 生成接口数据规范</h3>
+<table>
+<tr><th style="width:120px">项目</th><th>说明</th></tr>
+<tr><td>请求参数</td><td>pet_name, pet_breed, pet_personality, behavior_desc(≤500字), photos(可选), style(0-4)</td></tr>
+<tr><td>返回字段</td><td>title(≤30字), content(200-500字), style_used</td></tr>
+<tr><td>生成要求</td><td>第一人称视角；融入宠物性格特征；匹配选定文风；可读性强、有趣味性</td></tr>
+<tr><td>超时处理</td><td>15 秒超时，返回错误提示并提供重试</td></tr>
+</table>
+</section>
+
+<!-- ===== 8. 验收标准 ===== -->
+<section id="s8">
+<h2><span class="num">8</span>验收标准</h2>
+
+<h3>8.1 认证模块验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-AUTH-01：</strong>新用户可通过手机号+验证码+密码+昵称完成注册，注册后跳转引导页，未勾选协议时点击注册提示"请先同意用户协议"</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-AUTH-02：</strong>已注册用户可通过手机号/邮箱+密码登录，密码支持显示/隐藏切换，登录成功 1 秒内跳转首页</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-AUTH-03：</strong>忘记密码 3 步流程完整：验证身份→输入 6 位验证码→重设密码（两次一致性校验），完成后返回登录页</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-AUTH-04：</strong>验证码 60 秒倒计时期间不可重复发送，密码强度实时显示（弱/中/强三档进度条）</div></div>
+
+<h3>8.2 核心创作模块验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-01：</strong>创作页可选择宠物、输入行为描述（≤500 字+实时计数）、上传照片（≤9 张+可删除）、选择文风（5 种单选）</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-02：</strong>描述为空时点击生成提示"请先描述宠物行为"；正常提交后 ≤5 秒内展示生成结果（标题+正文+配图+文风标签+版本号）</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-03：</strong>重新生成时展示 Skeleton 骨架屏加载动画 + 文字提示，~2 秒后返回新版本，文风自动切换，版本号递增</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-04：</strong>历史版本弹窗展示全部版本卡片（版本号+文风+标题+摘要），当前版本高亮+标注"当前"，非当前版本提供"使用此版本"按钮，切换后预览页内容更新</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-05：</strong>编辑日记页可修改标题（非空校验）、正文（非空校验+字数统计）、配图增删（≤9 张），保存后返回预览页显示修改后内容</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-06：</strong>发布设置页可选择发布目标、添加话题、设置允许评论/允许转载开关，点击发布后展示进度弹窗，完成后 Toast 提示并跳转社区页</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-CREATE-07：</strong>创作页和结果预览页均可保存草稿，Toast 提示"已保存到草稿箱"后返回，草稿箱列表可继续编辑</div></div>
+
+<h3>8.3 社区模块验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-01：</strong>社区页"推荐"Tab 展示全部日记 Feed 流，"关注"Tab 仅展示已关注用户日记，切换无延迟</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-02：</strong>5 个分类筛选标签可单选切换，选中高亮，Feed 流按筛选条件刷新</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-03：</strong>Feed 卡片展示完整信息（作者/时间/文风标签/正文/配图/点赞/评论/分享），点赞可切换状态+数量实时更新+心形动画</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-04：</strong>日记详情页展示完整内容+评论区，自己日记有"重新生成"和"编辑"按钮，他人日记有举报入口</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-05：</strong>收藏按钮可切换收藏/取消状态+Toast 反馈，收藏的日记在"收藏列表"页可见</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-COMM-06：</strong>分享弹窗展示 6 种渠道，点击后 Toast 提示"已分享至 XX"并关闭弹窗</div></div>
+
+<h3>8.4 消息模块验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-MSG-01：</strong>消息页 3 个快捷入口带未读 Badge（数字），点击进入对应列表页</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-MSG-02：</strong>私信列表展示对话（头像/昵称/最后消息/时间/未读 Badge），未读对话背景高亮</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-MSG-03：</strong>聊天页消息气泡己方右、对方左，输入框+发送按钮可用，发送后 1.5 秒模拟自动回复，自动滚动到底部</div></div>
+
+<h3>8.5 个人中心验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-PROF-01：</strong>我的页展示头像/昵称/简介/统计数据/宠物预览/菜单入口，信息完整无缺失</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-PROF-02：</strong>宠物档案可增删改查：新建填写 5 项信息+头像；编辑含删除按钮（二次确认弹窗）；详情页展示档案+统计+专属日记</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-PROF-03：</strong>草稿箱展示未完成草稿（标题/时间/文风），点击进入创作页继续编辑</div></div>
+
+<h3>8.6 设置模块验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-SET-01：</strong>设置页 7 项菜单完整展示，免打扰和深色模式为开关控件，点击清除缓存弹出确认弹窗</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-SET-02：</strong>退出登录弹出二次确认弹窗，确认后返回登录页并清空登录状态</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-SET-03：</strong>注销账号页展示数据清除说明+勾选确认+二次确认按钮，流程完整不可误触</div></div>
+
+<h3>8.7 通用交互验收标准</h3>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-UI-01：</strong>底部 Tab 栏 5 个入口功能正确，中间创作按钮为凸起圆形，消息 Tab 带未读红点，选中态高亮颜色为珊瑚橙</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-UI-02：</strong>页面过渡动画流畅：前进右滑入、返回左滑出、Tab 切换渐入，无卡顿</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-UI-03：</strong>Toast 提示 4 种类型颜色正确，2 秒后自动淡出，不遮挡操作区域</div></div>
+<div class="ac-item"><div class="ac-checkbox">✓</div><div class="ac-text"><strong>AC-UI-04：</strong>所有弹窗（Sheet/Modal）遮罩层可点击关闭，内容区域点击不穿透</div></div>
+</section>
+
+<!-- ===== 9. 假设前提与约束 ===== -->
+<section id="s9">
+<h2><span class="num">9</span>假设前提与约束</h2>
+
+<div class="info-box">
+<strong>假设前提：</strong>
+<ul style="margin-top:8px">
+<li>AI 文本生成能力已具备：能够根据宠物行为描述+照片+文风标签，生成 200-500 字的第一人称视角趣味日记</li>
+<li>短信验证码服务已接入（如阿里云/腾讯云短信）</li>
+<li>图片存储 CDN 已就绪（如腾讯云 COS / 阿里云 OSS）</li>
+<li>第三方登录（微信/Apple/QQ）SDK 已申请并配置</li>
+<li>内容安全审核服务已接入（敏感词过滤+图片 NSFW 检测）</li>
+<li>用户量级 V1.0 预估 DAU ≤10 万，AI 生成 QPS ≤2000</li>
+</ul>
+</div>
+
+<div class="info-box">
+<strong>约束条件：</strong>
+<ul style="margin-top:8px">
+<li>首版仅支持中文，暂不支持多语言</li>
+<li>AI 生成文风固定 5 种（傲娇/热血/文艺/搞笑/哲理），不支持自定义文风</li>
+<li>日记正文上限 2000 字，配图上限 9 张</li>
+<li>行为描述输入上限 500 字</li>
+<li>私信暂不支持图片/语音消息，仅支持文本</li>
+<li>V1.0 暂不支持日记合辑、宠物成长时间线等高级功能</li>
+<li>社区内容排序首版仅支持时间倒序，推荐算法在 V2.0 迭代</li>
+</ul>
+</div>
+
+<h3>版本规划建议</h3>
+<table>
+<tr><th style="width:100px">版本</th><th>核心范围</th><th style="width:100px">预计周期</th></tr>
+<tr><td>V1.0 MVP</td><td>注册登录 + AI 日记生成（5文风）+ 日记编辑/发布 + 社区浏览/互动 + 宠物档案管理 + 消息通知 + 私信</td><td>3 个月</td></tr>
+<tr><td>V1.5</td><td>第三方登录接入 + 搜索优化 + 推荐算法 + 深色模式 + 离线浏览</td><td>1.5 个月</td></tr>
+<tr><td>V2.0</td><td>日记合辑 + 宠物成长时间线 + 自定义文风 + 图片/语音私信 + 数据分析报告</td><td>2 个月</td></tr>
+</table>
+</section>
+
+<div class="footer">
+<p>毛崽日记 PRD v2.2.0 · 2026-07-28 · 基于交互式原型推导撰写</p>
+<p>本文档基于原型文件「毛崽日记_交互式原型.html」分析推导，标注为假设的内容需产品团队确认后调整</p>
+</div>
+
+</div>
+</body>
+</html>
