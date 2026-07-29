@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>毛崽日记 App - 四大页面高保真原型</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #FFF5E8 0%, #FAE8D0 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+.page-grid {
+  display: grid;
+  grid-template-columns: 390px 390px;
+  gap: 40px;
+  justify-content: center;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.page-label {
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #8B7355;
+  letter-spacing: 1px;
+}
+
+/* ===== Phone Frame ===== */
+.frame {
+  width: 390px;
+  background: #FFF8EE;
+  border-radius: 48px;
+  padding: 14px;
+  border: 2px solid #E8D5B5;
+  position: relative;
+}
+.screen {
+  background: #FFF8EE;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  height: 780px;
+}
+
+/* ===== Status Bar ===== */
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.statusbar-right { display: flex; gap: 6px; align-items: center; }
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 22px 12px;
+}
+.navbar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #3D2817;
+}
+.navbar .nav-icons { display: flex; gap: 16px; align-items: center; }
+.nav-icons .dot-wrap { position: relative; }
+.nav-icons .dot {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 8px; height: 8px;
+  background: #E87A5D;
+  border-radius: 50%;
+  border: 1.5px solid #FFF8EE;
+}
+.back-btn { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
+/* ===== Tab Bar (sub-tabs) ===== */
+.sub-tabs {
+  display: flex;
+  padding: 0 22px;
+  gap: 24px;
+  border-bottom: 1px solid #F0E4CE;
+}
+.sub-tab {
+  font-size: 14px;
+  color: #8B7355;
+  padding: 10px 0 12px;
+  position: relative;
+  cursor: pointer;
+}
+.sub-tab.active {
+  color: #3D2817;
+  font-weight: 600;
+}
+.sub-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 3px;
+  background: #E87A5D;
+  border-radius: 2px;
+}
+
+/* ===== Filter Chips ===== */
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  padding: 12px 22px 10px;
+  overflow-x: auto;
+}
+.chip {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip.active {
+  background: #E87A5D;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+.chip.normal {
+  background: #FAF3E8;
+  color: #8B7355;
+  border: 1px solid #F0E4CE;
+}
+
+/* ===== Feed Card (Community) ===== */
+.feed-card {
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 0 22px 14px;
+}
+.feed-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.feed-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #F5DCC2;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1.5px solid #F0DDB5;
+}
+.feed-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.feed-user { flex: 1; min-width: 0; }
+.feed-name { font-size: 13px; font-weight: 500; color: #3D2817; }
+.feed-meta { font-size: 11px; color: #A0815F; margin-top: 2px; }
+.feed-style-tag {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: #FFF1DC;
+  color: #C4852A;
+  font-weight: 500;
+}
+.feed-text {
+  font-size: 13px;
+  color: #5C3D2E;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.feed-text .first-person { color: #E87A5D; font-weight: 500; }
+.feed-images {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.feed-img {
+  flex: 1;
+  height: 90px;
+  border-radius: 10px;
+  background: #F5E8D0;
+  border: 1px solid #F0E4CE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.feed-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.feed-img svg { opacity: 0.4; }
+.feed-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.feed-action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #8B7355;
+}
+.feed-action.liked { color: #E87A5D; }
+
+/* ===== Creation Page ===== */
+.create-section { padding: 16px 22px 0; }
+.create-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #3D2817;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.create-label .num-badge {
+  font-size: 11px;
+  color: #A0815F;
+  font-weight: 400;
+}
+.pet-select-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+.pet-select-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1.5px solid #EDE4D3;
+  border-radius: 14px;
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+.pet-select-card.selected {
+  border: 2px solid #E87A5D;
+  background: #FFF1DC;
+}
+.pet-select-card .ps-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #F5DCC2;
+}
+.pet-select-card .ps-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pet-select-card .ps-name { font-size: 12px; font-weight: 500; color: #3D2817; }
+.pet-select-card .ps-breed { font-size: 10px; color: #A0815F; }
+.textarea-box {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE4D3;
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 100px;
+  position: relative;
+}
+.textarea-placeholder {
+  font-size: 13px;
+  color: #C4A87A;
+  line-height: 1.6;
+}
+.textarea-box .char-count {
+  position: absolute;
+  bottom: 8px; right: 12px;
+  font-size: 11px;
+  color: #C4A87A;
+}
+.upload-grid {
+  display: flex;
+  gap: 8px;
+}
+.upload-item {
+  width: 72px; height: 72px;
+  border-radius: 12px;
+  background: #F5E8D0;
+  border: 1px solid #F0E4CE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.upload-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.upload-item.add-btn {
+  background: #FAF3E8;
+  border: 1.5px dashed #D3B98C;
+  cursor: pointer;
+}
+.upload-item .remove-x {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 16px; height: 16px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.style-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.style-tag {
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.style-tag.selected {
+  background: #E87A5D;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+.style-tag.normal {
+  background: #FAF3E8;
+  color: #8B7355;
+  border: 1px solid #F0E4CE;
+}
+.generate-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #E87A5D 0%, #D4684A 100%);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(232,122,93,0.3);
+}
+
+/* ===== Messages Page ===== */
+.msg-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #F8F0E0;
+}
+.msg-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #F5DCC2;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1.5px solid #F0DDB5;
+  position: relative;
+}
+.msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.msg-avatar .system-icon {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 18px; height: 18px;
+  background: #E87A5D;
+  border-radius: 50%;
+  border: 2px solid #FFF8EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg-content { flex: 1; min-width: 0; }
+.msg-name { font-size: 14px; font-weight: 500; color: #3D2817; }
+.msg-preview {
+  font-size: 12px;
+  color: #8B7355;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.msg-time { font-size: 11px; color: #C4A87A; }
+.msg-badge {
+  background: #E87A5D;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+.msg-divider {
+  padding: 10px 22px 6px;
+  font-size: 12px;
+  color: #A0815F;
+  font-weight: 500;
+}
+
+/* ===== Profile Page ===== */
+.profile-header {
+  padding: 20px 22px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.profile-avatar {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: #F5DCC2;
+  overflow: hidden;
+  border: 2.5px solid #F0DDB5;
+  flex-shrink: 0;
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-info { flex: 1; }
+.profile-name { font-size: 18px; font-weight: 600; color: #3D2817; }
+.profile-bio { font-size: 12px; color: #8B7355; margin-top: 4px; line-height: 1.5; }
+.profile-edit-btn {
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  background: #FFF1DC;
+  color: #C4852A;
+  border: 1px solid #F0DDB5;
+  font-weight: 500;
+  cursor: pointer;
+}
+.stats-row {
+  display: flex;
+  padding: 0 22px 18px;
+  gap: 0;
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 1px; height: 24px;
+  background: #F0E4CE;
+}
+.stat-num { font-size: 18px; font-weight: 600; color: #3D2817; }
+.stat-label { font-size: 11px; color: #A0815F; margin-top: 3px; }
+.profile-section {
+  padding: 0 22px;
+}
+.menu-list {
+  background: #FFFFFF;
+  border: 1px solid #F0E4CE;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #F8F0E0;
+  cursor: pointer;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.menu-text { flex: 1; }
+.menu-title { font-size: 14px; font-weight: 500; color: #3D2817; }
+.menu-sub { font-size: 11px; color: #A0815F; margin-top: 2px; }
+.menu-arrow { color: #D3B98C; }
+.menu-badge {
+  font-size: 11px;
+  background: #FFE6D5;
+  color: #E87A5D;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* ===== Bottom Tab Bar ===== */
+.tabbar-spacer { height: 100px; }
+.tabbar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid #F0E4CE;
+  padding: 8px 10px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+.tab-item .label { font-size: 10px; }
+.tab-item .label.active { color: #E87A5D; font-weight: 600; }
+.tab-item .label.normal { color: #8B7355; }
+.tab-item.center { margin-top: -28px; }
+.create-btn {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: #E87A5D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #FFF8EE;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(232,122,93,0.3);
+}
+</style>
+</head>
+<body>
+
+<!-- ========================================= -->
+<!--          PAGE 1: 社区页面                  -->
+<!-- ========================================= -->
+<div class="page-grid">
+
+<div class="page-wrapper">
+<div class="frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="statusbar-right">
+        <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="14" height="11" viewBox="0 0 14 11"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navbar-title">社区</div>
+      <div class="nav-icons">
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="#3D2817" stroke-width="1.5" fill="none"/><path d="M14 14 L18 18" stroke="#3D2817" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <!-- Sub Tabs: 推荐 / 关注 -->
+    <div class="sub-tabs">
+      <div class="sub-tab active">推荐</div>
+      <div class="sub-tab">关注</div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+      <span class="chip active">全部</span>
+      <span class="chip normal">拆家日记</span>
+      <span class="chip normal">卖萌日常</span>
+      <span class="chip normal">出门遛弯</span>
+      <span class="chip normal">美食时刻</span>
+    </div>
+
+    <!-- Feed Card 1 -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-avatar"><img src="布丁.jpg" alt="布丁"></div>
+        <div class="feed-user">
+          <div class="feed-name">布丁 · 金毛</div>
+          <div class="feed-meta">2小时前</div>
+        </div>
+        <span class="feed-style-tag">热血风</span>
+      </div>
+      <div class="feed-text">
+        <span class="first-person">本汪今天</span>正式向全小区的蝴蝶宣战！一口气追了15只，虽然一只都没抓到，但气势上已经赢了。铲屎官在后面追着跑，笑死，跑不过本汪的~
+      </div>
+      <div class="feed-images">
+        <div class="feed-img"><img src="布丁追蝴蝶1.jpg" alt="布丁追蝴蝶1"></div>
+        <div class="feed-img"><img src="布丁追蝴蝶2.jpg" alt="布丁追蝴蝶2"></div>
+        <div class="feed-img"><img src="布丁追蝴蝶3.jpg" alt="布丁追蝴蝶3"></div>
+      </div>
+      <div class="feed-actions">
+        <div class="feed-action liked">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z" fill="#E87A5D"/></svg>
+          <span>128</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 4 Q3 2 5 2 L11 2 Q13 2 13 4 L13 9 Q13 11 11 11 L6 11 L3 13 Z" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>32</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 11 M4 7 Q4 4 8 4 Q12 4 12 7 M4 7 L4 10 Q4 12 8 12 Q12 12 12 10 L12 7 M5 14 L8 11 L11 14" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>分享</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed Card 2 -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-avatar"><img src="年糕.jpg" alt="年糕"></div>
+        <div class="feed-user">
+          <div class="feed-name">年糕 · 橘猫</div>
+          <div class="feed-meta">4小时前</div>
+        </div>
+        <span class="feed-style-tag">傲娇风</span>
+      </div>
+      <div class="feed-text">
+        <span class="first-person">哼，</span>铲屎官又给我买了新窝。你以为换个软垫子本喵就会原谅你昨天忘记加餐的事吗？……好吧，躺一下试试。也不是不行。就躺五分钟。
+      </div>
+      <div class="feed-images">
+        <div class="feed-img"><img src="年糕打打滚.jpg" alt="年糕打打滚"></div>
+        <div class="feed-img"><img src="年糕生气.jpg" alt="年糕生气"></div>
+      </div>
+      <div class="feed-actions">
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>
+          <span>86</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 4 Q3 2 5 2 L11 2 Q13 2 13 4 L13 9 Q13 11 11 11 L6 11 L3 13 Z" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>18</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 11 M4 7 Q4 4 8 4 Q12 4 12 7 M4 7 L4 10 Q4 12 8 12 Q12 12 12 10 L12 7 M5 14 L8 11 L11 14" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>分享</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed Card 3 (compact) -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-avatar"><img src="咪咪.jpg" alt="咪咪"></div>
+        <div class="feed-user">
+          <div class="feed-name">咪咪 · 布偶猫</div>
+          <div class="feed-meta">6小时前</div>
+        </div>
+        <span class="feed-style-tag">文艺风</span>
+      </div>
+      <div class="feed-text">
+        <span class="first-person">午后的阳光</span>透过纱帘洒在地板上，形成一条金色的路。我沿着光走，每一步都踩在温暖里……
+      </div>
+      <div class="feed-actions">
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13 L3 8 Q1.5 6 3 4.5 Q4.5 3 6 4.5 L8 6.5 L10 4.5 Q11.5 3 13 4.5 Q14.5 6 13 8 Z" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>
+          <span>56</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 4 Q3 2 5 2 L11 2 Q13 2 13 4 L13 9 Q13 11 11 11 L6 11 L3 13 Z" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>9</span>
+        </div>
+        <div class="feed-action">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2 L8 11 M4 7 Q4 4 8 4 Q12 4 12 7 M4 7 L4 10 Q4 12 8 12 Q12 12 12 10 L12 7 M5 14 L8 11 L11 14" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>分享</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar-spacer"></div>
+
+    <!-- Tab Bar -->
+    <div class="tabbar">
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+        <span class="label normal">首页</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#E87A5D"/><circle cx="16" cy="6" r="2" fill="#E87A5D"/><circle cx="6" cy="16" r="2" fill="#E87A5D"/><circle cx="16" cy="16" r="2" fill="#E87A5D"/></svg>
+        <span class="label active">社区</span>
+      </div>
+      <div class="tab-item center">
+        <div class="create-btn">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="label normal">创作</span>
+      </div>
+      <div class="tab-item">
+        <div style="position:relative">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <div style="position:absolute;top:-2px;right:-4px;width:7px;height:7px;background:#E87A5D;border-radius:50%;border:1.2px solid #FFFFFF;"></div>
+        </div>
+        <span class="label normal">消息</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#8B7355" stroke-width="1.5" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">我的</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="page-label">社区页面 · 推荐Feed流</div>
+</div>
+
+<!-- ========================================= -->
+<!--          PAGE 2: 创作页面                  -->
+<!-- ========================================= -->
+<div class="page-wrapper">
+<div class="frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="statusbar-right">
+        <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="14" height="11" viewBox="0 0 14 11"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" stroke="#3D2817" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="navbar-title">为Ta写日记</div>
+      <span style="font-size:13px;color:#A0815F;cursor:pointer;">存草稿</span>
+    </div>
+
+    <!-- Pet Selection -->
+    <div class="create-section">
+      <div class="create-label">
+        选择宠物
+        <span class="num-badge">（已选咪咪）</span>
+      </div>
+      <div class="pet-select-row">
+        <div class="pet-select-card selected">
+          <div class="ps-avatar"><img src="咪咪.jpg" alt="咪咪"></div>
+          <div>
+            <div class="ps-name">咪咪</div>
+            <div class="ps-breed">布偶猫</div>
+          </div>
+        </div>
+        <div class="pet-select-card">
+          <div class="ps-avatar"><img src="年糕.jpg" alt="年糕"></div>
+          <div>
+            <div class="ps-name">年糕</div>
+            <div class="ps-breed">橘猫</div>
+          </div>
+        </div>
+        <div class="pet-select-card" style="border:1.5px dashed #D3B98C;background:#FAF3E8;">
+          <div style="width:32px;height:32px;border-radius:50%;background:#F5E8D0;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8" stroke="#A0815F" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="ps-name" style="color:#A0815F;">添加</div>
+            <div class="ps-breed">新宠物</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behavior Description -->
+    <div class="create-section">
+      <div class="create-label">
+        描述Ta今天的行为
+        <span class="num-badge">（越详细越好）</span>
+      </div>
+      <div class="textarea-box">
+        <div class="textarea-placeholder">比如：今天把拖鞋藏到了沙发底下，然后假装什么都没发生。被发现了还一脸无辜地眨眼睛……</div>
+        <div class="char-count">42/500</div>
+      </div>
+    </div>
+
+    <!-- Photo Upload -->
+    <div class="create-section">
+      <div class="create-label">
+        上传照片
+        <span class="num-badge">（可选，最多9张）</span>
+      </div>
+      <div class="upload-grid">
+        <div class="upload-item">
+          <img src="咪咪叼拖鞋.jpg" alt="咪咪叼拖鞋">
+          <div class="remove-x"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        </div>
+        <div class="upload-item">
+          <img src="咪咪叼拖鞋舔毛.jpg" alt="咪咪叼拖鞋舔毛">
+          <div class="remove-x"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1 L7 7 M7 1 L1 7" stroke="#FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        </div>
+        <div class="upload-item add-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L12 18 M6 12 L18 12" stroke="#A0815F" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Style Selection -->
+    <div class="create-section">
+      <div class="create-label">
+        日记风格
+        <span class="num-badge">（AI将以此风格生成）</span>
+      </div>
+      <div class="style-tags">
+        <span class="style-tag selected">傲娇风</span>
+        <span class="style-tag normal">热血风</span>
+        <span class="style-tag normal">文艺风</span>
+        <span class="style-tag normal">搞笑风</span>
+        <span class="style-tag normal">哲理风</span>
+      </div>
+    </div>
+
+    <!-- Generate Button -->
+    <div class="create-section" style="padding-bottom:8px;">
+      <div class="generate-btn">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2 L11.5 7 L17 8 L13 12 L14 18 L10 15 L6 18 L7 12 L3 8 L8.5 7 Z" fill="#FFFFFF" opacity="0.9"/></svg>
+        AI 生成日记
+      </div>
+    </div>
+
+    <div style="padding:6px 22px 0;display:flex;align-items:center;gap:6px;">
+      <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" stroke="#C4A87A" stroke-width="1" fill="none"/><path d="M6 3 L6 6.5 L8.5 8" stroke="#C4A87A" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+      <span style="font-size:11px;color:#C4A87A;">预计生成时间约 5 秒，生成后可重新换风格</span>
+    </div>
+
+    <div class="tabbar-spacer" style="height:80px;"></div>
+
+    <!-- Tab Bar -->
+    <div class="tabbar">
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+        <span class="label normal">首页</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#8B7355"/><circle cx="16" cy="6" r="2" fill="#8B7355"/><circle cx="6" cy="16" r="2" fill="#8B7355"/><circle cx="16" cy="16" r="2" fill="#8B7355"/></svg>
+        <span class="label normal">社区</span>
+      </div>
+      <div class="tab-item center">
+        <div class="create-btn" style="background:#D4684A;">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="label active">创作</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">消息</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#8B7355" stroke-width="1.5" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">我的</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="page-label">创作页面 · 输入与生成</div>
+</div>
+
+<!-- ========================================= -->
+<!--          PAGE 3: 消息页面                  -->
+<!-- ========================================= -->
+<div class="page-wrapper">
+<div class="frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="statusbar-right">
+        <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="14" height="11" viewBox="0 0 14 11"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navbar-title">消息</div>
+      <div class="nav-icons">
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" stroke="#3D2817" stroke-width="1.5" fill="none"/><path d="M10 6 L10 10 L13 12" stroke="#3D2817" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M4 5 Q4 3 6 3 L14 3 Q16 3 16 5 L16 13 Q16 15 14 15 L8 15 L5 17 L5 15 Q4 15 4 13 Z" stroke="#3D2817" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <!-- Sub Tabs -->
+    <div class="sub-tabs">
+      <div class="sub-tab active">互动通知</div>
+      <div class="sub-tab">私信</div>
+      <div class="sub-tab">系统通知</div>
+    </div>
+
+    <!-- Section: 宠物提醒 -->
+    <div class="msg-divider">宠物提醒</div>
+
+    <!-- Pet Reminder Item -->
+    <div class="msg-item" style="background:#FFF1DC;">
+      <div class="msg-avatar">
+        <img src="咪咪.jpg" alt="咪咪">
+        <div class="system-icon">
+          <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1 L6 4 L9 4.5 L7 6.5 L7.5 9 L5 7.5 L2.5 9 L3 6.5 L1 4.5 L4 4 Z" fill="#FFF"/></svg>
+        </div>
+      </div>
+      <div class="msg-content">
+        <div class="msg-name">咪咪提醒你</div>
+        <div class="msg-preview">喵～今天还没有帮我写日记哦！本喵今天在窗台看了半小时小鸟，快来记录一下吧～</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <span class="msg-time">10分钟前</span>
+        <span style="font-size:11px;color:#E87A5D;font-weight:500;background:#FFE6D5;padding:3px 10px;border-radius:10px;">去写日记</span>
+      </div>
+    </div>
+
+    <!-- Section: 点赞 -->
+    <div class="msg-divider">点赞</div>
+
+    <div class="msg-item">
+      <div class="msg-avatar"><img src="布丁.jpg" alt="布丁"></div>
+      <div class="msg-content">
+        <div class="msg-name">布丁·金毛</div>
+        <div class="msg-preview">赞了你的日记「今日份拆家述职报告」</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <span class="msg-time">1小时前</span>
+        <div class="msg-badge">3</div>
+      </div>
+    </div>
+
+    <div class="msg-item">
+      <div class="msg-avatar"><img src="年糕.jpg" alt="年糕"></div>
+      <div class="msg-content">
+        <div class="msg-name">年糕·橘猫</div>
+        <div class="msg-preview">赞了你的日记「午睡的艺术」</div>
+      </div>
+      <span class="msg-time">3小时前</span>
+    </div>
+
+    <!-- Section: 评论 -->
+    <div class="msg-divider">评论</div>
+
+    <div class="msg-item">
+      <div class="msg-avatar"><img src="布丁.jpg" alt="布丁"></div>
+      <div class="msg-content">
+        <div class="msg-name">布丁·金毛</div>
+        <div class="msg-preview">回复：哈哈哈太真实了！我家铲屎官也是这样追着我跑的</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <span class="msg-time">2小时前</span>
+        <div class="msg-badge">1</div>
+      </div>
+    </div>
+
+    <!-- Section: 系统通知 -->
+    <div class="msg-divider">系统通知</div>
+
+    <div class="msg-item">
+      <div class="msg-avatar" style="background:#FFE6D5;">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3 L14 9 L20 10 L15.5 14.5 L17 21 L12 17.5 L7 21 L8.5 14.5 L4 10 L10 9 Z" fill="#E87A5D"/></svg>
+        </div>
+      </div>
+      <div class="msg-content">
+        <div class="msg-name">毛崽日记官方</div>
+        <div class="msg-preview">你的日记「窗外的鸟是我的梦想」被选入社区精选！</div>
+      </div>
+      <span class="msg-time">昨天</span>
+    </div>
+
+    <div class="tabbar-spacer" style="height:90px;"></div>
+
+    <!-- Tab Bar -->
+    <div class="tabbar">
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+        <span class="label normal">首页</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#8B7355"/><circle cx="16" cy="6" r="2" fill="#8B7355"/><circle cx="6" cy="16" r="2" fill="#8B7355"/><circle cx="16" cy="16" r="2" fill="#8B7355"/></svg>
+        <span class="label normal">社区</span>
+      </div>
+      <div class="tab-item center">
+        <div class="create-btn">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="label normal">创作</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#E87A5D" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        <span class="label active">消息</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#8B7355" stroke-width="1.5" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">我的</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="page-label">消息页面 · 互动与通知</div>
+</div>
+
+<!-- ========================================= -->
+<!--          PAGE 4: 我的页面                  -->
+<!-- ========================================= -->
+<div class="page-wrapper">
+<div class="frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="statusbar-right">
+        <svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 7 Q4 3 8 3 Q12 3 15 7 M3 9 Q5.5 7 8 7 Q10.5 7 13 9 M5 11 L7 11 M9 11 L11 11" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="14" height="11" viewBox="0 0 14 11"><path d="M1 4 Q4 1 7 1 Q10 1 13 4 M3 6 Q5 4 7 4 Q9 4 11 6 M5 8 Q6 7 7 7 Q8 7 9 8 M6 10 L8 10" stroke="#3D2817" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12"><rect x="1" y="2" width="22" height="8" rx="2" stroke="#3D2817" stroke-width="1" fill="none"/><rect x="3" y="4" width="16" height="4" fill="#E87A5D"/><rect x="24" y="4.5" width="1.5" height="3" rx="0.5" fill="#3D2817"/></svg>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navbar-title">我的</div>
+      <div class="nav-icons">
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" stroke="#3D2817" stroke-width="1.5" fill="none"/><path d="M10 2 L10 4 M10 16 L10 18 M2 10 L4 10 M16 10 L18 10 M4.5 4.5 L6 6 M14 14 L15.5 15.5 M4.5 15.5 L6 14 M14 6 L15.5 4.5" stroke="#3D2817" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar"><img src="咪咪.jpg" alt="头像"></div>
+      <div class="profile-info">
+        <div class="profile-name">咪咪的铲屎官</div>
+        <div class="profile-bio">养了两只猫主子，日常被使唤 🐾</div>
+      </div>
+      <div class="profile-edit-btn">编辑资料</div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num">128</div>
+        <div class="stat-label">关注</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2,346</div>
+        <div class="stat-label">粉丝</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8,921</div>
+        <div class="stat-label">获赞</div>
+      </div>
+    </div>
+
+    <!-- My Pets Preview -->
+    <div class="profile-section" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:14px;font-weight:500;color:#3D2817;">我的宠物</span>
+        <span style="font-size:12px;color:#A0815F;">管理 →</span>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;background:#FFFFFF;border:1px solid #F0E4CE;border-radius:14px;padding:10px;display:flex;align-items:center;gap:8px;">
+          <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#F5DCC2;flex-shrink:0;">
+            <img src="咪咪.jpg" style="width:100%;height:100%;object-fit:cover;" alt="咪咪">
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#3D2817;">咪咪</div>
+            <div style="font-size:10px;color:#A0815F;">布偶猫 · 2岁</div>
+          </div>
+        </div>
+        <div style="flex:1;background:#FFFFFF;border:1px solid #F0E4CE;border-radius:14px;padding:10px;display:flex;align-items:center;gap:8px;">
+          <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#F5DCC2;flex-shrink:0;">
+            <img src="年糕.jpg" style="width:100%;height:100%;object-fit:cover;" alt="年糕">
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#3D2817;">年糕</div>
+            <div style="font-size:10px;color:#A0815F;">橘猫 · 3岁</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu List 1 -->
+    <div class="profile-section">
+      <div class="menu-list">
+        <!-- 我的日记 -->
+        <div class="menu-item">
+          <div class="menu-icon" style="background:#FFE6D5;">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M4 3 Q3 3 3 4 L3 15 Q3 16 4 16 L14 16 Q15 16 15 15 L15 4 Q15 3 14 3 Z M6 6 L12 6 M6 9 L12 9 M6 12 L10 12" stroke="#E87A5D" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title">我的日记</div>
+            <div class="menu-sub">共 42 篇 · 已分享 28 篇</div>
+          </div>
+          <svg class="menu-arrow" width="14" height="14" viewBox="0 0 14 14"><path d="M5 3 L9 7 L5 11" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- 宠物档案管理 -->
+        <div class="menu-item">
+          <div class="menu-icon" style="background:#FFF1DC;">
+            <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="6" r="3" stroke="#C4852A" stroke-width="1.3" fill="none"/><path d="M3 15 Q3 10 9 10 Q15 10 15 15" stroke="#C4852A" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title">宠物档案管理</div>
+            <div class="menu-sub">2 只宠物 · 咪咪、年糕</div>
+          </div>
+          <svg class="menu-arrow" width="14" height="14" viewBox="0 0 14 14"><path d="M5 3 L9 7 L5 11" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- 我的草稿箱 -->
+        <div class="menu-item">
+          <div class="menu-icon" style="background:#F5E8D0;">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M5 3 L13 3 L13 15 L5 15 Z M7 6 L11 6 M7 9 L11 9" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M5 3 L3 5 L3 13 L5 15" stroke="#8B7355" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title">我的草稿箱</div>
+            <div class="menu-sub">3 篇未完成</div>
+          </div>
+          <span class="menu-badge">3</span>
+          <svg class="menu-arrow" width="14" height="14" viewBox="0 0 14 14"><path d="M5 3 L9 7 L5 11" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- 收藏的日记 -->
+        <div class="menu-item">
+          <div class="menu-icon" style="background:#FFE0B0;">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M5 3 L13 3 L13 15 L9 12 L5 15 Z" stroke="#C4852A" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title">收藏的日记</div>
+            <div class="menu-sub">15 篇收藏</div>
+          </div>
+          <svg class="menu-arrow" width="14" height="14" viewBox="0 0 14 14"><path d="M5 3 L9 7 L5 11" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu List 2: Settings -->
+    <div class="profile-section">
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="menu-icon" style="background:#F5E8D0;">
+            <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="2.5" stroke="#8B7355" stroke-width="1.3" fill="none"/><path d="M9 2 L9 4 M9 14 L9 16 M2 9 L4 9 M14 9 L16 9 M4 4 L5.5 5.5 M12.5 12.5 L14 14 M4 14 L5.5 12.5 M12.5 5.5 L14 4" stroke="#8B7355" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title">设置</div>
+          </div>
+          <svg class="menu-arrow" width="14" height="14" viewBox="0 0 14 14"><path d="M5 3 L9 7 L5 11" stroke="#D3B98C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar-spacer" style="height:80px;"></div>
+
+    <!-- Tab Bar -->
+    <div class="tabbar">
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 10 L11 4 L18 10 L18 17 L13 17 L13 12 L9 12 L9 17 L4 17 Z" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+        <span class="label normal">首页</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="6" cy="6" r="2" fill="#8B7355"/><circle cx="16" cy="6" r="2" fill="#8B7355"/><circle cx="6" cy="16" r="2" fill="#8B7355"/><circle cx="16" cy="16" r="2" fill="#8B7355"/></svg>
+        <span class="label normal">社区</span>
+      </div>
+      <div class="tab-item center">
+        <div class="create-btn">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4 L11 18 M4 11 L18 11" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="label normal">创作</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M4 6 Q4 4 6 4 L16 4 Q18 4 18 6 L18 14 Q18 16 16 16 L6 16 Q4 16 4 14 Z M9 18 L13 18" stroke="#8B7355" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <span class="label normal">消息</span>
+      </div>
+      <div class="tab-item">
+        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.5" stroke="#E87A5D" stroke-width="1.8" fill="none"/><path d="M4 19 Q4 13 11 13 Q18 13 18 19" stroke="#E87A5D" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        <span class="label active">我的</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="page-label">我的页面 · 个人中心</div>
+</div>
+
+</div><!-- end page-grid -->
+
+</body>
+</html>
