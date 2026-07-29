@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>毛崽日记 - 全量页面高保真原型（5模块完整版）</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #FFF5E8 0%, #FAE8D0 100%);
+  min-height: 100vh;
+  padding: 40px 20px 80px;
+}
+.module-header { max-width: 2000px; margin: 0 auto 30px; padding: 24px 28px; background: linear-gradient(135deg, #FFF8EE, #FAF0E0); border-radius: 20px; border: 1px solid #F0E4CE; }
+.module-header h1 { font-size: 22px; color: #3D2817; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+.module-header h1 .icon-badge { width: 32px; height: 32px; border-radius: 10px; background: #E87A5D; display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 16px; }
+.module-header .summary { font-size: 13px; color: #8B7355; line-height: 1.7; }
+.section-group { max-width: 2000px; margin: 0 auto 40px; }
+.section-title { font-size: 17px; font-weight: 600; color: #3D2817; margin-bottom: 4px; padding-left: 4px; display: flex; align-items: center; gap: 8px; }
+.section-title .level-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; color: #FFF; }
+.level-tag.l2 { background: #E87A5D; }
+.level-tag.l3 { background: #F0A050; }
+.level-tag.l4 { background: #8B7355; }
+.level-tag.popup { background: #5DAF6B; }
+.section-desc { font-size: 12px; color: #A0815F; margin-bottom: 20px; padding-left: 4px; }
+.page-grid { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; }
+.frame { width: 340px; background: #FFF8EE; border-radius: 40px; padding: 10px; border: 2px solid #E8D5B5; position: relative; flex-shrink: 0; }
+.screen { background: #FFF8EE; border-radius: 32px; overflow: hidden; position: relative; height: 660px; }
+.statusbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 22px 4px; font-size: 11px; font-weight: 600; color: #3D2817; }
+.statusbar-right { display: flex; gap: 4px; align-items: center; }
+.navbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 18px 10px; }
+.navbar-title { font-size: 16px; font-weight: 600; color: #3D2817; }
+.navbar .nav-icons { display: flex; gap: 14px; align-items: center; }
+.back-btn { display: flex; align-items: center; gap: 3px; cursor: pointer; }
+.nav-text-btn { font-size: 13px; color: #E87A5D; font-weight: 500; cursor: pointer; }
+.sub-tabs { display: flex; padding: 0 18px; gap: 20px; border-bottom: 1px solid #F0E4CE; }
+.sub-tab { font-size: 13px; color: #8B7355; padding: 8px 0 10px; position: relative; }
+.sub-tab.active { color: #3D2817; font-weight: 600; }
+.sub-tab.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 2.5px; background: #E87A5D; border-radius: 2px; }
+.filter-chips { display: flex; gap: 7px; padding: 10px 18px 8px; overflow-x: auto; }
+.chip { font-size: 11px; padding: 5px 12px; border-radius: 18px; white-space: nowrap; }
+.chip.active { background: #E87A5D; color: #FFF; font-weight: 500; }
+.chip.normal { background: #FAF3E8; color: #8B7355; border: 1px solid #F0E4CE; }
+.card { background: #FFFFFF; border: 1px solid #F0E4CE; border-radius: 14px; padding: 12px; margin: 0 18px 10px; }
+.card-row { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: #F5DCC2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar.sm { width: 28px; height: 28px; }
+.avatar.lg { width: 56px; height: 56px; }
+.avatar.xl { width: 72px; height: 72px; }
+.user-name { font-size: 13px; font-weight: 600; color: #3D2817; }
+.user-sub { font-size: 11px; color: #A0815F; }
+.style-tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.style-tag.coral { background: #FCE8E0; color: #E87A5D; }
+.style-tag.green { background: #E0F0E4; color: #5DAF6B; }
+.style-tag.purple { background: #EDE0F0; color: #9B6BB0; }
+.style-tag.blue { background: #E0EAF5; color: #5D87B0; }
+.style-tag.amber { background: #FAF0D8; color: #C49020; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+.btn-primary { background: #E87A5D; color: #FFF; }
+.btn-primary.disabled { background: #F0D5C8; color: #FFF; }
+.btn-outline { background: transparent; color: #E87A5D; border: 1.5px solid #E87A5D; }
+.btn-ghost { background: #FAF3E8; color: #8B7355; }
+.btn-success { background: #5DAF6B; color: #FFF; }
+.btn-danger { background: #E85D5D; color: #FFF; }
+.btn-full { width: 100%; }
+.tabbar { position: absolute; bottom: 0; left: 0; right: 0; height: 64px; background: #FFFFFF; border-top: 1px solid #F0E4CE; display: flex; justify-content: space-around; align-items: center; padding-bottom: 8px; }
+.tab-item { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #A0815F; }
+.tab-item.active { color: #E87A5D; font-weight: 600; }
+.tab-create { width: 44px; height: 44px; border-radius: 50%; background: #E87A5D; display: flex; align-items: center; justify-content: center; margin-top: -10px; box-shadow: 0 2px 8px rgba(232,122,93,0.35); color: #FFF; font-size: 22px; }
+.input-field { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #F0E4CE; background: #FAF3E8; font-size: 13px; color: #3D2817; }
+.input-field.active { border-color: #E87A5D; background: #FFF; }
+.input-field.error { border-color: #E85D5D; background: #FFF5F5; }
+.input-label { font-size: 12px; font-weight: 600; color: #3D2817; margin-bottom: 6px; }
+.list-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; border-bottom: 1px solid #F5EDDE; cursor: pointer; }
+.list-item-left { display: flex; align-items: center; gap: 12px; }
+.list-item-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.list-item-title { font-size: 14px; color: #3D2817; font-weight: 500; }
+.list-item-sub { font-size: 11px; color: #A0815F; margin-top: 2px; }
+.list-item-arrow { color: #D3B98C; font-size: 14px; }
+.state-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+.state-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.state-icon.loading, .state-icon.empty, .state-icon.network { background: #FAF3E8; }
+.state-icon.error { background: #FFF0F0; }
+.state-icon.success { background: #E8F5EC; }
+.state-title { font-size: 14px; font-weight: 600; color: #3D2817; margin-bottom: 6px; }
+.state-desc { font-size: 12px; color: #8B7355; line-height: 1.6; max-width: 240px; }
+.popup-frame { width: 340px; background: #FFF8EE; border-radius: 40px; padding: 10px; border: 2px solid #E8D5B5; position: relative; flex-shrink: 0; }
+.popup-screen { background: rgba(61,40,23,0.35); border-radius: 32px; overflow: hidden; position: relative; height: 660px; }
+.popup-sheet { position: absolute; bottom: 0; left: 0; right: 0; background: #FFF8EE; border-radius: 24px 24px 0 0; padding: 20px 22px 30px; }
+.popup-sheet.center { bottom: 50%; transform: translateY(50%); border-radius: 20px; margin: 0 30px; }
+.popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.popup-title { font-size: 16px; font-weight: 600; color: #3D2817; }
+.popup-close { color: #A0815F; font-size: 18px; cursor: pointer; }
+.page-unit { display: flex; flex-direction: column; align-items: center; }
+.page-unit .label { margin-top: 12px; font-size: 12px; font-weight: 500; color: #3D2817; text-align: center; }
+.page-unit .sub-label { font-size: 10px; color: #A0815F; margin-top: 3px; text-align: center; max-width: 300px; line-height: 1.4; }
+.scroll-area { height: calc(100% - 110px); overflow-y: auto; padding-bottom: 10px; }
+.scroll-area.no-tabbar { height: calc(100% - 50px); }
+.divider { height: 1px; background: #F0E4CE; margin: 0 18px; }
+.section-label-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px 8px; }
+.section-label-row .sl-title { font-size: 14px; font-weight: 600; color: #3D2817; }
+.section-label-row .sl-link { font-size: 12px; color: #E87A5D; }
+.stat-row { display: flex; justify-content: space-around; padding: 14px 18px; }
+.stat-col { text-align: center; }
+.stat-num { font-size: 18px; font-weight: 700; color: #3D2817; }
+.stat-label { font-size: 11px; color: #A0815F; margin-top: 3px; }
+.chat-bubble { max-width: 70%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+.chat-bubble.left { background: #FFFFFF; border: 1px solid #F0E4CE; border-bottom-left-radius: 4px; color: #3D2817; }
+.chat-bubble.right { background: #E87A5D; color: #FFF; border-bottom-right-radius: 4px; margin-left: auto; }
+.chat-input-bar { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #FFFFFF; border-top: 1px solid #F0E4CE; }
+.chat-input { flex: 1; padding: 8px 14px; border-radius: 20px; border: 1px solid #F0E4CE; background: #FAF3E8; font-size: 13px; }
+.toggle { width: 40px; height: 22px; border-radius: 11px; position: relative; cursor: pointer; }
+.toggle.on { background: #E87A5D; }
+.toggle.off { background: #E0D5C0; }
+.toggle::after { content: ''; position: absolute; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #FFF; transition: 0.2s; }
+.toggle.on::after { right: 2px; }
+.toggle.off::after { left: 2px; }
+.toast { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+.toast.success { background: #E8F5EC; color: #5DAF6B; }
+.toast.error { background: #FFF0F0; color: #E85D5D; }
+.toast.warning { background: #FFF8E8; color: #C49020; }
+.toast.info { background: #E8F0FA; color: #5D87B0; }
+.spinner { width: 24px; height: 24px; border: 3px solid #F0E4CE; border-top-color: #E87A5D; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.skeleton { background: linear-gradient(90deg, #F5EDDE 25%, #FAF3E8 50%, #F5EDDE 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes blink { 50% { opacity: 0; } }
+mark { background: #FCE8E0; color: #E87A5D; padding: 0 2px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="module-header">
+  <h1><span class="icon-badge">📦</span> 毛崽日记 · 全量页面高保真原型（5模块完整版）</h1>
+  <div class="summary">
+    <b>5大模块 · 45+页面 · 15+弹窗 · 全状态覆盖</b><br>
+    首页 · 社区 · 创作 · 消息 · 我的 — 每个页面覆盖默认/加载中/空数据/错误/成功/无网络状态<br>
+    设计系统：奶油色 #FFF8EE 背景 · 珊瑚橙 #E87A5D 强调 · 深棕 #3D2817 文字 · 340px 手机框 · 14px 圆角卡片
+  </div>
+</div>
+<!-- ===== 状态组件库 ===== -->
+<div class="section-group">
+  <div class="section-title">状态组件库 <span class="level-tag popup">通用组件</span></div>
+  <div class="section-desc">所有页面通用的状态展示组件：加载中、空数据、错误、成功、无网络、Toast提示</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">加载中</span><span></span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon loading"><div class="spinner"></div></div>
+        <div class="state-title">正在加载...</div>
+        <div class="state-desc">正在为你获取最新内容，请稍等</div>
+      </div>
+    </div></div><div class="label">加载中状态</div><div class="sub-label">旋转动画 + 文案，适用于所有列表/详情页数据请求</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">空数据</span><span></span></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M14 4 L24 10 L24 20 L14 26 L4 20 L4 10 Z" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">还没有内容哦</div>
+        <div class="state-desc">这里还空空如也，快去创作第一篇日记吧～</div>
+        <div class="btn btn-primary" style="margin-top:16px; padding:8px 24px;">去创作</div>
+      </div>
+    </div></div><div class="label">空数据状态</div><div class="sub-label">插画占位 + 引导文案 + CTA按钮</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">错误</span><span></span></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon error"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" stroke="#E85D5D" stroke-width="1.5" fill="none"/><path d="M14 8 L14 16 M14 19 L14 20" stroke="#E85D5D" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="state-title">出错了</div>
+        <div class="state-desc">页面加载失败，请稍后重试</div>
+        <div class="btn btn-outline" style="margin-top:16px; padding:8px 24px;">重新加载</div>
+      </div>
+    </div></div><div class="label">错误状态</div><div class="sub-label">红色图标 + 错误文案 + 重试按钮</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">成功</span><span></span></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon success"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="#5DAF6B"/><path d="M9 14 L13 18 L19 10" stroke="#FFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="state-title">操作成功</div>
+        <div class="state-desc">日记已成功发布至社区</div>
+      </div>
+    </div></div><div class="label">成功状态</div><div class="sub-label">绿色对勾 + 成功文案</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">无网络</span><span></span></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon network"><svg width="32" height="28" viewBox="0 0 32 28"><path d="M4 10 Q16 0 28 10" stroke="#D3B98C" stroke-width="1.5" fill="none"/><path d="M12 18 Q16 15 20 18" stroke="#D3B98C" stroke-width="1.5" fill="none" opacity="0.5"/><circle cx="16" cy="22" r="2" fill="#D3B98C"/><path d="M12 6 L20 14 M20 6 L12 14" stroke="#E85D5D" stroke-width="1.5"/></svg></div>
+        <div class="state-title">网络连接失败</div>
+        <div class="state-desc">请检查网络设置后重试</div>
+        <div class="btn btn-outline" style="margin-top:16px; padding:8px 24px;">刷新重试</div>
+      </div>
+    </div></div><div class="label">无网络状态</div><div class="sub-label">断网图标 + 提示 + 重试按钮</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="navbar-title">Toast 提示组件</span><span></span></div>
+      <div style="padding:20px 18px; display:flex; flex-direction:column; gap:12px;">
+        <div class="toast success">✓ 日记发布成功！</div>
+        <div class="toast error">✕ 密码错误，请重新输入</div>
+        <div class="toast warning">⚠ 请先完善宠物档案</div>
+        <div class="toast info">ℹ 正在生成日记，请稍候</div>
+      </div>
+    </div></div><div class="label">Toast 提示组件库</div><div class="sub-label">成功/错误/警告/信息 四种类型，全局通用</div></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 1: 首页 ===== -->
+<div class="module-header">
+  <h1><span class="icon-badge">🏠</span> 模块一：首页</h1>
+  <div class="summary"><b>L2</b>：日记详情页 · 搜索页 · 查看全部日记 · <b>L3</b>：用户主页 · 评论列表 · <b>L4</b>：举报 · 分享设置 · <b>弹窗</b>：筛选 · 排序 · 操作确认</div>
+</div>
+
+<!-- 首页 L2: 日记详情页 -->
+<div class="section-group">
+  <div class="section-title">日记详情页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">从首页/社区点击日记卡片进入，展示完整日记、配图、互动栏、评论</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记详情</span><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card-row" style="padding:12px 18px;">
+          <div class="avatar"><img src="咪咪.jpg" alt=""></div>
+          <div style="flex:1;"><div class="user-name">咪咪的铲屎官</div><div class="user-sub">布偶猫·2岁 · 今天 10:30</div></div>
+          <div class="btn btn-outline" style="padding:5px 14px; font-size:12px;">+ 关注</div>
+        </div>
+        <div style="padding:0 18px 8px;"><span class="style-tag coral">傲娇风</span></div>
+        <div style="padding:0 18px 12px;">
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:8px;">今日份拆家述职报告</div>
+          <div style="font-size:13px; color:#5D4A38; line-height:1.8;">各位铲屎官好，我是咪咪。今天我要汇报一下我的工作成果：早上7点准时把拖鞋从门口搬运到沙发底下，完成了今日份的"藏宝任务"。8点半在窗台完成了30分钟的观鸟训练...</div>
+        </div>
+        <div style="display:flex; gap:6px; padding:0 18px 14px;">
+          <div style="flex:1; height:100px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+          <div style="flex:1; height:100px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; justify-content:space-around; padding:14px 18px;">
+          <div style="text-align:center;"><div style="font-size:20px;">❤️</div><div style="font-size:11px; color:#8B7355;">128</div></div>
+          <div style="text-align:center;"><div style="font-size:20px;">💬</div><div style="font-size:11px; color:#8B7355;">32</div></div>
+          <div style="text-align:center;"><div style="font-size:20px;">🔗</div><div style="font-size:11px; color:#8B7355;">分享</div></div>
+          <div style="text-align:center;"><div style="font-size:20px;">🔄</div><div style="font-size:11px; color:#E87A5D;">重新生成</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="section-label-row"><span class="sl-title">评论 32</span><span class="sl-link">查看全部 ›</span></div>
+        <div class="card-row" style="padding:8px 18px;">
+          <div class="avatar sm"><img src="年糕.jpg" alt=""></div>
+          <div style="flex:1;"><div style="font-size:12px; color:#3D2817;"><b>年糕的铲屎官</b>：咪咪太厉害了！我家年糕只会睡觉😴</div><div style="font-size:10px; color:#A0815F; margin-top:3px;">2小时前 · 回复</div></div>
+        </div>
+        <div class="card-row" style="padding:8px 18px;">
+          <div class="avatar sm"><img src="布丁.jpg" alt=""></div>
+          <div style="flex:1;"><div style="font-size:12px; color:#3D2817;"><b>布丁的铲屎官</b>：同款拆家选手报到！</div><div style="font-size:10px; color:#A0815F; margin-top:3px;">1小时前 · 回复</div></div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input" style="font-size:12px; color:#A0815F;">说点什么...</div>
+        <div style="font-size:20px;">😊</div>
+        <div class="btn btn-primary" style="padding:6px 16px; font-size:12px;">发送</div>
+      </div>
+    </div></div><div class="label">日记详情 - 默认状态</div><div class="sub-label">日记全文 + 配图 + 互动栏(赞/评/分享/重新生成) + 评论预览 + 底部输入</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记详情</span><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div style="padding:12px 18px;">
+        <div class="card-row"><div class="skeleton" style="width:36px; height:36px; border-radius:50%;"></div><div style="flex:1;"><div class="skeleton" style="width:100px; height:10px; margin-bottom:6px;"></div><div class="skeleton" style="width:140px; height:8px;"></div></div></div>
+        <div class="skeleton" style="width:60px; height:16px; margin:12px 0;"></div>
+        <div class="skeleton" style="width:100%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:90%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:70%; height:12px; margin-bottom:14px;"></div>
+        <div style="display:flex; gap:6px;"><div class="skeleton" style="flex:1; height:90px; border-radius:10px;"></div><div class="skeleton" style="flex:1; height:90px; border-radius:10px;"></div></div>
+      </div>
+      <div class="state-box" style="padding:20px;"><div class="spinner" style="width:20px; height:20px;"></div><div style="font-size:12px; color:#A0815F; margin-top:8px;">加载日记中...</div></div>
+    </div></div><div class="label">日记详情 - 加载中</div><div class="sub-label">骨架屏 + 旋转加载动画</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记详情</span><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div class="state-box" style="margin-top:100px;">
+        <div class="state-icon error"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" stroke="#E85D5D" stroke-width="1.5" fill="none"/><path d="M14 8 L14 16 M14 19 L14 20" stroke="#E85D5D" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="state-title">日记加载失败</div>
+        <div class="state-desc">该日记可能已被删除或网络异常</div>
+        <div class="btn btn-outline" style="margin-top:14px; padding:8px 24px;">重新加载</div>
+      </div>
+    </div></div><div class="label">日记详情 - 错误状态</div><div class="sub-label">日记被删除或接口异常时展示</div></div>
+  </div>
+</div>
+
+<!-- 首页 L2: 搜索页 -->
+<div class="section-group">
+  <div class="section-title">搜索页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">搜索宠物/日记/用户，含搜索历史、热门搜索、搜索结果</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar">
+        <span class="back-btn">‹</span>
+        <div style="flex:1; margin:0 12px; padding:8px 14px; background:#FAF3E8; border-radius:20px; border:1.5px solid #F0E4CE; display:flex; align-items:center; gap:6px;"><span style="font-size:14px; color:#A0815F;">🔍</span><span style="font-size:13px; color:#A0815F;">搜索宠物/日记/用户</span></div>
+        <span class="nav-text-btn">取消</span>
+      </div>
+      <div class="scroll-area no-tabbar">
+        <div class="section-label-row"><span class="sl-title">搜索历史</span><span style="font-size:12px; color:#A0815F;">🗑 清除</span></div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; padding:0 18px 16px;">
+          <span class="chip normal">拆家日记</span><span class="chip normal">布偶猫</span><span class="chip normal">傲娇风</span><span class="chip normal">追蝴蝶</span><span class="chip normal">午睡</span>
+        </div>
+        <div class="section-label-row"><span class="sl-title">🔥 热门搜索</span></div>
+        <div style="padding:0 18px;">
+          <div class="list-item" style="padding:10px 0;"><div class="list-item-left"><span style="font-size:14px; font-weight:700; color:#E87A5D; width:20px;">1</span><span style="font-size:13px; color:#3D2817;">#拆家日记大赛#</span></div><span class="style-tag coral">🔥 热</span></div>
+          <div class="list-item" style="padding:10px 0;"><div class="list-item-left"><span style="font-size:14px; font-weight:700; color:#F0A050; width:20px;">2</span><span style="font-size:13px; color:#3D2817;">布偶猫日常</span></div><span style="font-size:11px; color:#A0815F;">12.3k</span></div>
+          <div class="list-item" style="padding:10px 0;"><div class="list-item-left"><span style="font-size:14px; font-weight:700; color:#C49020; width:20px;">3</span><span style="font-size:13px; color:#3D2817;">猫咪第一视角</span></div><span style="font-size:11px; color:#A0815F;">8.7k</span></div>
+          <div class="list-item" style="padding:10px 0;"><div class="list-item-left"><span style="font-size:14px; font-weight:700; color:#8B7355; width:20px;">4</span><span style="font-size:13px; color:#3D2817;">金毛遛弯日记</span></div><span style="font-size:11px; color:#A0815F;">5.2k</span></div>
+          <div class="list-item" style="padding:10px 0;"><div class="list-item-left"><span style="font-size:14px; font-weight:700; color:#8B7355; width:20px;">5</span><span style="font-size:13px; color:#3D2817;">傲娇风日记</span></div><span style="font-size:11px; color:#A0815F;">3.1k</span></div>
+        </div>
+      </div>
+    </div></div><div class="label">搜索页 - 默认状态</div><div class="sub-label">搜索历史(可清除) + 热门搜索排行(带排名颜色)</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar">
+        <span class="back-btn">‹</span>
+        <div style="flex:1; margin:0 12px; padding:8px 14px; background:#FFF; border-radius:20px; border:1.5px solid #E87A5D; display:flex; align-items:center; gap:6px;"><span style="font-size:14px; color:#E87A5D;">🔍</span><span style="font-size:13px; color:#3D2817;">拆家</span><span style="font-size:12px; color:#A0815F; margin-left:auto;">✕</span></div>
+        <span class="nav-text-btn">搜索</span>
+      </div>
+      <div class="sub-tabs"><div class="sub-tab active">日记</div><div class="sub-tab">用户</div><div class="sub-tab">宠物</div></div>
+      <div class="scroll-area no-tabbar" style="height:calc(100% - 150px);">
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">咪咪的铲屎官</div><div class="user-sub">今天 10:30</div></div><span class="style-tag coral">傲娇风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;">今日份<mark>拆家</mark>述职报告...</div>
+          <div style="display:flex; gap:6px;"><div style="flex:1; height:60px; border-radius:8px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div><div style="flex:1; height:60px; border-radius:8px; overflow:hidden;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">布丁的铲屎官</div><div class="user-sub">昨天</div></div><span class="style-tag amber">热血风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;"><mark>拆家</mark>小能手上线！今天一口气推倒了三个花瓶...</div>
+        </div>
+      </div>
+    </div></div><div class="label">搜索页 - 结果状态</div><div class="sub-label">关键词高亮 + Tab切换 + 结果卡片</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar">
+        <span class="back-btn">‹</span>
+        <div style="flex:1; margin:0 12px; padding:8px 14px; background:#FFF; border-radius:20px; border:1.5px solid #E87A5D;"><span style="font-size:13px; color:#3D2817;">xkjfdslkjf</span></div>
+        <span class="nav-text-btn">搜索</span>
+      </div>
+      <div class="sub-tabs"><div class="sub-tab active">日记</div><div class="sub-tab">用户</div><div class="sub-tab">宠物</div></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="12" cy="12" r="8" stroke="#D3B98C" stroke-width="1.5" fill="none"/><path d="M18 18 L24 24" stroke="#D3B98C" stroke-width="1.5"/></svg></div>
+        <div class="state-title">未找到相关内容</div>
+        <div class="state-desc">换个关键词试试吧，比如"拆家"、"布偶猫"</div>
+      </div>
+    </div></div><div class="label">搜索页 - 无结果状态</div><div class="sub-label">搜索词无匹配时展示空状态 + 引导建议</div></div>
+  </div>
+</div>
+
+<!-- 首页 L2: 查看全部日记 -->
+<div class="section-group">
+  <div class="section-title">查看全部日记页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">首页"最近日记→查看全部"进入，展示当前宠物的全部日记</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">咪咪的日记</span><span style="font-size:16px; color:#8B7355;">☰</span></div>
+      <div style="display:flex; justify-content:space-around; padding:10px 18px; background:#FAF3E8;">
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">42</div><div class="stat-label" style="font-size:10px;">日记</div></div>
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">1.2k</div><div class="stat-label" style="font-size:10px;">获赞</div></div>
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">23</div><div class="stat-label" style="font-size:10px;">天</div></div>
+      </div>
+      <div style="display:flex; gap:8px; padding:10px 18px; align-items:center;">
+        <span class="chip active">全部</span><span class="chip normal">已发布</span><span class="chip normal">草稿</span>
+        <span style="font-size:11px; color:#A0815F; margin-left:auto;">📅 按时间</span>
+      </div>
+      <div class="scroll-area no-tabbar" style="height:calc(100% - 200px);">
+        <div class="list-item"><div style="flex:1;">
+          <div style="display:flex; gap:6px; margin-bottom:4px;"><span class="style-tag coral">傲娇风</span><span style="font-size:10px; color:#5DAF6B;">● 已发布</span></div>
+          <div style="font-size:13px; color:#3D2817; font-weight:500;">今日份拆家述职报告</div>
+          <div style="font-size:11px; color:#A0815F; margin-top:3px;">今天 10:30 · ❤️128 💬32</div>
+        </div><div style="width:50px; height:50px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+        <div class="list-item"><div style="flex:1;">
+          <div style="display:flex; gap:6px; margin-bottom:4px;"><span class="style-tag green">文艺风</span><span style="font-size:10px; color:#5DAF6B;">● 已发布</span></div>
+          <div style="font-size:13px; color:#3D2817; font-weight:500;">窗外的鸟是我的梦想</div>
+          <div style="font-size:11px; color:#A0815F; margin-top:3px;">昨天 15:20 · ❤️86 💬12</div>
+        </div><div style="width:50px; height:50px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+        <div class="list-item"><div style="flex:1;">
+          <div style="display:flex; gap:6px; margin-bottom:4px;"><span class="style-tag purple">搞笑风</span><span style="font-size:10px; color:#A0815F;">● 草稿</span></div>
+          <div style="font-size:13px; color:#3D2817; font-weight:500;">午睡的艺术</div>
+          <div style="font-size:11px; color:#A0815F; margin-top:3px;">前天 14:00 · 未发布</div>
+        </div><div style="width:50px; height:50px; border-radius:10px; background:#FAF3E8; display:flex; align-items:center; justify-content:center; font-size:20px; color:#D3B98C;">📝</div></div>
+        <div class="list-item"><div style="flex:1;">
+          <div style="display:flex; gap:6px; margin-bottom:4px;"><span class="style-tag blue">哲理风</span><span style="font-size:10px; color:#5DAF6B;">● 已发布</span></div>
+          <div style="font-size:13px; color:#3D2817; font-weight:500;">关于猫粮的深度思考</div>
+          <div style="font-size:11px; color:#A0815F; margin-top:3px;">3天前 · ❤️56 💬8</div>
+        </div><div style="width:50px; height:50px; border-radius:10px; overflow:hidden;"><img src="咪咪.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+      </div>
+    </div></div><div class="label">全部日记 - 默认状态</div><div class="sub-label">统计条 + 状态筛选 + 时间排序 + 日记列表</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">咪咪的日记</span><span></span></div>
+      <div style="display:flex; justify-content:space-around; padding:10px 18px; background:#FAF3E8;">
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">0</div><div class="stat-label" style="font-size:10px;">日记</div></div>
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">0</div><div class="stat-label" style="font-size:10px;">获赞</div></div>
+        <div class="stat-col"><div class="stat-num" style="font-size:16px;">0</div><div class="stat-label" style="font-size:10px;">天</div></div>
+      </div>
+      <div style="padding:10px 18px;"><span class="chip normal">已发布</span></div>
+      <div class="state-box" style="margin-top:40px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M6 4 L6 24 L22 24 L22 8 L18 4 Z" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">还没有已发布的日记</div>
+        <div class="state-desc">快为咪咪写第一篇日记吧～</div>
+        <div class="btn btn-primary" style="margin-top:14px; padding:8px 24px;">去创作</div>
+      </div>
+    </div></div><div class="label">全部日记 - 空数据状态</div><div class="sub-label">筛选"已发布"无数据时展示空状态</div></div>
+  </div>
+</div>
+
+<!-- 首页 L3: 用户主页 -->
+<div class="section-group">
+  <div class="section-title">用户主页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">从日记详情/社区点击用户头像进入，展示用户信息、宠物、日记列表</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">用户主页</span><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div class="scroll-area no-tabbar">
+        <div style="padding:16px 18px; text-align:center;">
+          <div class="avatar xl" style="margin:0 auto 10px;"><img src="布丁.jpg" alt=""></div>
+          <div style="font-size:16px; font-weight:600; color:#3D2817;">布丁的铲屎官</div>
+          <div style="font-size:12px; color:#8B7355; margin-top:4px;">养宠5年 · 金毛·布丁</div>
+          <div style="font-size:12px; color:#A0815F; margin-top:6px; line-height:1.5;">记录布丁的成长日常，分享快乐每一刻 🐕</div>
+        </div>
+        <div class="stat-row" style="padding:10px;">
+          <div class="stat-col"><div class="stat-num">156</div><div class="stat-label">日记</div></div>
+          <div class="stat-col"><div class="stat-num">2.3k</div><div class="stat-label">粉丝</div></div>
+          <div class="stat-col"><div class="stat-num">89</div><div class="stat-label">关注</div></div>
+          <div class="stat-col"><div class="stat-num">15.6k</div><div class="stat-label">获赞</div></div>
+        </div>
+        <div style="display:flex; gap:10px; padding:0 18px 14px;">
+          <div class="btn btn-primary" style="flex:1;">+ 关注</div>
+          <div class="btn btn-outline" style="flex:1;">私信</div>
+        </div>
+        <div class="sub-tabs"><div class="sub-tab active">日记</div><div class="sub-tab">宠物</div><div class="sub-tab">收藏</div></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 18px;">
+          <div class="card" style="margin:0; padding:0; overflow:hidden;">
+            <div style="height:100px; overflow:hidden;"><img src="布丁追蝴蝶1.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div style="padding:8px 10px;"><div style="font-size:11px; color:#3D2817; font-weight:500;">今天追了15只蝴蝶</div><div style="font-size:9px; color:#A0815F; margin-top:3px;">❤️234 · 💬45</div></div>
+          </div>
+          <div class="card" style="margin:0; padding:0; overflow:hidden;">
+            <div style="height:100px; overflow:hidden;"><img src="布丁追蝴蝶2.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div style="padding:8px 10px;"><div style="font-size:11px; color:#3D2817; font-weight:500;">草丛里的秘密</div><div style="font-size:9px; color:#A0815F; margin-top:3px;">❤️189 · 💬23</div></div>
+          </div>
+          <div class="card" style="margin:0; padding:0; overflow:hidden;">
+            <div style="height:100px; overflow:hidden;"><img src="布丁追蝴蝶3.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div style="padding:8px 10px;"><div style="font-size:11px; color:#3D2817; font-weight:500;">追蝴蝶冠军日记</div><div style="font-size:9px; color:#A0815F; margin-top:3px;">❤️312 · 💬67</div></div>
+          </div>
+          <div class="card" style="margin:0; padding:0; overflow:hidden;">
+            <div style="height:100px; background:#FAF3E8; display:flex; align-items:center; justify-content:center; font-size:24px; color:#D3B98C;">🐾</div>
+            <div style="padding:8px 10px;"><div style="font-size:11px; color:#3D2817; font-weight:500;">公园散步偶遇</div><div style="font-size:9px; color:#A0815F; margin-top:3px;">❤️156 · 💬19</div></div>
+          </div>
+        </div>
+      </div>
+    </div></div><div class="label">用户主页 - 默认状态</div><div class="sub-label">用户信息 + 统计 + 关注/私信 + Tab(日记/宠物/收藏) + 日记网格</div></div>
+  </div>
+</div>
+
+<!-- 首页 L3: 评论列表 -->
+<div class="section-group">
+  <div class="section-title">评论列表页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">日记详情"查看全部评论"进入，展示完整评论和楼层回复</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">评论 32</span><span style="font-size:12px; color:#8B7355;">按热度</span></div>
+      <div class="scroll-area no-tabbar" style="height:calc(100% - 110px);">
+        <div style="padding:12px 18px; border-bottom:1px solid #F5EDDE;">
+          <div class="card-row"><div class="avatar sm"><img src="年糕.jpg" alt=""></div><div style="flex:1;"><div style="font-size:12px; color:#3D2817; font-weight:500;">年糕的铲屎官</div><div style="font-size:10px; color:#A0815F;">2小时前</div></div><span style="font-size:11px; color:#8B7355;">❤️ 12</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0 6px 40px; line-height:1.5;">咪咪太厉害了！我家年糕只会睡觉😴 完全没有拆家的天赋</div>
+          <div style="margin-left:40px; padding:8px 12px; background:#FAF3E8; border-radius:10px; margin-top:6px;">
+            <div style="font-size:12px; color:#3D2817;"><b style="color:#E87A5D;">咪咪的铲屎官</b> 回复 <b>年糕的铲屎官</b>：每只猫都有自己的特长嘛～</div>
+            <div style="font-size:10px; color:#A0815F; margin-top:4px;">1小时前 · 回复</div>
+          </div>
+        </div>
+        <div style="padding:12px 18px; border-bottom:1px solid #F5EDDE;">
+          <div class="card-row"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div style="flex:1;"><div style="font-size:12px; color:#3D2817; font-weight:500;">布丁的铲屎官</div><div style="font-size:10px; color:#A0815F;">1小时前</div></div><span style="font-size:11px; color:#8B7355;">❤️ 8</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0 6px 40px; line-height:1.5;">同款拆家选手报到！布丁今天把沙发咬了个洞 🐕</div>
+        </div>
+        <div style="padding:12px 18px; border-bottom:1px solid #F5EDDE;">
+          <div class="card-row"><div class="avatar sm" style="background:#F5E0D0;">🐱</div><div style="flex:1;"><div style="font-size:12px; color:#3D2817; font-weight:500;">橘猫不胖</div><div style="font-size:10px; color:#A0815F;">30分钟前</div></div><span style="font-size:11px; color:#8B7355;">❤️ 5</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0 6px 40px; line-height:1.5;">傲娇风的日记太有画面感了，感觉我家猫也在旁边点头</div>
+        </div>
+      </div>
+      <div class="chat-input-bar"><div class="chat-input" style="font-size:12px; color:#A0815F;">说点什么...</div><div style="font-size:20px;">😊</div><div class="btn btn-primary" style="padding:6px 16px; font-size:12px;">发送</div></div>
+    </div></div><div class="label">评论列表 - 默认状态</div><div class="sub-label">评论卡片 + 楼中楼回复 + 点赞 + 排序 + 底部输入</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">评论 0</span><span></span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M6 8 L22 8 L22 20 L16 20 L12 24 L12 20 L6 20 Z" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">还没有评论</div>
+        <div class="state-desc">快来抢沙发，发表第一条评论吧～</div>
+      </div>
+      <div class="chat-input-bar"><div class="chat-input" style="font-size:12px; color:#A0815F;">说点什么...</div><div style="font-size:20px;">😊</div><div class="btn btn-primary disabled" style="padding:6px 16px; font-size:12px;">发送</div></div>
+    </div></div><div class="label">评论列表 - 空状态</div><div class="sub-label">无评论时展示引导文案，输入框仍可用</div></div>
+  </div>
+</div>
+
+<!-- 首页 L4: 举报页 + 分享设置页 -->
+<div class="section-group">
+  <div class="section-title">举报页 / 分享设置页 <span class="level-tag l4">L4</span></div>
+  <div class="section-desc">日记详情"⋯"菜单中的举报和分享子页面</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">举报</span><span></span></div>
+      <div style="padding:16px 18px;">
+        <div style="font-size:13px; color:#8B7355; margin-bottom:14px;">请选择举报原因，我们会认真处理你的反馈</div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817;">垃圾广告 / 推广信息</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817;">色情低俗内容</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817; font-weight:600;">虚假信息 / 误导</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817;">虐待动物</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817;">侵权 / 抄袭</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:14px; color:#3D2817;">其他原因</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div style="margin-top:16px;"><div class="input-label">补充说明（选填）</div><div style="padding:10px 14px; background:#FAF3E8; border-radius:12px; border:1.5px solid #F0E4CE; min-height:70px; font-size:12px; color:#A0815F;">请描述具体问题...</div></div>
+        <div class="btn btn-danger btn-full" style="margin-top:20px;">提交举报</div>
+        <div style="font-size:11px; color:#A0815F; text-align:center; margin-top:10px;">举报后我们将在24小时内审核处理</div>
+      </div>
+    </div></div><div class="label">举报页 - 已选择状态</div><div class="sub-label">单选原因列表 + 补充说明 + 提交按钮</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">分享</span><span></span></div>
+      <div style="padding:16px 18px;">
+        <div class="card" style="margin:0 0 20px;">
+          <div class="card-row"><div style="width:60px; height:60px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div><div style="flex:1;"><div style="font-size:13px; font-weight:600; color:#3D2817;">今日份拆家述职报告</div><div style="font-size:11px; color:#A0815F; margin-top:4px;">咪咪的铲屎官 · 傲娇风</div></div></div>
+        </div>
+        <div class="input-label">分享至</div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;">
+          <div style="text-align:center;"><div style="width:44px; height:44px; border-radius:14px; background:#E8F5EC; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:22px;">💬</div><div style="font-size:10px; color:#8B7355;">微信好友</div></div>
+          <div style="text-align:center;"><div style="width:44px; height:44px; border-radius:14px; background:#E8F0FA; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:22px;">📢</div><div style="font-size:10px; color:#8B7355;">朋友圈</div></div>
+          <div style="text-align:center;"><div style="width:44px; height:44px; border-radius:14px; background:#FAF0D8; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:22px;">📋</div><div style="font-size:10px; color:#8B7355;">复制链接</div></div>
+          <div style="text-align:center;"><div style="width:44px; height:44px; border-radius:14px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:22px;">📷</div><div style="font-size:10px; color:#8B7355;">生成图片</div></div>
+        </div>
+        <div class="input-label">分享设置</div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">包含宠物头像</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">包含风格标签</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">显示作者昵称</span><div class="toggle off"></div></div>
+      </div>
+    </div></div><div class="label">分享设置页 - 默认状态</div><div class="sub-label">预览卡 + 分享渠道 + 开关设置</div></div>
+  </div>
+</div>
+
+<!-- 首页 弹窗 -->
+<div class="section-group">
+  <div class="section-title">首页弹窗组件 <span class="level-tag popup">弹窗</span></div>
+  <div class="section-desc">筛选弹窗 · 排序弹窗 · 操作确认弹窗 — 覆盖正常/加载/错误/空数据状态</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">筛选</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px; margin-bottom:10px;"></div><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet">
+        <div class="popup-header"><span class="popup-title">筛选日记</span><span class="popup-close">✕</span></div>
+        <div class="input-label">宠物</div>
+        <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;"><span class="chip active">全部</span><span class="chip normal">咪咪</span><span class="chip normal">年糕</span></div>
+        <div class="input-label">风格</div>
+        <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;"><span class="chip active">全部</span><span class="chip normal">傲娇风</span><span class="chip normal">热血风</span><span class="chip normal">文艺风</span><span class="chip normal">搞笑风</span></div>
+        <div class="input-label">状态</div>
+        <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;"><span class="chip active">全部</span><span class="chip normal">已发布</span><span class="chip normal">草稿</span></div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">重置</div><div class="btn btn-primary" style="flex:1;">确定</div></div>
+      </div>
+    </div></div><div class="label">筛选弹窗 - 正常状态</div><div class="sub-label">底部sheet，宠物/风格/状态三维筛选</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">我的日记</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:50px; margin-bottom:8px;"></div><div class="skeleton" style="width:100%; height:50px;"></div></div>
+      <div class="popup-sheet">
+        <div class="popup-header"><span class="popup-title">排序方式</span><span class="popup-close">✕</span></div>
+        <div class="list-item" style="padding:14px 0;"><span style="font-size:14px; color:#3D2817; font-weight:600;">📅 按时间倒序</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:14px 0;"><span style="font-size:14px; color:#3D2817;">📅 按时间正序</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:14px 0;"><span style="font-size:14px; color:#3D2817;">❤️ 按点赞数</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:14px 0;"><span style="font-size:14px; color:#3D2817;">💬 按评论数</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+      </div>
+    </div></div><div class="label">排序弹窗 - 正常状态</div><div class="sub-label">底部sheet，单选排序方式</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">日记详情</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center">
+        <div style="text-align:center; padding:8px 0 16px;">
+          <div style="width:48px; height:48px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:24px;">🗑️</div>
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:8px;">确认删除这篇日记？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6;">删除后无法恢复，社区中的分享也将一并移除</div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:8px;"><div class="btn btn-ghost" style="flex:1;">取消</div><div class="btn btn-danger" style="flex:1;">确认删除</div></div>
+      </div>
+    </div></div><div class="label">操作确认弹窗 - 删除日记</div><div class="sub-label">居中弹窗，图标+标题+说明+双按钮</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">筛选</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet"><div style="text-align:center; padding:30px 0;"><div class="spinner" style="margin:0 auto 12px;"></div><div style="font-size:13px; color:#8B7355;">正在筛选...</div></div></div>
+    </div></div><div class="label">弹窗 - 加载中状态</div><div class="sub-label">弹窗内容替换为加载动画，按钮禁用</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">筛选</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet"><div style="text-align:center; padding:20px 0;"><div style="width:44px; height:44px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><span style="font-size:20px; color:#E85D5D;">✕</span></div><div style="font-size:14px; font-weight:600; color:#3D2817; margin-bottom:6px;">筛选失败</div><div style="font-size:12px; color:#8B7355; margin-bottom:16px;">网络异常，请重试</div><div class="btn btn-outline" style="padding:8px 24px;">重试</div></div></div>
+    </div></div><div class="label">弹窗 - 错误状态</div><div class="sub-label">弹窗内显示错误图标 + 提示 + 重试</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">筛选</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet"><div style="text-align:center; padding:20px 0;"><div style="width:44px; height:44px; border-radius:50%; background:#FAF3E8; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px; color:#D3B98C;">📭</div><div style="font-size:14px; font-weight:600; color:#3D2817; margin-bottom:6px;">没有匹配的日记</div><div style="font-size:12px; color:#8B7355;">试试调整筛选条件吧</div></div></div>
+    </div></div><div class="label">弹窗 - 空数据状态</div><div class="sub-label">筛选结果为空时展示空状态</div></div>
+  </div>
+</div>
+<!-- ===== MODULE 2: 社区 ===== -->
+<div class="module-header">
+  <h1><span class="icon-badge">🌍</span> 模块二：社区</h1>
+  <div class="summary"><b>L2</b>：话题详情 · 搜索结果 · <b>L3</b>：成员列表 · 帖子详情(共用日记详情) · <b>L4</b>：编辑帖子 · 话题管理 · <b>弹窗</b>：发布 · 举报 · 加入确认</div>
+</div>
+
+<!-- 社区 L2: 话题详情页 -->
+<div class="section-group">
+  <div class="section-title">话题详情页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">话题标签点击进入，展示话题简介、参与人数、相关日记Feed</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">话题</span><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div class="scroll-area no-tabbar">
+        <div style="padding:16px 18px; background:linear-gradient(135deg, #FCE8E0, #FAF3E8);">
+          <div style="font-size:18px; font-weight:700; color:#3D2817; margin-bottom:6px;">#拆家日记大赛#</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6; margin-bottom:12px;">晒出你家毛孩子的拆家杰作，用第一视角讲述"犯罪"过程！最有创意的日记将获得专属勋章 🏆</div>
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div><span style="font-size:16px; font-weight:700; color:#E87A5D;">3.2k</span> <span style="font-size:11px; color:#8B7355;">篇日记</span></div>
+            <div><span style="font-size:16px; font-weight:700; color:#E87A5D;">12.5k</span> <span style="font-size:11px; color:#8B7355;">人参与</span></div>
+            <div class="btn btn-primary" style="padding:5px 16px; font-size:12px; margin-left:auto;">+ 参与</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; padding:10px 18px; align-items:center;">
+          <span class="chip active">热度</span><span class="chip normal">最新</span><span style="font-size:11px; color:#A0815F; margin-left:auto;">共3,218篇</span>
+        </div>
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">咪咪的铲屎官</div><div class="user-sub">10:30</div></div><span class="style-tag coral">傲娇风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;">今日份拆家述职报告：把拖鞋从门口搬运到沙发底下...</div>
+          <div style="display:flex; gap:6px;"><div style="flex:1; height:70px; border-radius:8px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div><div style="flex:1; height:70px; border-radius:8px; overflow:hidden;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+          <div style="display:flex; gap:16px; margin-top:10px; font-size:11px; color:#8B7355;"><span>❤️ 128</span><span>💬 32</span><span>🔗 分享</span></div>
+        </div>
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">布丁的铲屎官</div><div class="user-sub">昨天</div></div><span class="style-tag amber">热血风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;">拆家小能手上线！今天一口气推倒了三个花瓶...</div>
+          <div style="display:flex; gap:6px;"><div style="flex:1; height:70px; border-radius:8px; overflow:hidden;"><img src="布丁追蝴蝶1.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+          <div style="display:flex; gap:16px; margin-top:10px; font-size:11px; color:#8B7355;"><span>❤️ 234</span><span>💬 45</span><span>🔗 分享</span></div>
+        </div>
+      </div>
+    </div></div><div class="label">话题详情 - 默认状态</div><div class="sub-label">话题头部(描述+统计+参与) + 排序 + 日记Feed</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">话题</span><span></span></div>
+      <div style="padding:16px 18px; background:linear-gradient(135deg, #FCE8E0, #FAF3E8);">
+        <div style="font-size:18px; font-weight:700; color:#3D2817;">#拆家日记大赛#</div>
+        <div style="font-size:12px; color:#8B7355; margin-top:4px;">3.2k篇 · 12.5k人参与</div>
+      </div>
+      <div class="state-box" style="margin-top:40px;"><div class="spinner"></div><div style="font-size:12px; color:#A0815F; margin-top:10px;">加载话题内容...</div></div>
+    </div></div><div class="label">话题详情 - 加载中</div><div class="sub-label">话题头部展示，内容区骨架屏加载</div></div>
+  </div>
+</div>
+
+<!-- 社区 L3: 成员列表页 -->
+<div class="section-group">
+  <div class="section-title">成员列表页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">话题详情"参与人数"点击进入，展示参与话题的用户列表</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">参与成员 12.5k</span><span style="font-size:12px; color:#8B7355;">🔍</span></div>
+      <div class="sub-tabs"><div class="sub-tab active">全部</div><div class="sub-tab">已关注</div><div class="sub-tab">最活跃</div></div>
+      <div class="scroll-area no-tabbar" style="height:calc(100% - 120px);">
+        <div class="list-item"><div class="list-item-left"><div class="avatar"><img src="咪咪.jpg" alt=""></div><div><div class="list-item-title">咪咪的铲屎官</div><div class="list-item-sub">布偶猫·咪咪 · 23篇日记</div></div></div><div class="btn btn-outline" style="padding:5px 14px; font-size:12px;">+ 关注</div></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar"><img src="布丁.jpg" alt=""></div><div><div class="list-item-title">布丁的铲屎官</div><div class="list-item-sub">金毛·布丁 · 156篇日记</div></div></div><div class="btn btn-ghost" style="padding:5px 14px; font-size:12px;">已关注</div></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar"><img src="年糕.jpg" alt=""></div><div><div class="list-item-title">年糕的铲屎官</div><div class="list-item-sub">橘猫·年糕 · 89篇日记</div></div></div><div class="btn btn-outline" style="padding:5px 14px; font-size:12px;">+ 关注</div></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar" style="background:#F5E0D0;">🐕</div><div><div class="list-item-title">柯基小短腿</div><div class="list-item-sub">柯基·肉包 · 45篇日记</div></div></div><div class="btn btn-outline" style="padding:5px 14px; font-size:12px;">+ 关注</div></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar" style="background:#E8F0FA;">🐱</div><div><div class="list-item-title">蓝猫不蓝</div><div class="list-item-sub">英短·阿蓝 · 67篇日记</div></div></div><div class="btn btn-ghost" style="padding:5px 14px; font-size:12px;">已关注</div></div>
+      </div>
+    </div></div><div class="label">成员列表 - 默认状态</div><div class="sub-label">Tab(全部/已关注/最活跃) + 用户列表 + 关注按钮</div></div>
+  </div>
+</div>
+
+<!-- 社区 L4: 编辑帖子 + 话题管理 -->
+<div class="section-group">
+  <div class="section-title">编辑帖子页 / 话题管理页 <span class="level-tag l4">L4</span></div>
+  <div class="section-desc">帖子编辑（仅限自己的内容） + 话题管理员的话题管理页</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 取消</span><span class="navbar-title">编辑日记</span><span class="nav-text-btn">保存</span></div>
+      <div style="padding:14px 18px;">
+        <div class="input-label">标题</div>
+        <div class="input-field active" style="margin-bottom:14px;">今日份拆家述职报告</div>
+        <div class="input-label">日记内容</div>
+        <div style="padding:12px 14px; background:#FFF; border:1.5px solid #E87A5D; border-radius:12px; min-height:120px; font-size:13px; color:#3D2817; line-height:1.7;">各位铲屎官好，我是咪咪。今天我要汇报一下我的工作成果：早上7点准时把拖鞋从门口搬运到沙发底下，完成了今日份的"藏宝任务"。<span style="display:inline-block; width:1px; height:14px; background:#E87A5D; animation:blink 1s infinite;"></span></div>
+        <div style="display:flex; justify-content:space-between; margin-top:6px;"><span style="font-size:11px; color:#A0815F;">支持表情😊 和话题#</span><span style="font-size:11px; color:#A0815F;">128/2000</span></div>
+        <div class="input-label" style="margin-top:14px;">日记风格</div>
+        <div style="display:flex; gap:7px; flex-wrap:wrap;"><span class="chip active">傲娇风</span><span class="chip normal">热血风</span><span class="chip normal">文艺风</span><span class="chip normal">搞笑风</span><span class="chip normal">哲理风</span></div>
+        <div class="input-label" style="margin-top:14px;">话题标签</div>
+        <div style="display:flex; gap:7px; flex-wrap:wrap;"><span class="chip normal">#拆家日记大赛# ✕</span><span class="chip normal">#布偶猫# ✕</span><span class="chip" style="background:transparent; border:1.5px dashed #E0D5C0; color:#A0815F;">+ 添加话题</span></div>
+        <div class="input-label" style="margin-top:14px;">谁可以看</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🌍 公开</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">👥 仅粉丝</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🔒 仅自己</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+      </div>
+    </div></div><div class="label">编辑帖子页 - 编辑中状态</div><div class="sub-label">标题/正文编辑 + 风格切换 + 话题管理 + 可见性设置</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">话题管理</span><span class="nav-text-btn">+ 新建</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="list-item"><div class="list-item-left"><div style="width:40px; height:40px; border-radius:10px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; font-size:18px;">🏆</div><div><div class="list-item-title">#拆家日记大赛#</div><div class="list-item-sub">3.2k篇 · 12.5k参与 · 进行中</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div style="width:40px; height:40px; border-radius:10px; background:#E0F0E4; display:flex; align-items:center; justify-content:center; font-size:18px;">🌸</div><div><div class="list-item-title">#春日遛弯计划#</div><div class="list-item-sub">1.8k篇 · 8.3k参与 · 进行中</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div style="width:40px; height:40px; border-radius:10px; background:#FAF0D8; display:flex; align-items:center; justify-content:center; font-size:18px;">😴</div><div><div class="list-item-title">#猫咪睡姿大赏#</div><div class="list-item-sub">2.1k篇 · 9.7k参与 · 已结束</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div style="width:40px; height:40px; border-radius:10px; background:#EDE0F0; display:flex; align-items:center; justify-content:center; font-size:18px;">🍖</div><div><div class="list-item-title">#美食日记#</div><div class="list-item-sub">986篇 · 4.2k参与 · 进行中</div></div></div><span class="list-item-arrow">›</span></div>
+      </div>
+    </div></div><div class="label">话题管理页 - 默认状态</div><div class="sub-label">话题列表(图标+名称+统计+状态) + 新建入口</div></div>
+  </div>
+</div>
+
+<!-- 社区 弹窗 -->
+<div class="section-group">
+  <div class="section-title">社区弹窗组件 <span class="level-tag popup">弹窗</span></div>
+  <div class="section-desc">发布弹窗 · 举报弹窗 · 加入确认弹窗</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">社区</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:100px;"></div></div>
+      <div class="popup-sheet center" style="padding:24px 22px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:52px; height:52px; border-radius:16px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:26px;">✏️</div>
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:6px;">发布到社区</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6;">你的日记将被社区用户看到，快分享给更多宠友吧！</div>
+        </div>
+        <div style="padding:12px; background:#FAF3E8; border-radius:12px; margin-bottom:16px;">
+          <div style="font-size:13px; color:#3D2817; font-weight:500; margin-bottom:4px;">今日份拆家述职报告</div>
+          <div style="font-size:11px; color:#A0815F;">傲娇风 · 2张配图</div>
+        </div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🌍 公开可见</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">💬 允许评论</span><div class="toggle on"></div></div>
+        <div class="btn btn-primary btn-full" style="margin-top:14px;">确认发布</div>
+      </div>
+    </div></div><div class="label">发布弹窗 - 正常状态</div><div class="sub-label">居中弹窗，预览摘要 + 公开/评论开关 + 确认发布</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">日记详情</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:100px;"></div></div>
+      <div class="popup-sheet">
+        <div class="popup-header"><span class="popup-title">举报内容</span><span class="popup-close">✕</span></div>
+        <div style="font-size:12px; color:#8B7355; margin-bottom:12px;">选择举报原因</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🚫 垃圾广告</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">⚠️ 不当内容</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🐾 虐待动物</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">📋 抄袭侵权</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="btn btn-danger btn-full" style="margin-top:14px;">提交举报</div>
+      </div>
+    </div></div><div class="label">举报弹窗 - 已选择状态</div><div class="sub-label">底部sheet，单选举报原因 + 提交</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">话题</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">🏆</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">参与 #拆家日记大赛# ？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">参与后你的日记将展示在话题页面</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">取消</div><div class="btn btn-primary" style="flex:1;">参与话题</div></div>
+      </div>
+    </div></div><div class="label">加入确认弹窗 - 正常状态</div><div class="sub-label">居中弹窗，话题图标+说明+双按钮</div></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 3: 创作 ===== -->
+<div class="module-header">
+  <h1><span class="icon-badge">✏️</span> 模块三：创作</h1>
+  <div class="summary"><b>L2</b>：AI生成结果 · 草稿箱 · 素材库 · <b>L3</b>：发布设置 · 模板选择 · <b>L4</b>：预览 · 历史版本 · <b>弹窗</b>：保存确认 · 发布进度 · 放弃编辑</div>
+</div>
+
+<!-- 创作 L2: AI生成结果页 -->
+<div class="section-group">
+  <div class="section-title">AI生成结果页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">创作输入"AI生成"后进入，展示AI日记内容，支持风格切换和重新生成</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记预览</span><span class="nav-text-btn">存草稿</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card-row" style="padding:10px 18px;"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div style="flex:1;"><div style="font-size:12px; color:#3D2817; font-weight:500;">咪咪 · 布偶猫</div></div><span style="font-size:11px; color:#A0815F; background:#FAF3E8; padding:2px 8px; border-radius:10px;">第1版</span></div>
+        <div style="padding:0 18px 14px;">
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:8px;">今日份拆家述职报告</div>
+          <div style="font-size:13px; color:#5D4A38; line-height:1.8;">各位铲屎官好，我是咪咪。今天我要正式汇报一下我的工作成果。首先，早上7点准时把拖鞋从门口搬运到沙发底下——这是我的"藏宝任务"，每天必须完成。其次，8点半在窗台完成了30分钟的观鸟训练，期间发出了38声挑衅性的咯咯声...</div>
+        </div>
+        <div class="divider"></div>
+        <div style="padding:12px 18px;">
+          <div class="input-label">切换风格重新生成</div>
+          <div style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px;"><span class="chip active">傲娇风 ✓</span><span class="chip normal">热血风</span><span class="chip normal">文艺风</span><span class="chip normal">搞笑风</span><span class="chip normal">哲理风</span></div>
+          <div class="btn btn-outline btn-full" style="margin-bottom:8px;">🔄 重新生成</div>
+          <div style="font-size:11px; color:#A0815F; text-align:center;">换一种风格，AI会根据照片内容重新创作</div>
+        </div>
+        <div class="divider"></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">📚</div><span style="font-size:13px; color:#3D2817;">历史版本 (3)</span></div><span class="list-item-arrow">›</span></div>
+      </div>
+      <div style="position:absolute; bottom:0; left:0; right:0; display:flex; gap:10px; padding:12px 18px; background:#FFF8EE; border-top:1px solid #F0E4CE;"><div class="btn btn-ghost" style="flex:1;">💾 存草稿</div><div class="btn btn-primary" style="flex:1;">发布 →</div></div>
+    </div></div><div class="label">AI结果页 - 成功状态</div><div class="sub-label">日记全文 + 版本标识 + 风格切换 + 重新生成 + 历史版本 + 存草稿/发布</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记预览</span><span class="nav-text-btn" style="color:#A0815F;">存草稿</span></div>
+      <div style="padding:10px 18px;"><div class="card-row"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div style="flex:1;"><span style="font-size:12px; color:#3D2817;">咪咪 · 布偶猫</span></div><span style="font-size:11px; color:#A0815F; background:#FAF3E8; padding:2px 8px; border-radius:10px;">生成中...</span></div></div>
+      <div style="padding:14px 18px;">
+        <div class="skeleton" style="width:60%; height:16px; margin-bottom:14px;"></div>
+        <div class="skeleton" style="width:100%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:95%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:88%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:92%; height:12px; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:70%; height:12px; margin-bottom:20px;"></div>
+      </div>
+      <div style="text-align:center; padding:20px;"><div class="spinner" style="margin:0 auto 10px;"></div><div style="font-size:13px; color:#E87A5D; font-weight:500;">AI正在以「热血风」重新创作...</div><div style="font-size:11px; color:#A0815F; margin-top:6px;">根据照片内容生成全新描述，约需3秒</div></div>
+      <div style="position:absolute; bottom:0; left:0; right:0; display:flex; gap:10px; padding:12px 18px; background:#FFF8EE; border-top:1px solid #F0E4CE; opacity:0.5;"><div class="btn btn-ghost" style="flex:1; pointer-events:none;">💾 存草稿</div><div class="btn btn-primary disabled" style="flex:1; pointer-events:none;">发布 →</div></div>
+    </div></div><div class="label">AI结果页 - 重新生成加载中</div><div class="sub-label">骨架屏 + 旋转动画 + 风格提示 + 底部按钮禁用</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">日记预览</span><span class="nav-text-btn">存草稿</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card-row" style="padding:10px 18px;"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div style="flex:1;"><div style="font-size:12px; color:#3D2817; font-weight:500;">咪咪 · 布偶猫</div></div><span style="font-size:11px; color:#5DAF6B; background:#E8F5EC; padding:2px 8px; border-radius:10px;">第2版</span></div>
+        <div style="padding:0 18px 14px;">
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:8px;">拖鞋大作战！</div>
+          <div style="font-size:13px; color:#5D4A38; line-height:1.8;">冲啊！！今天本喵向拖鞋大军发起了总攻！第一只拖鞋——爸爸的蓝色大拖鞋，被我一口叼住，从门口一路拖到沙发底下！这叫"战略转移"懂不懂？！妈妈追了我三圈没追上，因为她没有我这闪电般的速度！</div>
+        </div>
+        <div class="divider"></div>
+        <div style="padding:12px 18px;">
+          <div class="input-label">切换风格重新生成</div>
+          <div style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px;"><span class="chip normal">傲娇风</span><span class="chip active">热血风 ✓</span><span class="chip normal">文艺风</span><span class="chip normal">搞笑风</span><span class="chip normal">哲理风</span></div>
+          <div class="btn btn-outline btn-full" style="margin-bottom:8px;">🔄 重新生成</div>
+        </div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">📚</div><span style="font-size:13px; color:#3D2817;">历史版本 (3)</span><span class="style-tag amber" style="margin-left:6px;">最新</span></div><span class="list-item-arrow">›</span></div>
+      </div>
+      <div style="position:absolute; bottom:0; left:0; right:0; display:flex; gap:10px; padding:12px 18px; background:#FFF8EE; border-top:1px solid #F0E4CE;"><div class="btn btn-ghost" style="flex:1;">💾 存草稿</div><div class="btn btn-primary" style="flex:1;">发布 →</div></div>
+    </div></div><div class="label">AI结果页 - 新风格结果</div><div class="sub-label">热血风新内容，标题和正文完全不同，"第2版"标识</div></div>
+  </div>
+</div>
+
+<!-- 创作 L2: 草稿箱 -->
+<div class="section-group">
+  <div class="section-title">草稿箱页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">我的页面"草稿箱"入口，展示未完成的日记草稿</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">草稿箱</span><span style="font-size:12px; color:#8B7355;">编辑</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;"><span class="style-tag purple">搞笑风</span><span style="font-size:10px; color:#A0815F;">3分钟前</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">午睡的艺术</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">今天我要和大家分享一下午睡的终极奥义。首先，找一个阳光正好...</div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:10px;"><div style="width:40px; height:40px; border-radius:8px; overflow:hidden;"><img src="咪咪.jpg" style="width:100%; height:100%; object-fit:cover;"></div><span style="font-size:11px; color:#A0815F;">咪咪 · 2张配图</span><span class="btn btn-outline" style="margin-left:auto; padding:4px 12px; font-size:11px;">继续编辑</span></div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;"><span class="style-tag green">文艺风</span><span style="font-size:10px; color:#A0815F;">2小时前</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">窗外的那只麻雀</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">它又来了，站在窗台上歪着头看我。我觉得它在嘲笑我...</div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:10px;"><div style="width:40px; height:40px; border-radius:8px; overflow:hidden;"><img src="年糕.jpg" style="width:100%; height:100%; object-fit:cover;"></div><span style="font-size:11px; color:#A0815F;">年糕 · 无配图</span><span class="btn btn-outline" style="margin-left:auto; padding:4px 12px; font-size:11px;">继续编辑</span></div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;"><span class="style-tag amber">热血风</span><span style="font-size:10px; color:#A0815F;">昨天</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">追蝴蝶大作战</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">今天遇到了一只橙色蝴蝶，我追了它整整20分钟...</div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:10px;"><div style="width:40px; height:40px; border-radius:8px; overflow:hidden;"><img src="布丁.jpg" style="width:100%; height:100%; object-fit:cover;"></div><span style="font-size:11px; color:#A0815F;">布丁 · 3张配图</span><span class="btn btn-outline" style="margin-left:auto; padding:4px 12px; font-size:11px;">继续编辑</span></div>
+        </div>
+      </div>
+    </div></div><div class="label">草稿箱 - 默认状态</div><div class="sub-label">草稿卡片(风格+时间+标题+预览+宠物+配图数) + 继续编辑</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">草稿箱</span><span></span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M6 4 L6 24 L22 24 L22 8 L18 4 Z M18 4 L18 8 L22 8" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">草稿箱是空的</div>
+        <div class="state-desc">开始创作后，未完成的日记会保存在这里</div>
+        <div class="btn btn-primary" style="margin-top:14px; padding:8px 24px;">去创作</div>
+      </div>
+    </div></div><div class="label">草稿箱 - 空状态</div><div class="sub-label">无草稿时展示引导文案 + 创作入口</div></div>
+  </div>
+</div>
+
+<!-- 创作 L2: 素材库 -->
+<div class="section-group">
+  <div class="section-title">素材库页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">创作时"上传照片"可进入素材库，管理宠物照片库</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">素材库</span><span class="nav-text-btn">完成(2)</span></div>
+      <div class="sub-tabs"><div class="sub-tab active">咪咪</div><div class="sub-tab">年糕</div><div class="sub-tab">全部</div></div>
+      <div style="padding:10px 18px; display:flex; gap:8px; align-items:center;">
+        <span class="chip active">全部</span><span class="chip normal">最近添加</span><span class="chip normal">最常用</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:8px 18px;">
+        <div style="aspect-ratio:1; border-radius:8px; overflow:hidden; position:relative;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"><div style="position:absolute; top:4px; right:4px; width:18px; height:18px; border-radius:50%; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></div></div>
+        <div style="aspect-ratio:1; border-radius:8px; overflow:hidden; position:relative;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"><div style="position:absolute; top:4px; right:4px; width:18px; height:18px; border-radius:50%; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></div></div>
+        <div style="aspect-ratio:1; border-radius:8px; overflow:hidden;"><img src="咪咪.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+        <div style="aspect-ratio:1; border-radius:8px; background:#FAF3E8; display:flex; align-items:center; justify-content:center; font-size:20px; color:#D3B98C;">🐾</div>
+        <div style="aspect-ratio:1; border-radius:8px; background:#FAF3E8; display:flex; align-items:center; justify-content:center; font-size:20px; color:#D3B98C;">😴</div>
+        <div style="aspect-ratio:1; border-radius:8px; background:#FAF3E8; display:flex; align-items:center; justify-content:center; font-size:20px; color:#D3B98C;">🍖</div>
+      </div>
+      <div style="padding:10px 18px; font-size:11px; color:#A0815F;">已选2张，最多9张</div>
+    </div></div><div class="label">素材库 - 已选择状态</div><div class="sub-label">Tab(按宠物) + 排序 + 网格照片 + 选中标记 + 计数</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">素材库</span><span class="nav-text-btn">完成</span></div>
+      <div class="sub-tabs"><div class="sub-tab active">咪咪</div><div class="sub-tab">年糕</div><div class="sub-tab">全部</div></div>
+      <div class="state-box" style="margin-top:60px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="16" rx="2" stroke="#D3B98C" stroke-width="1.5" fill="none"/><circle cx="10" cy="12" r="2" fill="#D3B98C" opacity="0.5"/><path d="M4 18 L10 13 L16 18 L22 12 L24 14" stroke="#D3B98C" stroke-width="1" fill="none" opacity="0.4"/></svg></div>
+        <div class="state-title">还没有照片</div>
+        <div class="state-desc">上传宠物照片，AI会根据照片内容生成更生动的日记</div>
+        <div class="btn btn-primary" style="margin-top:14px; padding:8px 24px;">📷 拍照/上传</div>
+      </div>
+    </div></div><div class="label">素材库 - 空状态</div><div class="sub-label">无照片时展示引导 + 上传入口</div></div>
+  </div>
+</div>
+
+<!-- 创作 L3: 发布设置 + 模板选择 -->
+<div class="section-group">
+  <div class="section-title">发布设置页 / 模板选择页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">发布前的设置页 + 创作时的风格模板选择</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">发布设置</span><span class="nav-text-btn">发布</span></div>
+      <div style="padding:16px 18px;">
+        <div class="card" style="margin:0 0 16px;">
+          <div class="card-row"><div style="width:50px; height:50px; border-radius:10px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div><div style="flex:1;"><div style="font-size:13px; font-weight:600; color:#3D2817;">今日份拆家述职报告</div><div style="font-size:11px; color:#A0815F; margin-top:3px;">傲娇风 · 咪咪</div></div></div>
+        </div>
+        <div class="input-label">话题标签</div>
+        <div style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;"><span class="chip normal">#拆家日记大赛# ✕</span><span class="chip normal">#布偶猫# ✕</span><span class="chip" style="background:transparent; border:1.5px dashed #E0D5C0; color:#A0815F;">+ 添加</span></div>
+        <div class="input-label">谁可以看</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🌍 公开</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">👥 仅粉丝</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🔒 仅自己</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">💬 允许评论</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">📱 同步至动态</span><div class="toggle on"></div></div>
+        <div class="btn btn-primary btn-full" style="margin-top:16px;">发布到社区</div>
+      </div>
+    </div></div><div class="label">发布设置页 - 默认状态</div><div class="sub-label">预览卡 + 话题管理 + 可见性 + 评论/同步开关 + 发布按钮</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">选择风格</span><span></span></div>
+      <div style="padding:16px 18px;">
+        <div style="font-size:12px; color:#8B7355; margin-bottom:14px;">选择一种风格，AI将以宠物第一视角生成对应风格的日记</div>
+        <div class="card" style="margin:0 0 10px; border:2px solid #E87A5D;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><span class="style-tag coral">傲娇风</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5; font-style:italic;">"哼，我才不是为了让你开心才写日记的。只是今天的表现太出色了，不记录下来太可惜了而已。"</div>
+        </div>
+        <div class="card" style="margin:0 0 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><span class="style-tag amber">热血风</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5; font-style:italic;">"冲啊！！今天本喵向拖鞋大军发起总攻！这三只拖鞋被我一口叼住，谁也别想拦住我！"</div>
+        </div>
+        <div class="card" style="margin:0 0 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><span class="style-tag green">文艺风</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5; font-style:italic;">"阳光透过纱帘洒落，我安静地伏在窗台。那只麻雀又来了，歪着头看我，像是在问候一位老友。"</div>
+        </div>
+        <div class="card" style="margin:0 0 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><span class="style-tag purple">搞笑风</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5; font-style:italic;">"各位观众朋友们好！欢迎收看《咪咪的一天》。本期节目：如何用30秒让铲屎官崩溃——叼走拖鞋篇。"</div>
+        </div>
+        <div class="card" style="margin:0 0 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><span class="style-tag blue">哲理风</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5; font-style:italic;">"何为自由？是推开窗的那一刻，还是追逐蝴蝶的那一瞬？或许，自由本就是猫与生俱来的天赋。"</div>
+        </div>
+      </div>
+    </div></div><div class="label">模板选择页 - 已选择状态</div><div class="sub-label">5种风格卡片，每种带示例文案 + 单选</div></div>
+  </div>
+</div>
+
+<!-- 创作 L4: 预览页 + 历史版本页 -->
+<div class="section-group">
+  <div class="section-title">预览页 / 历史版本页 <span class="level-tag l4">L4</span></div>
+  <div class="section-desc">发布前全屏预览 + AI重新生成的历史版本对比</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">预览</span><span class="nav-text-btn">发布</span></div>
+      <div class="scroll-area no-tabbar">
+        <div style="padding:16px 18px; text-align:center;">
+          <div class="avatar lg" style="margin:0 auto 10px;"><img src="咪咪.jpg" alt=""></div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817;">咪咪</div>
+          <div style="font-size:11px; color:#A0815F;">布偶猫 · 2岁 · 今天</div>
+          <span class="style-tag coral" style="margin-top:6px; display:inline-block;">傲娇风</span>
+        </div>
+        <div style="padding:0 22px 16px;">
+          <div style="font-size:18px; font-weight:700; color:#3D2817; text-align:center; margin-bottom:14px;">今日份拆家述职报告</div>
+          <div style="font-size:14px; color:#3D2817; line-height:2; text-align:justify;">各位铲屎官好，我是咪咪。今天我要正式汇报一下我的工作成果。首先，早上7点准时把拖鞋从门口搬运到沙发底下——这是我的"藏宝任务"，每天必须完成。其次，8点半在窗台完成了30分钟的观鸟训练，期间发出了38声挑衅性的咯咯声。</div>
+        </div>
+        <div style="display:flex; gap:6px; padding:0 22px 16px;">
+          <div style="flex:1; height:140px; border-radius:12px; overflow:hidden;"><img src="咪咪叼拖鞋.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+          <div style="flex:1; height:140px; border-radius:12px; overflow:hidden;"><img src="咪咪叼拖鞋舔毛.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+        <div style="text-align:center; padding:10px; font-size:11px; color:#A0815F;">— 毛崽日记 · 来自咪咪的第一视角 —</div>
+      </div>
+    </div></div><div class="label">预览页 - 默认状态</div><div class="sub-label">全屏阅读式预览，大字号+大图+品牌签名</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">历史版本</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div style="font-size:12px; color:#8B7355; padding:12px 18px 8px;">共3个版本，选择一个使用</div>
+        <div class="card" style="border:2px solid #E87A5D;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span class="style-tag amber">热血风 · 第2版</span><span style="font-size:10px; color:#E87A5D; font-weight:600;">当前使用</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">拖鞋大作战！</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">冲啊！！今天本喵向拖鞋大军发起了总攻！第一只拖鞋——爸爸的蓝色大拖鞋...</div>
+          <div style="display:flex; gap:8px; margin-top:10px;"><div class="btn btn-ghost" style="flex:1; padding:6px; font-size:11px;">预览</div><div class="btn btn-primary disabled" style="flex:1; padding:6px; font-size:11px;">使用中</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span class="style-tag coral">傲娇风 · 第1版</span><span style="font-size:10px; color:#A0815F;">3分钟前</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">今日份拆家述职报告</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">各位铲屎官好，我是咪咪。今天我要正式汇报一下我的工作成果...</div>
+          <div style="display:flex; gap:8px; margin-top:10px;"><div class="btn btn-ghost" style="flex:1; padding:6px; font-size:11px;">预览</div><div class="btn btn-outline" style="flex:1; padding:6px; font-size:11px;">使用此版本</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span class="style-tag green">文艺风 · 第3版</span><span style="font-size:10px; color:#A0815F;">刚刚</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:4px;">窗台上的光影</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">阳光透过纱帘洒落，我安静地伏在窗台。那只麻雀又来了...</div>
+          <div style="display:flex; gap:8px; margin-top:10px;"><div class="btn btn-ghost" style="flex:1; padding:6px; font-size:11px;">预览</div><div class="btn btn-outline" style="flex:1; padding:6px; font-size:11px;">使用此版本</div></div>
+        </div>
+      </div>
+    </div></div><div class="label">历史版本页 - 对比状态</div><div class="sub-label">版本卡片(风格+标题+预览+预览/使用按钮)，当前版本高亮</div></div>
+  </div>
+</div>
+
+<!-- 创作 弹窗 -->
+<div class="section-group">
+  <div class="section-title">创作弹窗组件 <span class="level-tag popup">弹窗</span></div>
+  <div class="section-desc">保存确认 · 发布进度 · 放弃编辑</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">日记预览</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#E8F5EC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">💾</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">保存为草稿？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">草稿将保存在草稿箱中，可随时继续编辑</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">不保存</div><div class="btn btn-primary" style="flex:1;">保存草稿</div></div>
+      </div>
+    </div></div><div class="label">保存确认弹窗 - 正常状态</div><div class="sub-label">居中弹窗，图标+说明+双按钮(不保存/保存)</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">发布中</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center" style="padding:24px;">
+        <div style="text-align:center;">
+          <div class="spinner" style="margin:0 auto 14px; width:36px; height:36px;"></div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">正在发布...</div>
+          <div style="font-size:12px; color:#8B7355;">正在上传日记和配图</div>
+          <div style="width:100%; height:6px; background:#F0E4CE; border-radius:3px; margin-top:14px; overflow:hidden;"><div style="width:65%; height:100%; background:#E87A5D; border-radius:3px;"></div></div>
+          <div style="font-size:11px; color:#A0815F; margin-top:6px;">65%</div>
+        </div>
+      </div>
+    </div></div><div class="label">发布进度弹窗 - 加载中</div><div class="sub-label">旋转动画 + 进度条 + 百分比</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">创作</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:100px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#FFF8E8; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">⚠️</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">放弃编辑？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">退出后未保存的内容将丢失</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">继续编辑</div><div class="btn btn-danger" style="flex:1;">放弃</div></div>
+      </div>
+    </div></div><div class="label">放弃编辑弹窗 - 正常状态</div><div class="sub-label">居中弹窗，警告图标+说明+双按钮</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">发布中</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><span style="font-size:20px; color:#E85D5D;">✕</span></div>
+          <div style="font-size:14px; font-weight:600; color:#3D2817; margin-bottom:6px;">发布失败</div>
+          <div style="font-size:12px; color:#8B7355; margin-bottom:16px;">网络异常，请重试</div>
+          <div class="btn btn-outline" style="padding:8px 24px;">重试</div>
+        </div>
+      </div>
+    </div></div><div class="label">发布弹窗 - 错误状态</div><div class="sub-label">发布失败时展示错误图标 + 重试</div></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 4: 消息 ===== -->
+<div class="module-header">
+  <h1><span class="icon-badge">💬</span> 模块四：消息</h1>
+  <div class="summary"><b>L2</b>：聊天详情 · 通知列表 · 系统消息 · <b>L3</b>：消息搜索 · 聊天设置 · <b>L4</b>：记录导出 · 消息详情 · <b>弹窗</b>：删除确认 · 免打扰 · 举报</div>
+</div>
+
+<!-- 消息 L2: 聊天详情页 -->
+<div class="section-group">
+  <div class="section-title">聊天详情页（私信） <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">消息页私信Tab点击进入，与其他贴主的一对一聊天</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><div style="display:flex; align-items:center; gap:8px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><span class="navbar-title" style="font-size:14px;">布丁的铲屎官</span></div><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div style="height:calc(100% - 175px); overflow-y:auto; padding:14px 18px;">
+        <div style="text-align:center; margin-bottom:16px;"><span style="font-size:10px; color:#A0815F; background:#FAF3E8; padding:3px 12px; border-radius:10px;">今天</span></div>
+        <div style="display:flex; gap:8px; margin-bottom:14px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div class="chat-bubble left">你好呀！看到你家咪咪的拆家日记了，太有意思了 😂</div></div>
+        <div class="chat-bubble right">哈哈谢谢！你家布丁追蝴蝶也很厉害 🐕</div>
+        <div style="display:flex; gap:8px; margin-bottom:14px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div class="chat-bubble left">我们布丁今天又追了一只，追了20分钟！要不要一起参加拆家日记大赛？</div></div>
+        <div class="chat-bubble right">好呀！我用咪咪的照片参赛 🐱</div>
+        <div style="display:flex; gap:8px; margin-bottom:14px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div class="chat-bubble left">太好了！期待你的新日记 👍</div></div>
+        <div style="text-align:center; margin:10px 0;"><span style="font-size:10px; color:#5DAF6B;">● 对方正在输入...</span></div>
+      </div>
+      <div class="chat-input-bar"><div style="font-size:18px; color:#8B7355;">😊</div><div class="chat-input" style="font-size:12px; color:#3D2817;">好呀！我用咪咪</div><div style="font-size:18px; color:#8B7355;">📎</div><div class="btn btn-primary" style="padding:6px 14px; font-size:12px;">发送</div></div>
+    </div></div><div class="label">聊天详情 - 默认状态</div><div class="sub-label">聊天气泡(左白右橙) + 日期分隔 + 正在输入提示 + 输入栏(表情/附件/发送)</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><div style="display:flex; align-items:center; gap:8px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><span class="navbar-title" style="font-size:14px;">布丁的铲屎官</span></div><span style="font-size:18px; color:#8B7355;">⋯</span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon network"><svg width="32" height="28" viewBox="0 0 32 28"><path d="M4 10 Q16 0 28 10" stroke="#D3B98C" stroke-width="1.5" fill="none"/><path d="M12 18 Q16 15 20 18" stroke="#D3B98C" stroke-width="1.5" fill="none" opacity="0.5"/><circle cx="16" cy="22" r="2" fill="#D3B98C"/><path d="M12 6 L20 14 M20 6 L12 14" stroke="#E85D5D" stroke-width="1.5"/></svg></div>
+        <div class="state-title">网络连接失败</div>
+        <div class="state-desc">消息发送失败，请检查网络后重试</div>
+        <div class="btn btn-outline" style="margin-top:14px; padding:8px 24px;">重新连接</div>
+      </div>
+    </div></div><div class="label">聊天详情 - 无网络状态</div><div class="sub-label">断网时展示，提供重连入口</div></div>
+  </div>
+</div>
+
+<!-- 消息 L2: 通知列表 + 系统消息 -->
+<div class="section-group">
+  <div class="section-title">通知列表页 / 系统消息页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">互动通知(点赞/评论/关注) + 系统官方消息</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">互动通知</span><span style="font-size:12px; color:#E87A5D;">全部已读</span></div>
+      <div class="scroll-area no-tabbar">
+        <!-- 宠物提醒 -->
+        <div style="margin:12px 18px; padding:14px; background:linear-gradient(135deg, #FFF8E8, #FAF0D8); border-radius:14px; border:1px solid #F0E4CE;">
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div class="avatar sm" style="background:#FCE8E0;"><span style="font-size:14px;">🐱</span></div>
+            <div style="flex:1;">
+              <div style="font-size:12px; color:#E87A5D; font-weight:600;">咪咪提醒你</div>
+              <div style="font-size:13px; color:#3D2817; margin-top:4px; line-height:1.5;">铲屎的！今天还没有给我写日记呢！你是不是外面有别的猫了？😾</div>
+              <div class="btn btn-primary" style="margin-top:8px; padding:5px 16px; font-size:11px;">去写日记 →</div>
+            </div>
+          </div>
+        </div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div><div class="list-item-title">布丁的铲屎官</div><div class="list-item-sub">赞了你的日记「今日份拆家述职报告」</div></div></div><span style="font-size:10px; color:#A0815F;">10分钟前</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar sm"><img src="年糕.jpg" alt=""></div><div><div class="list-item-title">年糕的铲屎官</div><div class="list-item-sub">评论：咪咪太厉害了！我家年糕只会睡觉😴</div></div></div><span style="font-size:10px; color:#A0815F;">2小时前</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar sm" style="background:#F5E0D0;">🐕</div><div><div class="list-item-title">柯基小短腿</div><div class="list-item-sub">关注了你</div></div></div><span style="font-size:10px; color:#A0815F;">3小时前</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="avatar sm" style="background:#E8F0FA;">🐱</div><div><div class="list-item-title">蓝猫不蓝</div><div class="list-item-sub">赞了你的日记「窗外的鸟是我的梦想」</div></div></div><span style="font-size:10px; color:#A0815F;">昨天</span></div>
+      </div>
+    </div></div><div class="label">通知列表 - 默认状态</div><div class="sub-label">宠物提醒(特色·第一人称) + 点赞/评论/关注通知 + 全部已读</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">系统消息</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card" style="border-left:3px solid #E87A5D;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:12px; font-weight:600; color:#E87A5D;">🏆 官方通知</span><span style="font-size:10px; color:#A0815F;">1小时前</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:6px;">你的日记入选社区精选！</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6;">恭喜！你的日记「今日份拆家述职报告」因高互动量被选为社区精选，将获得更多曝光～</div>
+          <div class="btn btn-outline" style="margin-top:10px; padding:5px 16px; font-size:11px;">查看详情</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:12px; font-weight:600; color:#5DAF6B;">📢 活动通知</span><span style="font-size:10px; color:#A0815F;">昨天</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:6px;">#拆家日记大赛# 火热进行中</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6;">参与话题赢取专属勋章和积分奖励，快来分享你家毛孩子的拆家杰作吧！</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:12px; font-weight:600; color:#5D87B0;">ℹ️ 系统公告</span><span style="font-size:10px; color:#A0815F;">3天前</span></div>
+          <div style="font-size:14px; font-weight:500; color:#3D2817; margin-bottom:6px;">v2.1.0 版本更新</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6;">新增「哲理风」日记风格、历史版本对比功能、素材库管理优化。</div>
+        </div>
+      </div>
+    </div></div><div class="label">系统消息 - 默认状态</div><div class="sub-label">官方通知(精选/活动/公告) + 分类标签色 + 查看详情</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">系统消息</span><span></span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M6 8 L22 8 L22 20 L16 20 L12 24 L12 20 L6 20 Z" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">暂无系统消息</div>
+        <div class="state-desc">官方通知和活动消息会在这里展示</div>
+      </div>
+    </div></div><div class="label">系统消息 - 空状态</div><div class="sub-label">无消息时展示空状态</div></div>
+  </div>
+</div>
+
+<!-- 消息 L3: 消息搜索 + 聊天设置 -->
+<div class="section-group">
+  <div class="section-title">消息搜索页 / 聊天设置页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">消息列表内搜索 + 聊天详情页设置</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar">
+        <span class="back-btn">‹</span>
+        <div style="flex:1; margin:0 12px; padding:8px 14px; background:#FFF; border-radius:20px; border:1.5px solid #E87A5D;"><span style="font-size:13px; color:#3D2817;">拆家</span></div>
+        <span class="nav-text-btn">搜索</span>
+      </div>
+      <div class="section-label-row"><span class="sl-title">聊天记录</span></div>
+      <div class="list-item"><div class="list-item-left"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div><div class="list-item-title">布丁的铲屎官</div><div class="list-item-sub">...你家布丁<mark>拆家</mark>也很厉害...</div></div></div><span style="font-size:10px; color:#A0815F;">2条匹配</span></div>
+      <div class="section-label-row"><span class="sl-title">日记</span></div>
+      <div class="list-item"><div class="list-item-left"><div class="avatar sm"><img src="咪咪.jpg" alt=""></div><div><div class="list-item-title">今日份<mark>拆家</mark>述职报告</div><div class="list-item-sub">咪咪的铲屎官 · 傲娇风</div></div></div><span class="list-item-arrow">›</span></div>
+    </div></div><div class="label">消息搜索 - 结果状态</div><div class="sub-label">关键词高亮 + 分类(聊天记录/日记)</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">聊天设置</span><span></span></div>
+      <div style="padding:16px 18px; text-align:center;">
+        <div class="avatar xl" style="margin:0 auto 10px;"><img src="布丁.jpg" alt=""></div>
+        <div style="font-size:15px; font-weight:600; color:#3D2817;">布丁的铲屎官</div>
+        <div style="font-size:11px; color:#A0815F; margin-top:4px;">金毛·布丁</div>
+      </div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FCE8E0;">🔔</div><span style="font-size:13px; color:#3D2817;">消息免打扰</span></div><div class="toggle off"></div></div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E0F0E4;">📌</div><span style="font-size:13px; color:#3D2817;">置顶聊天</span></div><div class="toggle on"></div></div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E8F0FA;">🖼️</div><span style="font-size:13px; color:#3D2817;">聊天背景</span></div><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">📋</div><span style="font-size:13px; color:#3D2817;">导出聊天记录</span></div><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#EDE0F0;">🚫</div><span style="font-size:13px; color:#3D2817;">举报</span></div><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FFF0F0;">🗑️</div><span style="font-size:13px; color:#E85D5D;">清空聊天记录</span></div><span class="list-item-arrow">›</span></div>
+    </div></div><div class="label">聊天设置 - 默认状态</div><div class="sub-label">用户信息 + 免打扰/置顶开关 + 背景设置 + 导出/举报/清空</div></div>
+  </div>
+</div>
+
+<!-- 消息 L4: 记录导出 + 消息详情 -->
+<div class="section-group">
+  <div class="section-title">聊天记录导出页 / 消息详情页 <span class="level-tag l4">L4</span></div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">导出聊天记录</span><span class="nav-text-btn">导出</span></div>
+      <div style="padding:16px 18px;">
+        <div class="input-label">时间范围</div>
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <span class="chip normal">最近7天</span><span class="chip active">最近30天</span><span class="chip normal">全部</span>
+        </div>
+        <div class="input-label">导出格式</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">📄 PDF文档</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E87A5D; background:#E87A5D; display:flex; align-items:center; justify-content:center;"><span style="color:#FFF; font-size:10px;">✓</span></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">📝 TXT文本</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="input-label" style="margin-top:14px;">包含内容</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">💬 文字消息</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">🖼️ 图片</span><div class="toggle on"></div></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">📎 文件</span><div class="toggle off"></div></div>
+        <div style="padding:12px; background:#FAF3E8; border-radius:12px; margin-top:14px; font-size:11px; color:#8B7355; line-height:1.6;">📋 预览：共1,234条消息 · 56张图片 · 预计大小约12MB</div>
+      </div>
+    </div></div><div class="label">记录导出页 - 默认状态</div><div class="sub-label">时间范围 + 格式选择 + 内容筛选 + 预览统计</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">消息详情</span><span></span></div>
+      <div style="padding:16px 18px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="font-size:10px; color:#A0815F; background:#FAF3E8; padding:3px 12px; border-radius:10px; display:inline-block;">2026年7月27日 10:30</div>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:16px;"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div style="flex:1;"><div class="chat-bubble left">你好呀！看到你家咪咪的拆家日记了，太有意思了 😂</div><div style="font-size:10px; color:#A0815F; margin-top:4px; margin-left:8px;">10:30</div></div></div>
+        <div style="text-align:center; margin:10px 0;"><span style="font-size:10px; color:#5DAF6B; background:#E8F5EC; padding:3px 12px; border-radius:10px;">✓ 已读</span></div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;"><div class="chat-bubble right" style="margin:0;">哈哈谢谢！你家布丁追蝴蝶也很厉害 🐕</div><div style="font-size:10px; color:#A0815F; margin-right:8px;">10:32</div></div>
+      </div>
+    </div></div><div class="label">消息详情 - 默认状态</div><div class="sub-label">单条消息详情查看，含时间戳和已读状态</div></div>
+  </div>
+</div>
+
+<!-- 消息 弹窗 -->
+<div class="section-group">
+  <div class="section-title">消息弹窗组件 <span class="level-tag popup">弹窗</span></div>
+  <div class="section-desc">删除确认 · 免打扰设置 · 举报</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">聊天</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:80px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">🗑️</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">清空聊天记录？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">清空后无法恢复，对方不会收到通知</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">取消</div><div class="btn btn-danger" style="flex:1;">确认清空</div></div>
+      </div>
+    </div></div><div class="label">删除确认弹窗 - 正常状态</div><div class="sub-label">居中弹窗，警告图标+说明+双按钮</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">聊天设置</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet">
+        <div class="popup-header"><span class="popup-title">免打扰设置</span><span class="popup-close">✕</span></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">🔕 全天免打扰</span><div class="toggle off"></div></div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">🌙 夜间免打扰 (22:00-8:00)</span><div class="toggle on"></div></div>
+        <div style="padding:12px 0;">
+          <div class="input-label">自定义时段</div>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
+            <div style="flex:1; padding:8px 12px; background:#FAF3E8; border-radius:10px; border:1px solid #F0E4CE; text-align:center; font-size:13px; color:#3D2817;">22:00</div>
+            <span style="color:#A0815F;">至</span>
+            <div style="flex:1; padding:8px 12px; background:#FAF3E8; border-radius:10px; border:1px solid #F0E4CE; text-align:center; font-size:13px; color:#3D2817;">08:00</div>
+          </div>
+        </div>
+      </div>
+    </div></div><div class="label">免打扰设置弹窗 - 正常状态</div><div class="sub-label">底部sheet，全天/夜间/自定义时段</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">聊天设置</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#EDE0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">🚫</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">举报布丁的铲屎官？</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.5;">请选择举报原因，我们会保护你的隐私</div>
+        </div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">骚扰/广告推广</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">不当言论</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">欺诈/诈骗</span><span style="width:18px; height:18px; border-radius:50%; border:2px solid #E0D5C0;"></span></div>
+        <div class="btn btn-danger btn-full" style="margin-top:12px;">提交举报</div>
+      </div>
+    </div></div><div class="label">举报弹窗 - 正常状态</div><div class="sub-label">居中弹窗，用户名+原因列表+提交</div></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 5: 我的 ===== -->
+<div class="module-header">
+  <h1><span class="icon-badge">👤</span> 模块五：我的</h1>
+  <div class="summary"><b>L2</b>：个人资料 · 设置 · 收藏 · 宠物档案管理 · 我的日记 · 草稿箱 · <b>L3</b>：账号安全 · 隐私设置 · 关于 · 档案详情 · 编辑档案 · <b>L4</b>：修改密码 · 绑定手机 · 注销账号 · <b>弹窗</b>：退出登录 · 清除缓存 · 版本更新</div>
+</div>
+
+<!-- 我的 L2: 个人资料页 -->
+<div class="section-group">
+  <div class="section-title">个人资料页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">我的页面"编辑资料"入口，编辑个人信息</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">编辑资料</span><span class="nav-text-btn">保存</span></div>
+      <div style="padding:18px;">
+        <div style="text-align:center; margin-bottom:20px;">
+          <div class="avatar xl" style="margin:0 auto; position:relative;"><img src="咪咪.jpg" alt=""></div>
+          <div style="font-size:12px; color:#E87A5D; margin-top:8px; font-weight:500;">📷 更换头像</div>
+        </div>
+        <div class="input-label">昵称</div>
+        <div class="input-field active" style="margin-bottom:14px;">咪咪的铲屎官</div>
+        <div class="input-label">个性签名</div>
+        <div style="padding:12px 14px; background:#FFF; border:1.5px solid #E87A5D; border-radius:12px; min-height:60px; font-size:13px; color:#3D2817;">记录咪咪的每一天，用AI写日记超有趣 🐱</div>
+        <div style="display:flex; justify-content:space-between; margin-top:4px;"><span style="font-size:11px; color:#A0815F;">展现你的个性</span><span style="font-size:11px; color:#A0815F;">18/100</span></div>
+        <div class="input-label" style="margin-top:14px;">所在城市</div>
+        <div class="list-item" style="padding:12px 0;"><span style="font-size:13px; color:#3D2817;">📍 上海</span><span class="list-item-arrow">›</span></div>
+        <div class="input-label" style="margin-top:10px;">性别</div>
+        <div style="display:flex; gap:10px;">
+          <span class="chip normal">男</span><span class="chip active">女</span><span class="chip normal">保密</span>
+        </div>
+      </div>
+    </div></div><div class="label">个人资料 - 编辑中状态</div><div class="sub-label">头像更换 + 昵称/签名编辑 + 城市/性别选择</div></div>
+  </div>
+</div>
+
+<!-- 我的 L2: 设置页 -->
+<div class="section-group">
+  <div class="section-title">设置页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">我的页面"设置"入口，通用设置中心</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">设置</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">账号与安全</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FCE8E0;">🔐</div><span style="font-size:13px; color:#3D2817;">账号安全</span></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E8F0FA;">🔒</div><span style="font-size:13px; color:#3D2817;">隐私设置</span></div><span class="list-item-arrow">›</span></div>
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">通用设置</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E0F0E4;">🔔</div><span style="font-size:13px; color:#3D2817;">通知管理</span></div><div class="toggle on"></div></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">🌙</div><span style="font-size:13px; color:#3D2817;">深色模式</span></div><div class="toggle off"></div></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#EDE0F0;">🌐</div><span style="font-size:13px; color:#3D2817;">语言</span></div><span style="font-size:12px; color:#A0815F;">简体中文 ›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#F5E0D0;">💾</div><span style="font-size:13px; color:#3D2817;">清除缓存</span></div><span style="font-size:12px; color:#A0815F;">45.2MB</span></div>
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">关于</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FCE8E0;">ℹ️</div><span style="font-size:13px; color:#3D2817;">关于毛崽日记</span></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E0F0E4;">⭐</div><span style="font-size:13px; color:#3D2817;">给我们评分</span></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E8F0FA;">📋</div><span style="font-size:13px; color:#3D2817;">用户协议与隐私政策</span></div><span class="list-item-arrow">›</span></div>
+        <div style="padding:20px 18px;"><div class="btn btn-outline btn-full" style="color:#E85D5D; border-color:#E85D5D;">退出登录</div></div>
+      </div>
+    </div></div><div class="label">设置页 - 默认状态</div><div class="sub-label">账号安全/隐私/通知/深色模式/语言/缓存/关于/退出登录</div></div>
+  </div>
+</div>
+
+<!-- 我的 L2: 收藏页 -->
+<div class="section-group">
+  <div class="section-title">收藏页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">收藏的日记列表</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">我的收藏</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="布丁.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">布丁的铲屎官</div><div class="user-sub">3天前</div></div><span class="style-tag amber">热血风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;">今天追了15只蝴蝶，我是小区蝴蝶追逐冠军！</div>
+          <div style="display:flex; gap:6px;"><div style="flex:1; height:60px; border-radius:8px; overflow:hidden;"><img src="布丁追蝴蝶1.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-row"><div class="avatar sm"><img src="年糕.jpg" alt=""></div><div style="flex:1;"><div class="user-name" style="font-size:12px;">年糕的铲屎官</div><div class="user-sub">5天前</div></div><span class="style-tag purple">搞笑风</span></div>
+          <div style="font-size:13px; color:#3D2817; margin:8px 0; line-height:1.6;">打滚是一门艺术，我用一生在研究...</div>
+          <div style="display:flex; gap:6px;"><div style="flex:1; height:60px; border-radius:8px; overflow:hidden;"><img src="年糕打打滚.jpg" style="width:100%; height:100%; object-fit:cover;"></div></div>
+        </div>
+      </div>
+    </div></div><div class="label">收藏页 - 默认状态</div><div class="sub-label">收藏的日记卡片列表</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">我的收藏</span><span></span></div>
+      <div class="state-box" style="margin-top:80px;">
+        <div class="state-icon empty"><svg width="28" height="28" viewBox="0 0 28 28"><path d="M14 4 L17 11 L24 11 L18 16 L20 23 L14 19 L8 23 L10 16 L4 11 L11 11 Z" stroke="#D3B98C" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="state-title">还没有收藏</div>
+        <div class="state-desc">在社区看到喜欢的日记，点击收藏就会出现在这里</div>
+      </div>
+    </div></div><div class="label">收藏页 - 空状态</div><div class="sub-label">无收藏时展示引导</div></div>
+  </div>
+</div>
+
+<!-- 我的 L2: 宠物档案管理 -->
+<div class="section-group">
+  <div class="section-title">宠物档案管理页 <span class="level-tag l2">L2</span></div>
+  <div class="section-desc">管理所有宠物档案，添加/编辑/删除</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">宠物档案</span><span class="nav-text-btn">+ 添加</span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="card" style="display:flex; gap:12px; align-items:center;">
+          <div class="avatar lg"><img src="咪咪.jpg" alt=""></div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:600; color:#3D2817;">咪咪</div>
+            <div style="font-size:11px; color:#A0815F; margin-top:3px;">布偶猫 · ♀ · 2岁 · 4.5kg</div>
+            <div style="display:flex; gap:6px; margin-top:6px;"><span class="style-tag coral">温顺</span><span class="style-tag blue">粘人</span><span class="style-tag amber">好奇</span></div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="card" style="display:flex; gap:12px; align-items:center;">
+          <div class="avatar lg"><img src="年糕.jpg" alt=""></div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:600; color:#3D2817;">年糕</div>
+            <div style="font-size:11px; color:#A0815F; margin-top:3px;">橘猫 · ♂ · 3岁 · 6.2kg</div>
+            <div style="display:flex; gap:6px; margin-top:6px;"><span class="style-tag amber">贪吃</span><span class="style-tag purple">慵懒</span></div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="card" style="display:flex; gap:12px; align-items:center; border:1.5px dashed #E0D5C0; cursor:pointer;">
+          <div class="avatar lg" style="background:#FAF3E8; border:2px dashed #D3B98C;"><span style="font-size:24px; color:#D3B98C;">+</span></div>
+          <div style="flex:1;"><div style="font-size:13px; color:#8B7355;">添加新宠物档案</div><div style="font-size:11px; color:#A0815F; margin-top:3px;">为你的新毛孩子建立专属档案</div></div>
+        </div>
+      </div>
+    </div></div><div class="label">宠物档案管理 - 默认状态</div><div class="sub-label">宠物卡片(头像+基本信息+性格标签) + 添加新宠物</div></div>
+  </div>
+</div>
+
+<!-- 我的 L3: 宠物档案详情 + 编辑 -->
+<div class="section-group">
+  <div class="section-title">宠物档案详情页 / 编辑档案页 <span class="level-tag l3">L3</span></div>
+  <div class="section-desc">单只宠物档案详情 + 编辑宠物信息</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">宠物档案</span><span class="nav-text-btn">编辑</span></div>
+      <div class="scroll-area no-tabbar">
+        <div style="text-align:center; padding:16px;">
+          <div class="avatar xl" style="margin:0 auto 10px;"><img src="咪咪.jpg" alt=""></div>
+          <div style="font-size:17px; font-weight:700; color:#3D2817;">咪咪</div>
+          <div style="font-size:12px; color:#A0815F; margin-top:4px;">布偶猫 · ♀ · 2岁</div>
+        </div>
+        <div class="stat-row" style="padding:10px;">
+          <div class="stat-col"><div class="stat-num">42</div><div class="stat-label">日记</div></div>
+          <div class="stat-col"><div class="stat-num">1.2k</div><div class="stat-label">获赞</div></div>
+          <div class="stat-col"><div class="stat-num">128</div><div class="stat-label">粉丝</div></div>
+        </div>
+        <div class="section-label-row"><span class="sl-title">基本信息</span></div>
+        <div class="list-item"><span style="font-size:12px; color:#A0815F;">品种</span><span style="font-size:13px; color:#3D2817;">布偶猫</span></div>
+        <div class="list-item"><span style="font-size:12px; color:#A0815F;">性别</span><span style="font-size:13px; color:#3D2817;">♀ 母</span></div>
+        <div class="list-item"><span style="font-size:12px; color:#A0815F;">生日</span><span style="font-size:13px; color:#3D2817;">2024-03-15</span></div>
+        <div class="list-item"><span style="font-size:12px; color:#A0815F;">体重</span><span style="font-size:13px; color:#3D2817;">4.5kg</span></div>
+        <div class="section-label-row"><span class="sl-title">性格标签</span></div>
+        <div style="display:flex; gap:6px; padding:0 18px 14px; flex-wrap:wrap;"><span class="style-tag coral">温顺</span><span class="style-tag blue">粘人</span><span class="style-tag amber">好奇</span></div>
+        <div class="section-label-row"><span class="sl-title">Ta的日记</span><span class="sl-link">查看全部 ›</span></div>
+        <div class="list-item"><div style="flex:1;"><div style="font-size:13px; color:#3D2817;">今日份拆家述职报告</div><div style="font-size:11px; color:#A0815F;">今天 · 傲娇风</div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div style="flex:1;"><div style="font-size:13px; color:#3D2817;">窗外的鸟是我的梦想</div><div style="font-size:11px; color:#A0815F;">昨天 · 文艺风</div></div><span class="list-item-arrow">›</span></div>
+      </div>
+    </div></div><div class="label">宠物档案详情 - 默认状态</div><div class="sub-label">头像+统计+基本信息+性格标签+Ta的日记</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 取消</span><span class="navbar-title">编辑档案</span><span class="nav-text-btn">保存</span></div>
+      <div style="padding:16px 18px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div class="avatar xl" style="margin:0 auto; position:relative;"><img src="咪咪.jpg" alt=""></div>
+          <div style="font-size:12px; color:#E87A5D; margin-top:6px;">📷 更换照片</div>
+        </div>
+        <div class="input-label">名字</div>
+        <div class="input-field active" style="margin-bottom:12px;">咪咪</div>
+        <div class="input-label">品种</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">布偶猫</span><span class="list-item-arrow">›</span></div>
+        <div class="input-label">性别</div>
+        <div style="display:flex; gap:8px; margin-bottom:12px;"><span class="chip active">♀ 母</span><span class="chip normal">♂ 公</span></div>
+        <div class="input-label">生日</div>
+        <div class="list-item" style="padding:10px 0;"><span style="font-size:13px; color:#3D2817;">2024-03-15</span><span class="list-item-arrow">›</span></div>
+        <div class="input-label">体重</div>
+        <div class="input-field" style="margin-bottom:12px;">4.5 kg</div>
+        <div class="input-label">性格标签（最多5个）</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="chip active">温顺</span><span class="chip active">粘人</span><span class="chip active">好奇</span>
+          <span class="chip normal">活泼</span><span class="chip normal">贪吃</span><span class="chip normal">慵懒</span><span class="chip normal">高冷</span>
+        </div>
+      </div>
+    </div></div><div class="label">编辑档案 - 编辑中状态</div><div class="sub-label">名字/品种/性别/生日/体重 + 性格标签多选</div></div>
+  </div>
+</div>
+
+<!-- 我的 L3: 账号安全 + 隐私设置 -->
+<div class="section-group">
+  <div class="section-title">账号安全页 / 隐私设置页 <span class="level-tag l3">L3</span></div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">账号安全</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FCE8E0;">📱</div><div><div class="list-item-title">绑定手机</div><div class="list-item-sub">138****8888</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E8F0FA;">🔐</div><div><div class="list-item-title">修改密码</div><div class="list-item-sub">建议定期更换</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E0F0E4;">💬</div><div><div class="list-item-title">绑定微信</div><div class="list-item-sub" style="color:#5DAF6B;">已绑定</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">🍎</div><div><div class="list-item-title">绑定Apple</div><div class="list-item-sub" style="color:#A0815F;">未绑定</div></div></div><span class="list-item-arrow">›</span></div>
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">账号操作</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#EDE0F0;">📊</div><span style="font-size:13px; color:#3D2817;">导出我的数据</span></div><span class="list-item-arrow">›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FFF0F0;">⚠️</div><span style="font-size:13px; color:#E85D5D;">注销账号</span></div><span class="list-item-arrow">›</span></div>
+      </div>
+    </div></div><div class="label">账号安全 - 默认状态</div><div class="sub-label">手机/密码/微信/Apple绑定 + 数据导出/注销</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">隐私设置</span><span></span></div>
+      <div class="scroll-area no-tabbar">
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">可见性</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FCE8E0;">🔍</div><span style="font-size:13px; color:#3D2817;">允许搜索找到我</span></div><div class="toggle on"></div></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E8F0FA;">📋</div><span style="font-size:13px; color:#3D2817;">通过手机号找到我</span></div><div class="toggle off"></div></div>
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">互动</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#E0F0E4;">💬</div><span style="font-size:13px; color:#3D2817;">谁可以私信我</span></div><span style="font-size:12px; color:#A0815F;">所有人 ›</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#FAF0D8;">👁️</div><span style="font-size:13px; color:#3D2817;">谁可以看我的日记</span></div><span style="font-size:12px; color:#A0815F;">公开 ›</span></div>
+        <div class="section-label-row"><span class="sl-title" style="font-size:12px; color:#A0815F;">数据</span></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#EDE0F0;">📊</div><span style="font-size:13px; color:#3D2817;">个性化推荐</span></div><div class="toggle on"></div></div>
+        <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background:#F5E0D0;">📍</div><span style="font-size:13px; color:#3D2817;">显示所在城市</span></div><div class="toggle off"></div></div>
+      </div>
+    </div></div><div class="label">隐私设置 - 默认状态</div><div class="sub-label">可见性/互动/数据三个分区的开关设置</div></div>
+  </div>
+</div>
+
+<!-- 我的 L3: 关于页 -->
+<div class="section-group">
+  <div class="section-title">关于页 <span class="level-tag l3">L3</span></div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">关于</span><span></span></div>
+      <div style="padding:30px 18px; text-align:center;">
+        <div style="width:72px; height:72px; border-radius:20px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:36px;">🐾</div>
+        <div style="font-size:18px; font-weight:700; color:#3D2817;">毛崽日记</div>
+        <div style="font-size:12px; color:#A0815F; margin-top:4px;">v2.1.0 (Build 210)</div>
+        <div style="font-size:12px; color:#8B7355; margin-top:10px; line-height:1.6;">用AI为宠物写第一视角日记<br>记录毛孩子的每一天</div>
+      </div>
+      <div class="list-item"><span style="font-size:13px; color:#3D2817;">📋 用户协议</span><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><span style="font-size:13px; color:#3D2817;">🔒 隐私政策</span><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><span style="font-size:13px; color:#3D2817;">🔄 检查更新</span><span style="font-size:12px; color:#5DAF6B;">最新版本</span></div>
+      <div class="list-item"><span style="font-size:13px; color:#3D2817;">⭐ 给我们评分</span><span class="list-item-arrow">›</span></div>
+      <div class="list-item"><span style="font-size:13px; color:#3D2817;">📞 联系客服</span><span class="list-item-arrow">›</span></div>
+    </div></div><div class="label">关于页 - 默认状态</div><div class="sub-label">App信息 + 协议/政策/更新/评分/客服</div></div>
+  </div>
+</div>
+
+<!-- 我的 L4: 修改密码 + 绑定手机 + 注销账号 -->
+<div class="section-group">
+  <div class="section-title">修改密码 / 绑定手机 / 注销账号 <span class="level-tag l4">L4</span></div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">修改密码</span><span class="nav-text-btn">完成</span></div>
+      <div style="padding:18px;">
+        <div class="input-label">当前密码</div>
+        <div class="input-field" style="margin-bottom:14px; type:password;">••••••••</div>
+        <div class="input-label">新密码</div>
+        <div class="input-field active" style="margin-bottom:6px;">Mimi1234!</div>
+        <div style="display:flex; gap:4px; margin-bottom:4px;">
+          <div style="flex:1; height:4px; border-radius:2px; background:#5DAF6B;"></div>
+          <div style="flex:1; height:4px; border-radius:2px; background:#5DAF6B;"></div>
+          <div style="flex:1; height:4px; border-radius:2px; background:#5DAF6B;"></div>
+        </div>
+        <div style="font-size:11px; color:#5DAF6B; margin-bottom:14px;">强度：强</div>
+        <div class="input-label">确认新密码</div>
+        <div class="input-field active" style="margin-bottom:6px;">Mimi1234!</div>
+        <div style="font-size:11px; color:#5DAF6B;">✓ 两次密码一致</div>
+      </div>
+    </div></div><div class="label">修改密码 - 输入完成</div><div class="sub-label">当前密码 + 新密码(含强度检测) + 确认密码(一致性验证)</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">绑定手机</span><span></span></div>
+      <div style="padding:18px;">
+        <div style="font-size:13px; color:#8B7355; margin-bottom:16px; line-height:1.6;">更换绑定手机号后，下次可使用新手机号登录</div>
+        <div class="input-label">当前手机号</div>
+        <div style="padding:12px 14px; background:#FAF3E8; border-radius:12px; font-size:13px; color:#A0815F; margin-bottom:14px;">138****8888</div>
+        <div class="input-label">新手机号</div>
+        <div class="input-field active" style="margin-bottom:14px;">139 0000 0000</div>
+        <div class="input-label">验证码</div>
+        <div style="display:flex; gap:10px;">
+          <div class="input-field active" style="flex:1;">8 3 6 _ _ _</div>
+          <div class="btn btn-outline" style="padding:0 16px; white-space:nowrap; font-size:12px;">59s后重发</div>
+        </div>
+        <div class="btn btn-primary btn-full" style="margin-top:20px;">确认绑定</div>
+      </div>
+    </div></div><div class="label">绑定手机 - 验证中状态</div><div class="sub-label">当前手机号 + 新手机号 + 验证码(倒计时) + 确认</div></div>
+
+    <div class="page-unit"><div class="frame"><div class="screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹ 返回</span><span class="navbar-title">注销账号</span><span></span></div>
+      <div style="padding:18px;">
+        <div style="text-align:center; margin-bottom:20px;">
+          <div style="width:52px; height:52px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:26px;">⚠️</div>
+          <div style="font-size:16px; font-weight:600; color:#E85D5D;">注销后无法恢复</div>
+        </div>
+        <div style="padding:14px; background:#FFF8E8; border-radius:12px; margin-bottom:16px;">
+          <div style="font-size:12px; color:#C49020; font-weight:600; margin-bottom:8px;">注销将导致以下内容永久丢失：</div>
+          <div style="font-size:12px; color:#8B7355; line-height:2;">• 全部日记和草稿（42篇）<br>• 宠物档案（2只）<br>• 社区互动记录和粉丝<br>• 收藏和关注关系<br>• 积分和勋章</div>
+        </div>
+        <div class="input-label">请输入「确认注销」以继续</div>
+        <div class="input-field" style="margin-bottom:14px;">确认注销</div>
+        <div class="input-label">登录密码验证</div>
+        <div class="input-field" style="margin-bottom:20px;">••••••••</div>
+        <div class="btn btn-danger btn-full">确认注销账号</div>
+        <div style="font-size:11px; color:#A0815F; text-align:center; margin-top:10px;">注销申请提交后将在72小时内审核处理</div>
+      </div>
+    </div></div><div class="label">注销账号 - 确认状态</div><div class="sub-label">警告图标 + 数据丢失说明 + 文字确认 + 密码验证 + 注销按钮</div></div>
+  </div>
+</div>
+
+<!-- 我的 弹窗 -->
+<div class="section-group">
+  <div class="section-title">我的弹窗组件 <span class="level-tag popup">弹窗</span></div>
+  <div class="section-desc">退出登录 · 清除缓存 · 版本更新</div>
+  <div class="page-grid">
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">设置</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#FAF0D8; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">🚪</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">退出登录？</div>
+          <div style="font-size:12px; color:#8B7355;">退出后需重新登录</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">取消</div><div class="btn btn-primary" style="flex:1; background:#E85D5D;">退出</div></div>
+      </div>
+    </div></div><div class="label">退出登录弹窗 - 正常状态</div><div class="sub-label">居中弹窗，图标+说明+双按钮</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">设置</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#E8F0FA; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">💾</div>
+          <div style="font-size:15px; font-weight:600; color:#3D2817; margin-bottom:6px;">清除缓存？</div>
+          <div style="font-size:12px; color:#8B7355;">当前缓存 45.2MB，清除后不影响你的数据</div>
+        </div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">取消</div><div class="btn btn-primary" style="flex:1;">清除</div></div>
+      </div>
+    </div></div><div class="label">清除缓存弹窗 - 正常状态</div><div class="sub-label">居中弹窗，缓存大小+说明+双按钮</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">关于</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:24px 22px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:56px; height:56px; border-radius:16px; background:#FCE8E0; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:28px;">✨</div>
+          <div style="font-size:16px; font-weight:600; color:#3D2817; margin-bottom:4px;">发现新版本 v2.2.0</div>
+          <div style="font-size:12px; color:#8B7355; line-height:1.6; margin-bottom:12px;">新增「日记合辑」功能、社区话题优化、性能提升</div>
+        </div>
+        <div style="padding:10px; background:#FAF3E8; border-radius:10px; font-size:11px; color:#8B7355; line-height:1.6; margin-bottom:14px;">更新大小：18.5MB<br>建议在WiFi环境下更新</div>
+        <div style="display:flex; gap:10px;"><div class="btn btn-ghost" style="flex:1;">稍后</div><div class="btn btn-primary" style="flex:1;">立即更新</div></div>
+      </div>
+    </div></div><div class="label">版本更新弹窗 - 正常状态</div><div class="sub-label">居中弹窗，新版本特性 + 大小提示 + 立即更新/稍后</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">关于</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center;">
+          <div class="spinner" style="margin:0 auto 12px;"></div>
+          <div style="font-size:13px; color:#8B7355;">正在下载更新... 45%</div>
+          <div style="width:100%; height:6px; background:#F0E4CE; border-radius:3px; margin-top:10px; overflow:hidden;"><div style="width:45%; height:100%; background:#E87A5D; border-radius:3px;"></div></div>
+        </div>
+      </div>
+    </div></div><div class="label">版本更新弹窗 - 下载中状态</div><div class="sub-label">旋转动画 + 进度条 + 百分比</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">关于</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FFF0F0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><span style="font-size:20px; color:#E85D5D;">✕</span></div>
+          <div style="font-size:14px; font-weight:600; color:#3D2817; margin-bottom:6px;">下载失败</div>
+          <div style="font-size:12px; color:#8B7355; margin-bottom:16px;">网络异常，请重试</div>
+          <div class="btn btn-outline" style="padding:8px 24px;">重试</div>
+        </div>
+      </div>
+    </div></div><div class="label">版本更新弹窗 - 错误状态</div><div class="sub-label">下载失败展示错误图标 + 重试</div></div>
+
+    <div class="page-unit"><div class="popup-frame"><div class="popup-screen">
+      <div class="statusbar"><span>9:41</span><span class="statusbar-right">📶 🔋</span></div>
+      <div class="navbar"><span class="back-btn">‹</span><span class="navbar-title">设置</span><span></span></div>
+      <div style="padding:12px 18px;"><div class="skeleton" style="width:100%; height:60px;"></div></div>
+      <div class="popup-sheet center" style="padding:20px;">
+        <div style="text-align:center;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#E8F5EC; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;"><span style="font-size:20px; color:#5DAF6B;">✓</span></div>
+          <div style="font-size:14px; font-weight:600; color:#3D2817; margin-bottom:6px;">缓存已清除</div>
+          <div style="font-size:12px; color:#8B7355;">已释放 45.2MB 空间</div>
+        </div>
+      </div>
+    </div></div><div class="label">清除缓存弹窗 - 成功状态</div><div class="sub-label">操作完成展示成功反馈</div></div>
+  </div>
+</div>
+
+<!-- ===== 页面跳转逻辑总览 ===== -->
+<div class="section-group">
+  <div class="section-title">页面跳转逻辑总览 <span class="level-tag popup">架构</span></div>
+  <div class="section-desc">5大模块间核心页面跳转路径与触发条件</div>
+  <div class="card" style="margin:0 auto; max-width:800px; padding:20px;">
+    <div style="font-size:13px; color:#3D2817; line-height:2.2;">
+      <b>🏠 首页模块</b><br>
+      → 首页 → 点击日记卡片 → <span style="color:#E87A5D;">日记详情页(L2)</span> [push]<br>
+      → 首页 → 点击搜索图标 → <span style="color:#E87A5D;">搜索页(L2)</span> [push]<br>
+      → 首页 → "查看全部" → <span style="color:#E87A5D;">全部日记页(L2)</span> [push]<br>
+      → 日记详情 → 点击头像 → <span style="color:#F0A050;">用户主页(L3)</span> [push]<br>
+      → 日记详情 → "查看全部评论" → <span style="color:#F0A050;">评论列表(L3)</span> [push]<br>
+      → 日记详情 → "⋯" → <span style="color:#8B7355;">举报页/分享设置(L4)</span> [push]<br><br>
+      <b>🌍 社区模块</b><br>
+      → 社区 → 点击话题标签 → <span style="color:#E87A5D;">话题详情(L2)</span> [push]<br>
+      → 话题详情 → "参与人数" → <span style="color:#F0A050;">成员列表(L3)</span> [push]<br>
+      → 社区 → 点击帖子 → <span style="color:#E87A5D;">日记详情(共用)</span> [push]<br>
+      → 社区 → "⋯" → <span style="color:#8B7355;">编辑帖子(L4)</span> [push]<br><br>
+      <b>✏️ 创作模块</b><br>
+      → Tab"⊕创作" → <span style="color:#E87A5D;">创作输入页(L1)</span> [push]<br>
+      → 创作输入 → "AI生成" → <span style="color:#E87A5D;">AI结果页(L2)</span> [push]<br>
+      → AI结果 → "重新生成" → <span style="color:#E87A5D;">加载态→新结果</span> [crossfade]<br>
+      → AI结果 → "历史版本" → <span style="color:#8B7355;">历史版本页(L4)</span> [push]<br>
+      → AI结果 → "发布" → <span style="color:#F0A050;">发布设置(L3)</span> [push]<br>
+      → 发布设置 → "发布到社区" → <span style="color:#5DAF6B;">社区Feed</span> [pop+refresh]<br>
+      → 创作输入 → "存草稿" → <span style="color:#E87A5D;">草稿箱(L2)</span> [push]<br>
+      → 创作输入 → "上传照片" → <span style="color:#E87A5D;">素材库(L2)</span> [sheet-up]<br><br>
+      <b>💬 消息模块</b><br>
+      → 消息 → 点击私信 → <span style="color:#E87A5D;">聊天详情(L2)</span> [push]<br>
+      → 聊天详情 → "⋯" → <span style="color:#F0A050;">聊天设置(L3)</span> [push]<br>
+      → 聊天设置 → "导出记录" → <span style="color:#8B7355;">导出页(L4)</span> [push]<br>
+      → 消息 → "互动通知" → <span style="color:#E87A5D;">通知列表(L2)</span> [push]<br>
+      → 消息 → "系统通知" → <span style="color:#E87A5D;">系统消息(L2)</span> [push]<br>
+      → 通知列表 → 点击通知 → <span style="color:#E87A5D;">日记详情(共用)</span> [push]<br><br>
+      <b>👤 我的模块</b><br>
+      → 我的 → "编辑资料" → <span style="color:#E87A5D;">个人资料(L2)</span> [push]<br>
+      → 我的 → "设置" → <span style="color:#E87A5D;">设置页(L2)</span> [push]<br>
+      → 我的 → "宠物档案管理" → <span style="color:#E87A5D;">档案管理(L2)</span> [push]<br>
+      → 档案管理 → 点击宠物 → <span style="color:#F0A050;">档案详情(L3)</span> [push]<br>
+      → 档案详情 → "编辑" → <span style="color:#8B7355;">编辑档案(L4)</span> [push]<br>
+      → 设置 → "账号安全" → <span style="color:#F0A050;">账号安全(L3)</span> [push]<br>
+      → 账号安全 → "修改密码" → <span style="color:#8B7355;">修改密码(L4)</span> [push]<br>
+      → 账号安全 → "绑定手机" → <span style="color:#8B7355;">绑定手机(L4)</span> [push]<br>
+      → 账号安全 → "注销账号" → <span style="color:#8B7355;">注销账号(L4)</span> [push]<br>
+      → 设置 → "退出登录" → <span style="color:#5DAF6B;">退出确认弹窗</span> [sheet-up]
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
